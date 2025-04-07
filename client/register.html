@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urbaverse - Inscription</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="../assets/img/logo-urbaverse.png" alt="Logo Urbaverse" class="logo-img">
+                <h1>Urbaverse</h1>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="about.html">À propos</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="report.html">Signalements</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="login.html" class="btn btn-outline">Connexion</a>
+                <a href="register.html" class="btn btn-primary active">Inscription</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section class="auth-container">
+        <div class="auth-card" style="max-width: 600px;">
+            <div class="auth-header">
+                <h2>Créer un compte</h2>
+                <p>Rejoignez la communauté Urbaverse pour contribuer à la ville de demain</p>
+            </div>
+            <div class="auth-body">
+                <form action="#" method="post">
+                    <h3 class="mb-3">Informations personnelles</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstname" class="form-label">Prénom</label>
+                            <input type="text" id="firstname" name="firstname" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname" class="form-label">Nom</label>
+                            <input type="text" id="lastname" name="lastname" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password" class="form-label">Mot de passe</label>
+                            <input type="password" id="password" name="password" class="form-control" required>
+                            <span class="form-hint">8 caractères minimum, incluant majuscules, minuscules et chiffres</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="password_confirm" class="form-label">Confirmer le mot de passe</label>
+                            <input type="password" id="password_confirm" name="password_confirm" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mb-3 mt-4">Votre quartier</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city" class="form-label">Ville</label>
+                            <input type="text" id="city" name="city" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="district" class="form-label">Quartier</label>
+                            <select id="district" name="district" class="form-control" required>
+                                <option value="">Sélectionnez votre quartier</option>
+                                <option value="centre">Centre-ville</option>
+                                <option value="nord">Quartier Nord</option>
+                                <option value="est">Quartier Est</option>
+                                <option value="sud">Quartier Sud</option>
+                                <option value="ouest">Quartier Ouest</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mb-3 mt-4">Vos préférences</h3>
+                    <div class="form-group">
+                        <div class="form-label mb-2">Centres d'intérêt</div>
+                        <div class="d-flex flex-wrap">
+                            <div class="form-checkbox" style="width: 50%; margin-bottom: 0.5rem;">
+                                <input type="checkbox" id="interest_1" name="interests[]" value="mobility">
+                                <label for="interest_1">Mobilité durable</label>
+                            </div>
+                            <div class="form-checkbox" style="width: 50%; margin-bottom: 0.5rem;">
+                                <input type="checkbox" id="interest_2" name="interests[]" value="gardening">
+                                <label for="interest_2">Jardinage urbain</label>
+                            </div>
+                            <div class="form-checkbox" style="width: 50%; margin-bottom: 0.5rem;">
+                                <input type="checkbox" id="interest_3" name="interests[]" value="waste">
+                                <label for="interest_3">Réduction des déchets</label>
+                            </div>
+                            <div class="form-checkbox" style="width: 50%; margin-bottom: 0.5rem;">
+                                <input type="checkbox" id="interest_4" name="interests[]" value="energy">
+                                <label for="interest_4">Énergie renouvelable</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mt-4">
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            <label for="terms">J'accepte les <a href="#">conditions d'utilisation</a> et la <a href="#">politique de confidentialité</a></label>
+                        </div>
+                        <div class="form-checkbox mt-2">
+                            <input type="checkbox" id="newsletter" name="newsletter">
+                            <label for="newsletter">Je souhaite recevoir la newsletter d'Urbaverse</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-full">Créer mon compte</button>
+                    </div>
+                </form>
+            </div>
+            <div class="auth-footer">
+                <p>Vous avez déjà un compte ? <a href="login.html">Se connecter</a></p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Urbaverse</h4>
+                <p class="mb-3">Construisons ensemble la ville du futur, plus verte et plus durable.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Liens utiles</h4>
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="about.html">À propos</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="report.html">Signalements</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Légal</h4>
+                <ul>
+                    <li><a href="#">Conditions d'utilisation</a></li>
+                    <li><a href="#">Politique de confidentialité</a></li>
+                    <li><a href="#">Mentions légales</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:contact@urbaverse.fr">contact@urbaverse.fr</a></li>
+                    <li><a href="tel:+33123456789">+33 1 23 45 67 89</a></li>
+                    <li>123 Rue de la Ville Verte<br>75001 Paris, France</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Urbaverse. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle mobile menu
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Urbaverse - Tableau de bord</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .admin-sidebar {
+      width: 250px;
+      background-color: var(--dark-green);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      height: 100%;
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      padding-top: 2rem;
+      z-index: 10;
+    }
+    
+    .admin-sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .admin-sidebar li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .admin-sidebar a {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      color: var(--light);
+      transition: var(--transition);
+      font-weight: 500;
+    }
+    
+    .admin-sidebar a:hover, 
+    .admin-sidebar a.active {
+      color: var(--light);
+      background-color: rgba(76, 175, 80, 0.2);
+      border-right: 3px solid var(--light-green);
+    }
+    
+    .admin-sidebar i {
+      margin-right: 0.75rem;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .admin-content {
+      margin-left: 250px;
+      padding: 2rem;
+      margin-top: var(--header-height);
+      background-color: var(--light-bg);
+    }
+    
+    .stats-card {
+      display: flex;
+      align-items: center;
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      background-color: var(--light);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 1rem;
+      border: 1px solid rgba(46, 79, 62, 0.1);
+    }
+    
+    .stats-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      font-size: 1.5rem;
+    }
+    
+    .stats-info h3 {
+      margin-bottom: 0.25rem;
+      font-size: 1rem;
+      color: var(--gray);
+    }
+    
+    .stats-info .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark-green);
+    }
+    
+    .trend {
+      display: flex;
+      align-items: center;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+    
+    .trend i {
+      margin-right: 0.25rem;
+    }
+    
+    .trend-up {
+      color: var(--light-green);
+    }
+    
+    .trend-down {
+      color: var(--danger);
+    }
+    
+    .activity-card {
+      margin-top: 2rem;
+      background-color: var(--light);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      border: 1px solid rgba(46, 79, 62, 0.1);
+    }
+    
+    .activity-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(46, 79, 62, 0.1);
+    }
+    
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+    
+    .activity-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(46, 79, 62, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+    }
+    
+    .activity-info {
+      flex: 1;
+    }
+    
+    .activity-time {
+      color: var(--gray);
+      font-size: 0.875rem;
+    }
+    
+    @media (max-width: 992px) {
+      .admin-sidebar {
+        width: 80px;
+      }
+      
+      .admin-sidebar span {
+        display: none;
+      }
+      
+      .admin-sidebar a {
+        justify-content: center;
+        padding: 1rem;
+      }
+      
+      .admin-sidebar i {
+        margin-right: 0;
+        font-size: 1.25rem;
+      }
+      
+      .admin-content {
+        margin-left: 80px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .admin-sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid rgba(46, 79, 62, 0.1);
+        padding-top: 0;
+      }
+      
+      .admin-sidebar ul {
+        display: flex;
+        overflow-x: auto;
+      }
+      
+      .admin-sidebar li {
+        margin-bottom: 0;
+        flex-shrink: 0;
+      }
+      
+      .admin-sidebar a {
+        padding: 1rem 1.5rem;
+      }
+      
+      .admin-sidebar i {
+        margin-right: 0.5rem;
+      }
+      
+      .admin-sidebar span {
+        display: inline-block;
+        white-space: nowrap;
+      }
+      
+      .admin-content {
+        margin-left: 0;
+        padding: 1.5rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="main-header">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="../assets/img/logo-urbaverse.png" alt="Logo Urbaverse" class="logo-img">
+        <h1>Urbaverse</h1>
+      </div>
+      <div class="user-actions">
+        <span class="btn btn-outline"><i class="fas fa-user-shield"></i> Admin</span>
+        <a href="../client/index.html" class="btn btn-primary">Retour au site</a>
+      </div>
+      <button class="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="admin-sidebar">
+    <ul>
+      <li>
+        <a href="#" class="active">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Tableau de bord</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fas fa-users"></i>
+          <span>Utilisateurs</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fas fa-map-marked-alt"></i>
+          <span>Quartiers</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fas fa-trophy"></i>
+          <span>Défis</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fas fa-leaf"></i>
+          <span>Actions</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fas fa-chart-bar"></i>
+          <span>Statistiques</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fas fa-cog"></i>
+          <span>Paramètres</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="admin-content">
+    <div class="d-flex justify-between align-center mb-4">
+      <h1 class="mb-0">Tableau de bord</h1>
+      <div>
+        <a href="#" class="btn btn-outline">
+          <i class="fas fa-download"></i> Exporter
+        </a>
+        <a href="#" class="btn btn-primary">
+          <i class="fas fa-plus"></i> Nouveau projet
+        </a>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap">
+      <div style="flex: 1 1 22%; min-width: 250px; margin-right: 1rem; margin-bottom: 1rem;">
+        <div class="stats-card">
+          <div class="stats-icon" style="background-color: rgba(76, 175, 80, 0.1); color: var(--light-green);">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stats-info">
+            <h3>Utilisateurs</h3>
+            <div class="value">5,842</div>
+            <div class="trend trend-up">
+              <i class="fas fa-arrow-up"></i>
+              <span>+12% ce mois</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="flex: 1 1 22%; min-width: 250px; margin-right: 1rem; margin-bottom: 1rem;">
+        <div class="stats-card">
+          <div class="stats-icon" style="background-color: rgba(46, 79, 62, 0.1); color: var(--dark-green);">
+            <i class="fas fa-seedling"></i>
+          </div>
+          <div class="stats-info">
+            <h3>Projets actifs</h3>
+            <div class="value">128</div>
+            <div class="trend trend-up">
+              <i class="fas fa-arrow-up"></i>
+              <span>+5 cette semaine</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="flex: 1 1 22%; min-width: 250px; margin-right: 1rem; margin-bottom: 1rem;">
+        <div class="stats-card">
+          <div class="stats-icon" style="background-color: rgba(241, 196, 15, 0.1); color: var(--accent-color);">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div class="stats-info">
+            <h3>Quartiers</h3>
+            <div class="value">42</div>
+            <div class="trend trend-up">
+              <i class="fas fa-arrow-up"></i>
+              <span>+3 ce mois</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="flex: 1 1 22%; min-width: 250px; margin-bottom: 1rem;">
+        <div class="stats-card">
+          <div class="stats-icon" style="background-color: rgba(129, 199, 132, 0.1); color: var(--accent-green);">
+            <i class="fas fa-leaf"></i>
+          </div>
+          <div class="stats-info">
+            <h3>Points attribués</h3>
+            <div class="value">192,450</div>
+            <div class="trend trend-up">
+              <i class="fas fa-arrow-up"></i>
+              <span>+8,520 cette semaine</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap">
+      <div style="flex: 1 1 65%; min-width: 300px; margin-right: 1rem;">
+        <div class="activity-card">
+          <div class="card-header">
+            <div class="d-flex justify-between align-center">
+              <h2 class="mb-0">Activités récentes</h2>
+              <a href="#" class="text-primary">Voir tout</a>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="activity-item">
+              <div class="activity-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="activity-info">
+                <div><strong>Sophie Duvall</strong> a rejoint le projet <a href="#">Jardins partagés</a></div>
+                <div class="activity-time">Il y a 23 minutes</div>
+              </div>
+            </div>
+            
+            <div class="activity-item">
+              <div class="activity-avatar">
+                <i class="fas fa-trophy"></i>
+              </div>
+              <div class="activity-info">
+                <div>Le défi <strong>Mobilité douce</strong> a été complété par 15 utilisateurs</div>
+                <div class="activity-time">Il y a 1 heure</div>
+              </div>
+            </div>
+            
+            <div class="activity-item">
+              <div class="activity-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="activity-info">
+                <div><strong>Thomas Bernard</strong> a signalé un problème dans <a href="#">Quartier Sud</a></div>
+                <div class="activity-time">Il y a 3 heures</div>
+              </div>
+            </div>
+            
+            <div class="activity-item">
+              <div class="activity-avatar">
+                <i class="fas fa-seedling"></i>
+              </div>
+              <div class="activity-info">
+                <div>Le projet <strong>Compostage collectif</strong> est maintenant à 90% de complétion</div>
+                <div class="activity-time">Il y a 5 heures</div>
+              </div>
+            </div>
+            
+            <div class="activity-item">
+              <div class="activity-avatar">
+                <i class="fas fa-user-plus"></i>
+              </div>
+              <div class="activity-info">
+                <div><strong>5 nouveaux utilisateurs</strong> se sont inscrits aujourd'hui</div>
+                <div class="activity-time">Il y a 6 heures</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="flex: 1 1 30%; min-width: 300px;">
+        <div class="activity-card">
+          <div class="card-header">
+            <div class="d-flex justify-between align-center">
+              <h2 class="mb-0">Tâches à suivre</h2>
+              <a href="#" class="text-primary">Voir tout</a>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="activity-item">
+              <div class="activity-avatar" style="background-color: rgba(244, 67, 54, 0.1); color: var(--danger);">
+                <i class="fas fa-exclamation-circle"></i>
+              </div>
+              <div class="activity-info">
+                <div><strong>Valider les signalements</strong> (3 en attente)</div>
+                <div class="activity-time">Urgent</div>
+              </div>
+            </div>
+            
+            <div class="activity-item">
+              <div class="activity-avatar" style="background-color: rgba(241, 196, 15, 0.1); color: var(--accent-color);">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="activity-info">
+                <div><strong>Approuver les nouveaux défis</strong> (5 en attente)</div>
+                <div class="activity-time">À faire aujourd'hui</div>
+              </div>
+            </div>
+            
+            <div class="activity-item">
+              <div class="activity-avatar" style="background-color: rgba(76, 175, 80, 0.1); color: var(--light-green);">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="activity-info">
+                <div><strong>Envoyer le rapport mensuel</strong></div>
+                <div class="activity-time">À faire cette semaine</div>
+              </div>
+            </div>
+            
+            <div class="activity-item">
+              <div class="activity-avatar" style="background-color: rgba(33, 150, 243, 0.1); color: var(--info);">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <div class="activity-info">
+                <div><strong>Planifier la réunion trimestrielle</strong></div>
+                <div class="activity-time">À faire cette semaine</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle mobile menu
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+      document.querySelector('.admin-sidebar').classList.toggle('active');
+    });
+  </script>
+</body>
+</html>

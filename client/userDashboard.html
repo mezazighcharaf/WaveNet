@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Urbaverse - Tableau de bord</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Élément de fond -->
+  <div class="page-background"></div>
+  
+  <!-- HEADER -->
+  <header class="main-header">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="../assets/img/logo-urbaverse.png" alt="Logo Urbaverse" class="logo-img">
+        <h1>Urbaverse</h1>
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="about.html">À propos</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="report.html">Signalements</a></li>
+        </ul>
+      </nav>
+      <div class="user-actions">
+        <div class="user-points" style="margin-right: 1rem; display: flex; align-items: center;">
+          <i class="fas fa-leaf" style="color: var(--light-green); margin-right: 0.5rem;"></i>
+          <span style="font-weight: 600;">150 points</span>
+        </div>
+        <div class="user-menu">
+          <button class="btn btn-outline">
+            <i class="fas fa-user"></i> Sophie
+          </button>
+        </div>
+      </div>
+      <button class="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- DASHBOARD HERO SECTION -->
+  <section class="hero" style="min-height: 40vh;">
+    <img src="../assets/img/urban-nature.jpg" alt="Ville verte" class="hero-background">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">Bienvenue, <span class="text-primary">Sophie</span></h1>
+      <p class="hero-text">Votre tableau de bord pour suivre vos actions écologiques et contribuer à la transformation de votre quartier.</p>
+    </div>
+  </section>
+
+  <!-- DASHBOARD CONTENT -->
+  <div class="container" style="margin-top: -3rem; position: relative; z-index: 10; margin-bottom: 3rem;">
+    <div class="card" style="padding: 2rem; max-width: 1100px; margin: 0 auto;">
+      <!-- Statistiques utilisateur -->
+      <div class="mb-5">
+        <h2 class="mb-4">Mes statistiques</h2>
+        <div class="d-flex flex-wrap justify-between">
+          <div class="card" style="width: 230px; margin-bottom: 1rem;">
+            <div class="card-body" style="padding: 1.5rem; text-align: center;">
+              <div style="font-size: 3rem; color: var(--light-green); margin-bottom: 0.5rem;">
+                <i class="fas fa-leaf"></i>
+              </div>
+              <h3 class="text-dark">Points Verts</h3>
+              <div style="font-size: 2rem; font-weight: 700; color: var(--light-green);">150</div>
+              <p class="text-gray mt-2">Niveau: Explorateur</p>
+            </div>
+          </div>
+
+          <div class="card" style="width: 230px; margin-bottom: 1rem;">
+            <div class="card-body" style="padding: 1.5rem; text-align: center;">
+              <div style="font-size: 3rem; color: var(--light-green); margin-bottom: 0.5rem;">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <h3 class="text-dark">Défis Complétés</h3>
+              <div style="font-size: 2rem; font-weight: 700; color: var(--light-green);">7</div>
+              <p class="text-gray mt-2">2 en cours</p>
+            </div>
+          </div>
+
+          <div class="card" style="width: 230px; margin-bottom: 1rem;">
+            <div class="card-body" style="padding: 1.5rem; text-align: center;">
+              <div style="font-size: 3rem; color: var(--light-green); margin-bottom: 0.5rem;">
+                <i class="fas fa-trophy"></i>
+              </div>
+              <h3 class="text-dark">Rang Quartier</h3>
+              <div style="font-size: 2rem; font-weight: 700; color: var(--light-green);">3<span style="font-size: 1.5rem; font-weight: 400;">/25</span></div>
+              <p class="text-gray mt-2">Quartier Est</p>
+            </div>
+          </div>
+
+          <div class="card" style="width: 230px; margin-bottom: 1rem;">
+            <div class="card-body" style="padding: 1.5rem; text-align: center;">
+              <div style="font-size: 3rem; color: var(--light-green); margin-bottom: 0.5rem;">
+                <i class="fas fa-cloud"></i>
+              </div>
+              <h3 class="text-dark">CO2 Évité</h3>
+              <div style="font-size: 2rem; font-weight: 700; color: var(--light-green);">25kg</div>
+              <p class="text-gray mt-2">Ce mois-ci</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Défis en cours -->
+      <div class="mb-5">
+        <h2 class="mb-4">Mes défis en cours</h2>
+        <div class="d-flex flex-wrap justify-between">
+          <div class="card" style="width: 48%; min-width: 300px; margin-bottom: 1rem;">
+            <div class="card-body">
+              <div class="d-flex justify-between align-center mb-3">
+                <h3>Plantation d'arbres urbains</h3>
+                <span class="status-badge status-active">En cours</span>
+              </div>
+              <p class="mb-3">Participez à la plantation de 50 arbres dans le quartier Est pour augmenter la couverture verte.</p>
+              <div class="mb-2 d-flex justify-between align-center">
+                <span>Progression : 60%</span>
+                <span>30/50 arbres</span>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar" style="width: 60%;"></div>
+              </div>
+              <div class="d-flex justify-between align-center mt-3">
+                <span>Expiration : 15 juin 2023</span>
+                <a href="#" class="btn btn-primary btn-small">Participer</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="width: 48%; min-width: 300px; margin-bottom: 1rem;">
+            <div class="card-body">
+              <div class="d-flex justify-between align-center mb-3">
+                <h3>Mobilité douce</h3>
+                <span class="status-badge status-active">En cours</span>
+              </div>
+              <p class="mb-3">Effectuez 20 trajets en utilisant des moyens de transport écologiques (vélo, marche, transport en commun).</p>
+              <div class="mb-2 d-flex justify-between align-center">
+                <span>Progression : 25%</span>
+                <span>5/20 trajets</span>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar" style="width: 25%;"></div>
+              </div>
+              <div class="d-flex justify-between align-center mt-3">
+                <span>Expiration : 30 juin 2023</span>
+                <a href="#" class="btn btn-primary btn-small">Déclarer un trajet</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activité du quartier -->
+      <div class="mb-5">
+        <h2 class="mb-4">Activité de mon quartier</h2>
+        <div class="card">
+          <div class="card-body">
+            <h3 class="mb-3">Événements à venir</h3>
+            <table class="mb-4" style="width: 100%;">
+              <thead>
+                <tr>
+                  <th style="width: 20%;">Date</th>
+                  <th style="width: 50%;">Événement</th>
+                  <th style="width: 20%;">Lieu</th>
+                  <th style="width: 10%;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>12 juin 2023</td>
+                  <td>Journée de plantation d'arbres</td>
+                  <td>Parc Central</td>
+                  <td><a href="#" class="btn btn-small btn-outline">Participer</a></td>
+                </tr>
+                <tr>
+                  <td>18 juin 2023</td>
+                  <td>Atelier compostage urbain</td>
+                  <td>Centre communautaire</td>
+                  <td><a href="#" class="btn btn-small btn-outline">Participer</a></td>
+                </tr>
+                <tr>
+                  <td>25 juin 2023</td>
+                  <td>Nettoyage collectif des berges</td>
+                  <td>Rivière Est</td>
+                  <td><a href="#" class="btn btn-small btn-outline">Participer</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Habitudes de transport -->
+      <div>
+        <h2 class="mb-4">Mes habitudes de transport</h2>
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex flex-wrap justify-between">
+              <div style="width: 48%; min-width: 300px;">
+                <h3 class="mb-3">Répartition des modes de transport</h3>
+                <div style="height: 250px; background-color: #f5f5f5; display: flex; align-items: flex-end; border-radius: var(--border-radius);">
+                  <div style="height: 65%; width: 25%; background-color: var(--light-green); margin: 0 0.5rem;">
+                    <div style="text-align: center; padding: 0.5rem; color: var(--light); font-weight: 600;">Vélo</div>
+                  </div>
+                  <div style="height: 40%; width: 25%; background-color: var(--light-green); margin: 0 0.5rem;">
+                    <div style="text-align: center; padding: 0.5rem; color: var(--light); font-weight: 600;">Marche</div>
+                  </div>
+                  <div style="height: 30%; width: 25%; background-color: var(--light-green); margin: 0 0.5rem;">
+                    <div style="text-align: center; padding: 0.5rem; color: var(--light); font-weight: 600;">Bus</div>
+                  </div>
+                  <div style="height: 15%; width: 25%; background-color: var(--light-green); margin: 0 0.5rem;">
+                    <div style="text-align: center; padding: 0.5rem; color: var(--light); font-weight: 600;">Voiture</div>
+                  </div>
+                </div>
+              </div>
+              <div style="width: 48%; min-width: 300px;">
+                <h3 class="mb-3">Statistiques</h3>
+                <ul style="list-style: none; padding: 0;">
+                  <li style="padding: 0.75rem 0; border-bottom: 1px solid rgba(46, 79, 62, 0.1);">
+                    <div class="d-flex justify-between">
+                      <span>Distance parcourue en vélo</span>
+                      <span style="font-weight: 600;">125 km</span>
+                    </div>
+                  </li>
+                  <li style="padding: 0.75rem 0; border-bottom: 1px solid rgba(46, 79, 62, 0.1);">
+                    <div class="d-flex justify-between">
+                      <span>Distance parcourue à pied</span>
+                      <span style="font-weight: 600;">45 km</span>
+                    </div>
+                  </li>
+                  <li style="padding: 0.75rem 0; border-bottom: 1px solid rgba(46, 79, 62, 0.1);">
+                    <div class="d-flex justify-between">
+                      <span>Trajets en transports en commun</span>
+                      <span style="font-weight: 600;">32</span>
+                    </div>
+                  </li>
+                  <li style="padding: 0.75rem 0;">
+                    <div class="d-flex justify-between">
+                      <span>CO2 économisé</span>
+                      <span style="font-weight: 600; color: var(--light-green);">25 kg</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>Urbaverse</h4>
+        <p class="mb-3">Construisons ensemble la ville du futur, plus verte et plus durable.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h4>Liens utiles</h4>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="about.html">À propos</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="report.html">Signalements</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h4>Légal</h4>
+        <ul>
+          <li><a href="#">Conditions d'utilisation</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+          <li><a href="#">Mentions légales</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:contact@urbaverse.fr">contact@urbaverse.fr</a></li>
+          <li><a href="tel:+33123456789">+33 1 23 45 67 89</a></li>
+          <li>123 Rue de la Ville Verte<br>75001 Paris, France</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2023 Urbaverse. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript pour l'interactivité -->
+  <script>
+    // Toggle mobile menu
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+      document.querySelector('.nav-links').classList.toggle('active');
+    });
+  </script>
+</body>
+</html> 

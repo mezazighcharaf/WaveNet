@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Urbaverse - Blog</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header class="main-header">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="../assets/img/logo-urbaverse.png" alt="Logo Urbaverse" class="logo-img">
+        <h1>Urbaverse</h1>
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="about.html">À propos</a></li>
+          <li><a href="blog.html" class="active">Blog</a></li>
+          <li><a href="report.html">Signalements</a></li>
+        </ul>
+      </nav>
+      <div class="user-actions">
+        <a href="login.html" class="btn btn-outline">Connexion</a>
+        <a href="register.html" class="btn btn-primary">Inscription</a>
+      </div>
+      <button class="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <section class="container" style="margin-top: 7rem; margin-bottom: 3rem;">
+    <div class="text-center mb-5">
+      <h1>Notre Blog</h1>
+      <p class="text-gray">Découvrez les dernières actualités et astuces pour un urbanisme durable.</p>
+    </div>
+
+    <div class="d-flex flex-wrap justify-center">
+      <!-- Article 1 -->
+      <div class="card" style="width: 350px; margin: 1rem; overflow: hidden;">
+        <div style="height: 200px; overflow: hidden;">
+          <img src="https://lejardin.ma/wp-content/uploads/2025/01/Les-plantes-ideales-pour-les-petits-espaces-en-ville-1024x683.webp" 
+               alt="Jardin Urbain" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="card-body">
+          <h3>Jardin Urbain : un refuge en pleine ville</h3>
+          <p class="text-gray">Découvrez comment aménager des espaces verts partagés pour dynamiser votre quartier.</p>
+          <a href="#" class="btn btn-primary mt-3">Lire plus</a>
+        </div>
+      </div>
+      
+      <!-- Article 2 -->
+      <div class="card" style="width: 350px; margin: 1rem; overflow: hidden;">
+        <div style="height: 200px; overflow: hidden;">
+          <img src="https://www.bee-cycle.fr/wp-content/uploads/2023/04/mobilite-douce-entreprise.webp" 
+               alt="Mobilité Douce" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="card-body">
+          <h3>Mobilité Douce : le futur des déplacements urbains</h3>
+          <p class="text-gray">Les solutions alternatives à la voiture pour réduire la pollution et les embouteillages.</p>
+          <a href="#" class="btn btn-primary mt-3">Lire plus</a>
+        </div>
+      </div>
+      
+      <!-- Article 3 -->
+      <div class="card" style="width: 350px; margin: 1rem; overflow: hidden;">
+        <div style="height: 200px; overflow: hidden;">
+          <img src="https://www.demainlaville.com/content/uploads/2019/02/decloisonnons.png" 
+               alt="Initiatives Locales" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="card-body">
+          <h3>Initiatives Locales : comment participer ?</h3>
+          <p class="text-gray">Guide pratique pour rejoindre ou lancer une action écologique dans votre ville.</p>
+          <a href="#" class="btn btn-primary mt-3">Lire plus</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>Urbaverse</h4>
+        <p class="mb-3">Construisons ensemble la ville du futur, plus verte et plus durable.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h4>Liens utiles</h4>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="about.html">À propos</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="report.html">Signalements</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h4>Légal</h4>
+        <ul>
+          <li><a href="#">Conditions d'utilisation</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+          <li><a href="#">Mentions légales</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:contact@urbaverse.fr">contact@urbaverse.fr</a></li>
+          <li><a href="tel:+33123456789">+33 1 23 45 67 89</a></li>
+          <li>123 Rue de la Ville Verte<br>75001 Paris, France</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2023 Urbaverse. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Toggle mobile menu
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+      document.querySelector('.nav-links').classList.toggle('active');
+    });
+  </script>
+</body>
+</html>

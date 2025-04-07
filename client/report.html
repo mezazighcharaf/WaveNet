@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urbaverse - Signalements</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="../assets/img/logo-urbaverse.png" alt="Logo Urbaverse" class="logo-img">
+                <h1>Urbaverse</h1>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="about.html">À propos</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="report.html" class="active">Signalements</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="login.html" class="btn btn-outline">Connexion</a>
+                <a href="register.html" class="btn btn-primary">Inscription</a>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section class="hero" style="min-height: 40vh;">
+        <img src="../assets/img/urban-nature.jpg" alt="Ville verte" class="hero-background">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Signaler une <span class="text-primary">anomalie</span></h1>
+            <p class="hero-text">Contribuez à l'amélioration de votre environnement urbain en signalant des problèmes.</p>
+        </div>
+    </section>
+
+    <section class="container" style="margin-top: -3rem; position: relative; z-index: 10; margin-bottom: 3rem;">
+        <div class="card" style="padding: 2rem; max-width: 800px; margin: 0 auto;">
+            <form id="reportForm">
+                <div class="form-group">
+                    <label for="type" class="form-label">Type d'anomalie</label>
+                    <select id="type" name="type" class="form-control" required>
+                        <option value="">Sélectionnez un type</option>
+                        <option value="dechets">Déchets</option>
+                        <option value="voirie">Voirie</option>
+                        <option value="eclairage">Éclairage</option>
+                        <option value="vegetation">Végétation</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="location" class="form-label">Localisation</label>
+                    <input type="text" id="location" name="location" class="form-control" placeholder="Adresse ou description du lieu" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" class="form-control" rows="5" placeholder="Décrivez le problème en détail" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="photo" class="form-label">Photo (optionnel)</label>
+                    <input type="file" id="photo" name="photo" class="form-control" accept="image/*">
+                    <span class="form-hint">Formats acceptés: JPG, PNG (max 5MB)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="urgency" class="form-label">Niveau d'urgence</label>
+                    <select id="urgency" name="urgency" class="form-control" required>
+                        <option value="low">Faible</option>
+                        <option value="medium">Moyen</option>
+                        <option value="high">Élevé</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">J'accepte que mes données soient traitées pour résoudre ce problème</label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Envoyer le signalement</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Urbaverse</h4>
+                <p class="mb-3">Construisons ensemble la ville du futur, plus verte et plus durable.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Liens utiles</h4>
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="about.html">À propos</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="report.html">Signalements</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Légal</h4>
+                <ul>
+                    <li><a href="#">Conditions d'utilisation</a></li>
+                    <li><a href="#">Politique de confidentialité</a></li>
+                    <li><a href="#">Mentions légales</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:contact@urbaverse.fr">contact@urbaverse.fr</a></li>
+                    <li><a href="tel:+33123456789">+33 1 23 45 67 89</a></li>
+                    <li>123 Rue de la Ville Verte<br>75001 Paris, France</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Urbaverse. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle mobile menu
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
