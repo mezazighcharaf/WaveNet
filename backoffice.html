@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Backoffice - Urbaverse</title>
+  <link rel="stylesheet" href="backoffice.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <h1>Urbaverse</h1>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="#dashboard" class="active">Dashboard</a></li>
+        <li><a href="#reports">Signalements</a></li>
+        <li><a href="#users">Utilisateurs</a></li>
+        <li><a href="#settings">Paramètres</a></li>
+        <li class="home-link"><a href="index.html">Retour à l'accueil</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <header class="content-header">
+      <h1>Dashboard</h1>
+      <div class="user-info">
+        <span>Admin</span>
+        <a href="index.html" class="home-button">Accueil</a>
+      </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-1-5h2v2h-2v-2zm0-8h2v6h-2V7z" fill="currentColor"/></svg>
+        </div>
+        <div class="stat-content">
+          <h3>Total Utilisateurs</h3>
+          <p>1,200</p>
+          <span class="trend positive">+12% ce mois</span>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-1-5h2v2h-2v-2zm0-8h2v6h-2V7z" fill="currentColor"/></svg>
+        </div>
+        <div class="stat-content">
+          <h3>Signalements</h3>
+          <p>2,356</p>
+          <span class="trend positive">+8% ce mois</span>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-1-5h2v2h-2v-2zm0-8h2v6h-2V7z" fill="currentColor"/></svg>
+        </div>
+        <div class="stat-content">
+          <h3>Actions Écologiques</h3>
+          <p>924</p>
+          <span class="trend positive">+15% ce mois</span>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-1-5h2v2h-2v-2zm0-8h2v6h-2V7z" fill="currentColor"/></svg>
+        </div>
+        <div class="stat-content">
+          <h3>Taux d'Engagement</h3>
+          <p>49.65%</p>
+          <span class="trend positive">+3% ce mois</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-container">
+      <div class="chart-card large">
+        <div class="chart-header">
+          <h3>Aperçu des activités</h3>
+          <div class="chart-controls">
+            <button class="active">Jour</button>
+            <button>Semaine</button>
+            <button>Mois</button>
+          </div>
+        </div>
+        <div class="chart-body">
+          <canvas id="activitiesChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Répartition des signalements</h3>
+        </div>
+        <div class="chart-body">
+          <canvas id="reportsChart"></canvas>
+        </div>
+        <div class="chart-legend">
+          <div class="legend-item">
+            <span class="color-dot waiting"></span>
+            <span>En attente</span>
+            <span class="value">35%</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-dot resolved"></span>
+            <span>Résolu</span>
+            <span class="value">65%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Graphique des activités
+    const ctxActivities = document.getElementById('activitiesChart').getContext('2d');
+    const activitiesChart = new Chart(ctxActivities, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+        datasets: [{
+          label: 'Activités',
+          data: [65, 59, 80, 81, 56, 85],
+          fill: false,
+          borderColor: '#4caf50',
+          tension: 0.4,
+          pointBackgroundColor: '#4caf50',
+          pointBorderColor: '#fff',
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    });
+
+    // Graphique des signalements
+    const ctxReports = document.getElementById('reportsChart').getContext('2d');
+    const reportsChart = new Chart(ctxReports, {
+      type: 'doughnut',
+      data: {
+        labels: ['En attente', 'Résolu'],
+        datasets: [{
+          data: [35, 65],
+          backgroundColor: ['#f1c40f', '#4caf50'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '75%',
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
