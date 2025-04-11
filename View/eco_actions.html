@@ -1,293 +1,129 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Éco-Actions | Urbaverse</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    :root {
-      --green: #2c6e49;
-      --light-green: #eafaf1;
-      --white: #ffffff;
-      --gray: #f5f5f5;
-      --shadow: rgba(0, 0, 0, 0.1);
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--light-green);
-      color: var(--green);
-    }
-
-    /* BARRE DE NAVIGATION */
-    .navbar {
-      background-color: #2e5241;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .nav-left h2 {
-      color: white;
-      font-weight: bold;
-      margin: 0;
-    }
-
-    .nav-left a {
-      color: white;
-      text-decoration: none;
-      font-weight: normal;
-      transition: color 0.3s;
-    }
-
-    .nav-left a.active {
-      color: #4caf50;
-      font-weight: bold;
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 0.5rem;
-    }
-
-    .points {
-      background-color: rgba(255, 255, 255, 0.2);
-      color: white;
-      font-weight: bold;
-      padding: 0.4rem 1rem;
-      border-radius: 0.6rem;
-    }
-
-    .login-btn {
-      background-color: white;
-      color: #4caf50;
-      font-weight: bold;
-      padding: 0.4rem 1rem;
-      border: 2px solid #4caf50;
-      border-radius: 0.6rem;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .login-btn:hover {
-      background-color: #4caf50;
-      color: white;
-    }
-
-    /* CONTENU PRINCIPAL */
-    header {
-      background-color: var(--green);
-      color: var(--white);
-      padding: 2rem 1rem;
-      text-align: center;
-      box-shadow: 0 2px 6px var(--shadow);
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 2.2rem;
-    }
-
-    p {
-      margin: 0.5rem 0 0;
-      font-size: 1rem;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 2rem auto;
-      background-color: var(--white);
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px var(--shadow);
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-
-    .actions-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .action-card {
-      background-color: var(--gray);
-      padding: 1rem;
-      border-radius: 12px;
-      border-left: 6px solid var(--green);
-      transition: transform 0.2s ease;
-    }
-
-    .action-card:hover {
-      transform: scale(1.02);
-    }
-
-    .action-card h3 {
-      margin: 0 0 0.5rem;
-    }
-
-    .action-card p {
-      margin: 0.3rem 0;
-    }
-
-    .btn-participate {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.5rem 1.2rem;
-      background-color: var(--green);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      text-decoration: none;
-    }
-
-    .btn-participate:hover {
-      background-color: #245a3d;
-    }
-
-    form {
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    label {
-      font-weight: 600;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    textarea,
-    select {
-      padding: 0.6rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      width: 100%;
-      font-size: 1rem;
-    }
-
-    input[type="submit"] {
-      background-color: var(--green);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 0.7rem;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    input[type="submit"]:hover {
-      background-color: #245a3d;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 1rem;
-      }
-
-      h1 {
-        font-size: 1.6rem;
-      }
-
-      .nav-left, .nav-right {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Éco-Actions </title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-
-  <!-- Barre de navigation -->
-  <nav class="navbar">
-    <div class="nav-left">
-      <h2>URBAVERSE</h2>
-      <a href="#" class="active">Accueil</a>
-      <a href="#">utilisateurs</a>
-      <a href="#">infrastructures</a>
-      <a href="#">defis</a>
-      <a href="#">eco_actions</a>
-      <a href="#">recompenses</a>
-      <a href="#">signalemements</a>
-    </div>
-    <div class="nav-right">
-      <div class="points">Points verts: 150</div>
-      <button class="login-btn">Connexion</button>
-    </div>
-  </nav>
-
-  <!-- En-tête de page -->
-  <header>
-    <h1>🌍 Éco-Actions Urbaines</h1>
-    <p>Collectez des points verts en participant aux actions écologiques de votre ville</p>
+  <header class="main-header">
+    <nav class="nav-container">
+      <div class="logo">
+        <h1>Urbaverse</h1>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="dashboard.html">User</a></li>
+        <li><a href="blog.html">Infra</a></li>
+        <li><a href="blog1.html">Défis</a></li>
+        <li><a href="eco_actions.html" class="active">Eco action</a></li>
+        <li><a href="blog2.html">Récompenses</a></li>
+        <li><a href="report.html">Signalements</a></li>
+        <li><a href="backoffice.html">Back Office</a></li>
+        
+      </ul>
+      <div class="user-actions">
+        <span class="points">Points verts: 150</span>
+        <a href="#login" class="btn btn-secondary">Connexion</a>
+      </div>
+    </nav>
   </header>
+  <main class="main-content">
+    <section class="actions-disponibles">
+      <h2>🌱 Actions disponibles</h2>
+      <!-- ACTION 1 : Planter un arbre -->
+      <div class="action-card" id="action-planter-arbre">
+        <div class="action-header">
+          <h3>🌳 Planter un arbre <span class="action-id">#001</span></h3>
+        </div>
 
-  <!-- Contenu principal -->
-  <div class="container">
-    <div class="section-title">🌱 Actions disponibles</div>
+        <p class="action-description">
+          <strong>Description :</strong> Organisez une plantation d’arbres dans votre quartier pour améliorer l’air, le sol et la biodiversité. Une action concrète pour la planète !
+        </p>
 
-    <div class="actions-grid">
-      <div class="action-card">
-        <h3>Planter un arbre</h3>
-        <p><strong>Description :</strong> Organisez une plantation dans votre quartier.</p>
-        <p><strong>Points verts :</strong> 50</p>
-        <p><strong>Catégorie :</strong> Environnement</p>
-        <a href="#" class="btn-participate">Je participe</a>
+        <ul class="action-details">
+          <li><strong>Points verts :</strong> 50</li>
+          <li><strong>Catégorie :</strong> Environnement</li>
+        </ul>
+        <button class="btn-participer" id="btn-planter-arbre" onclick="participerAction('planter-arbre')">Je participe</button>
+
+        <div class="confirmation-message" id="confirmation-planter-arbre" style="display: none;">
+          🌱 Merci pour votre participation !
+        </div>
       </div>
 
-      <div class="action-card">
-        <h3>Nettoyage collectif</h3>
-        <p><strong>Description :</strong> Participez à une session de nettoyage urbain.</p>
-        <p><strong>Points verts :</strong> 30</p>
-        <p><strong>Catégorie :</strong> Communauté</p>
-        <a href="#" class="btn-participate">Je participe</a>
-      </div>
-    </div>
+      <!-- ACTION 2 : Nettoyage collectif -->
+      <div class="action-card" id="action-nettoyage">
+        <div class="action-header">
+          <h3>🧹 Nettoyage collectif <span class="action-id">#002</span></h3>
+          <div class="action-badge">🌟 Populaire</div>
+        </div>
 
-    <div class="form-section">
-      <div class="section-title">➕ Proposer une nouvelle éco-action</div>
-      <form action="ajouter_action.php" method="post">
+        <p class="action-description">
+          <strong>Description :</strong> Rejoignez un groupe citoyen pour nettoyer les rues et les espaces communs. Un petit geste pour un grand impact collectif !
+        </p>
+
+        <ul class="action-details">
+          <li><strong>Points verts :</strong> 30</li>
+          <li><strong>Catégorie :</strong> Communauté</li>
+        </ul>
+        <button class="btn-participer" id="btn-nettoyage" onclick="participerAction('nettoyage')">Je participe</button>
+
+        <div class="confirmation-message" id="confirmation-nettoyage" style="display: none;">
+          ✅ Merci pour votre participation !
+        </div>
+      </div>
+    </section>
+    <section class="proposer-action">
+      <h2>➕ Proposer une nouvelle éco-action</h2>
+      <form>
         <label for="nom">Nom de l'action</label>
-        <input type="text" id="nom" name="nom_action" placeholder="Ex: Atelier recyclage" required>
+        <input type="text" id="nom" name="nom" placeholder="Ex: Atelier recyclage" />
 
-        <label for="desc">Description</label>
-        <textarea id="desc" name="description_action" rows="4" placeholder="Décrivez l'action..." required></textarea>
-
-        <label for="points">Points verts</label>
-        <input type="number" id="points" name="points_verts" min="0" required>
+        <label for="description">Description</label>
+        <textarea id="description" name="description" placeholder="Décrivez l'action"></textarea>
 
         <label for="categorie">Catégorie</label>
         <select id="categorie" name="categorie">
-          <option value="1">Environnement</option>
-          <option value="2">Recyclage</option>
-          <option value="3">Énergie</option>
-          <option value="4">Transport vert</option>
+          <option value="environnement">Environnement</option>
+          <option value="communauté">Communauté</option>
+          <option value="énergie">Énergie</option>
         </select>
-
-        <input type="submit" value="Ajouter l'action">
+        <button type="submit" class="btn-soumettre"> Soumettre</button>
       </form>
-    </div>
-  </div>
+    </section>
+  </main>
 
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>Urbaverse</h4>
+        <p>Ensemble pour un avenir urbain durable</p>
+      </div>
+      <div class="footer-section">
+        <h4>Liens Rapides</h4>
+        <ul>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#privacy">Confidentialité</a></li>
+          <li><a href="#terms">Conditions</a></li>
+          <li><a href="backoffice.html">Backoffice</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Suivez-nous</h4>
+        <div class="social-links">
+          <a href="#twitter">Twitter</a>
+          <a href="#facebook">Facebook</a>
+          <a href="#instagram">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Urbaverse. Tous droits réservés.</p>
+    </div>
+  </footer>
 </body>
 </html>
