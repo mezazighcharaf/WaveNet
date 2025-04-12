@@ -1,0 +1,138 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    background-color: #f7faf7;
+    color: #333;
+}
+
+.sidebar {
+    width: 240px;
+    background-color: #20523f;
+    color: #fff;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin-bottom: 20px;
+}
+
+.sidebar a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    display: block;
+    padding: 8px;
+    border-radius: 6px;
+}
+
+.sidebar .active a {
+    background-color: #b8f1c3;
+    color: #124d3d;
+}
+
+main {
+    flex: 1;
+    padding: 30px;
+}
+
+h1 {
+    margin-top: 0;
+    font-size: 28px;
+    color: #124d3d;
+}
+
+.add-action {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.add-action input[type="text"],
+.add-action textarea,
+.add-action input[type="date"],
+.add-action select,
+.add-action input[type="number"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.add-action textarea {
+    resize: vertical;
+    min-height: 40px;
+}
+
+.add-action button {
+    background-color: #124d3d;
+    color: #fff;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.add-action button:hover {
+    background-color: #0b3b2c;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #20523f;
+    color: #fff;
+}
+
+td button {
+    background-color: #20523f;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+td button:hover {
+    background-color: #1a4133;
+}
+
+td {
+    text-align: center; /* Pour mieux centrer les éléments dans la table */
+}
+
+td input[type="number"] {
+    text-align: center;
+}
+
+td select {
+    text-align: center;
+}

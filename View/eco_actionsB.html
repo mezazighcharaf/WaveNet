@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Actions Écologiques</title>
+    <link rel="stylesheet" href="eco_actionsB.css">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2>Urbaverse</h2>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="utilisateurs.html">utilisateurs</a></li>
+            <li><a href="Infrastructures.html">Infrastructures</a></li>
+            <li><a href="defis.html">défis</a></li>
+            <li><a href="eco_actionsB.html" class="active">Eco Action</a></li>
+            <li><a href="recompenses.html">récompenses</a></li>
+            <li><a href="signalements.html">signalements</a></li>
+            <li><a href="#">Paramètres</a></li>
+            <li><a href="#">Déconnexion</a></li>
+            <li class="home-link"><a href="index.html">Retour à l'accueil</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>Gestion des Actions Écologiques</h1>
+
+        <form class="add-action">
+            <input type="text" placeholder="Nom de l'action" required>
+            <textarea placeholder="Description" required></textarea>
+            <input type="date" required>
+            <select required>
+                <option value="">Statut</option>
+                <option value="encours">En cours</option>
+                <option value="termine">Terminée</option>
+                <option value="annule">Annulée</option>
+            </select>
+            <input type="number" placeholder="Nombre de points verts" required>
+            <select required>
+                <option value="">Catégorie</option>
+                <option value="environnement">Environnement</option>
+                <option value="biodiversite">Biodiversité</option>
+                <option value="recyclage">Recyclage</option>
+                <option value="energie">Énergie</option>
+            </select>
+            <button type="submit">Ajouter</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Points Verts</th>
+                    <th>Catégorie</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Plantation arbres</td>
+                    <td>Planter 50 arbres au parc municipal</td>
+                    <td>2025-04-15</td>
+                    <td>En cours</td>
+                    <td>10</td>
+                    <td>Environnement</td>
+                    <td>
+                        <button>Modifier</button>
+                        <button>Supprimer</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </main>
+
+</body>
+</html>
