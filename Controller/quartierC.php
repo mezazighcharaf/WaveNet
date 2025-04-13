@@ -70,12 +70,12 @@ class quartierC {
     }
     
     public function recupererQuartierparId($idq) {
-        $sql = "SELECT * FROM quartier WHERE id = :id";
+        $sql = "SELECT * FROM quartier WHERE idq = :idq";
         $db = Config::getConnection();
 
         try {
             $stmt = $db->prepare($sql);
-            $stmt->execute(['id' => $id]);
+            $stmt->execute(['idq' => $idq]);
             return $stmt->fetch();
         } catch (PDOException $e) {
             echo "Erreur : " . $e->getMessage();

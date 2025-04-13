@@ -68,7 +68,34 @@ $listeQuartiers = $quartierC->afficherQuartier(); // méthode à adapter selon t
     </main>
 
     <footer class="main-footer">
-        <!-- Footer identique -->
+    <div class="footer-content">
+            <div class="footer-section">
+                <h3>URBAVERSE</h3>
+                <p>Innovons ensemble pour des infrastructures urbaines durables et intelligentes.</p>
+            </div>
+            <div class="footer-section">
+                <h3>LIENS RAPIDES</h3>
+                <ul>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Confidentialité</a></li>
+                    <li><a href="#">Conditions</a></li>
+                    <li><a href="#">Backoffice</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>SUIVEZ-NOUS</h3>
+                <ul>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© 2025 URBAVERSE. Tous droits réservés.</p>
+        </div>
+
     </footer>
 </body>
 </html>

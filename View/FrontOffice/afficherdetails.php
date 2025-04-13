@@ -1,7 +1,5 @@
 <?php
-var_dump($_GET); // à supprimer une fois que ça marche
-
-include_once(__DIR__ . '/../../Controller/quartierC.php'); // chemin corrigé
+include_once(__DIR__ . '/../../Controller/quartierC.php');
 
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $quartierC = new quartierC();
@@ -42,7 +40,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                 
                 <div class="quartier-card">
                     <div class="card-image">
-                        <img src="<?= htmlspecialchars($quartier['image'] ?? 'default.jpg') ?>" alt="<?= htmlspecialchars($quartier['nomq']) ?>">
+                        <img src="<?= htmlspecialchars($quartier['image'] ?? 'Ariana-Borj-Baccouche.jpg') ?>" alt="<?= htmlspecialchars($quartier['nomq']) ?>">
                     </div>
                     <div class="card-content">
                         <p><strong>ID :</strong> <?= htmlspecialchars($quartier['idq']) ?></p>
@@ -57,7 +55,34 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     </main>
 
     <footer class="main-footer">
-        <!-- Footer -->
+    <div class="footer-content">
+            <div class="footer-section">
+                <h3>URBAVERSE</h3>
+                <p>Innovons ensemble pour des infrastructures urbaines durables et intelligentes.</p>
+            </div>
+            <div class="footer-section">
+                <h3>LIENS RAPIDES</h3>
+                <ul>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Confidentialité</a></li>
+                    <li><a href="#">Conditions</a></li>
+                    <li><a href="#">Backoffice</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>SUIVEZ-NOUS</h3>
+                <ul>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© 2025 URBAVERSE. Tous droits réservés.</p>
+        </div>
+
     </footer>
 </body>
 </html>

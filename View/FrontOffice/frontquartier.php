@@ -1,5 +1,5 @@
 <?php
-include_once "../../controller/quartierC.php"; // Assure-toi d’avoir cette classe qui gère les requêtes
+include_once "../../Controller/quartierC.php"; // Assure-toi d’avoir cette classe qui gère les requêtes
 $quartierC = new quartierC();
 $listeQuartiers = $quartierC->afficherQuartier(); // méthode à adapter selon ton code
 ?>
@@ -12,18 +12,22 @@ $listeQuartiers = $quartierC->afficherQuartier(); // méthode à adapter selon t
     <link rel="stylesheet" href="frontquartier.css">
 </head>
 <body class="frontoffice">
-    <header class="main-header">
+<header class="main-header">
         <div class="header-container">
-            <h1 class="logo">URBAVERSE <span>Explorer</span></h1>
+            <h1 class="logo">URBAVERSE </h1>
             <nav class="main-nav">
                 <ul class="nav-links">
+                    <li><a href="#">Tableau de bord</a></li>
                     <li><a href="#" class="active">Quartiers</a></li>
-                    <li><a href="#">À propos</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Infrastructures</a></li>
+                    <li><a href="#">Utilisateurs</a></li>
+                    <li><a href="#">Statistiques</a></li>
+                    <li><a href="#" class="btn-logout">Déconnexion</a></li>
                 </ul>
             </nav>
         </div>
     </header>
+
 
     <main class="main-content">
         <section class="quartiers-section">
@@ -39,7 +43,7 @@ $listeQuartiers = $quartierC->afficherQuartier(); // méthode à adapter selon t
                             <div class="card-content">
                                 <h3><?= htmlspecialchars($quartier['nomq']) ?></h3>
                                 <div class="card-actions">
-                                    <a href="afficherdetails.php?id=<?= $quartier['idq'] ?>" class="btn btn-primary">Détails</a>
+                                    <a href="afficherdetails.php?id=<?= $quartier['idq'] ?>" class="btn btn-details">Détails</a>
                                 </div>
                             </div>
                         </article>
@@ -53,7 +57,34 @@ $listeQuartiers = $quartierC->afficherQuartier(); // méthode à adapter selon t
     </main>
 
     <footer class="main-footer">
-        <!-- Footer identique -->
+        <div class="footer-content">
+                <div class="footer-section">
+                    <h3>URBAVERSE</h3>
+                    <p>Innovons ensemble pour des infrastructures urbaines durables et intelligentes.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>LIENS RAPIDES</h3>
+                    <ul>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Confidentialité</a></li>
+                        <li><a href="#">Conditions</a></li>
+                        <li><a href="#">Backoffice</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>SUIVEZ-NOUS</h3>
+                    <ul>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2025 URBAVERSE. Tous droits réservés.</p>
+            </div>
+
     </footer>
 </body>
 </html>
