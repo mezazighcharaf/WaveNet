@@ -21,7 +21,7 @@ $actions = $controller->getAllActions();
   <header class="main-header">
     <nav class="nav-container">
       <div class="logo">
-        <h1>Urbaverse</h1>
+        <h1>WaveNet</h1>
       </div>
       <ul class="nav-links">
         <li><a href="index.php">Accueil</a></li>

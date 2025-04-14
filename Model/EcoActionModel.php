@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . '/../config.php'); // Ensure your database connection is available
+require_once '../config/database.php'; // Ensure your database connection is available
 
 class EcoActionModel {
     private $pdo;
