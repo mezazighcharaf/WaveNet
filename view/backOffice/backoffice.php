@@ -6,6 +6,10 @@ require_once(__DIR__ . '/../../controller/recompenseController.php');
 $controller = new PartenaireController();
 $recController = new RecompenseController();
 
+// Initialisation des variables d'erreur
+$partenaireError = null;
+$recompenseError = null;
+
 // Gestion des actions pour les partenaires
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add'])) {
@@ -14,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: backOffice.php");
             exit;
         } catch (Exception $e) {
-            $error = $e->getMessage();
+            $partenaireError = $e->getMessage();
         }
     }
 
@@ -24,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: backOffice.php");
             exit;
         } catch (Exception $e) {
-            $error = $e->getMessage();
+            $partenaireError = $e->getMessage();
         }
     }
 
@@ -34,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: backOffice.php");
             exit;
         } catch (Exception $e) {
-            $error = $e->getMessage();
+            $partenaireError = $e->getMessage();
         }
     }
 
@@ -45,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: backOffice.php");
             exit;
         } catch (Exception $e) {
-            $error = $e->getMessage();
+            $recompenseError = $e->getMessage();
         }
     }
 
@@ -55,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: backOffice.php");
             exit;
         } catch (Exception $e) {
-            $error = $e->getMessage();
+            $recompenseError = $e->getMessage();
         }
     }
 
@@ -65,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: backOffice.php");
             exit;
         } catch (Exception $e) {
-            $error = $e->getMessage();
+            $recompenseError = $e->getMessage();
         }
     }
 }
@@ -95,7 +99,7 @@ $recompenses = $recController->listAll();
         th { background-color: #f2f2f2; }
         .editable { cursor: pointer; }
         input[type=text], input[type=email], input[type=number], input[type=date] { width: 120px; }
-        .error { color: red; }
+        .error { color: red; margin: 10px 0; padding: 10px; background-color: #ffeeee; border: 1px solid #ffcccc; }
         h1, h2 { margin-top: 30px; }
     </style>
 </head>
@@ -130,9 +134,17 @@ $recompenses = $recController->listAll();
 
     <h1>Gestion des Partenaires</h1>
 
-    <?php if (isset($error)) echo "<p class='error'>$error</p>"; ?>
+    <?php if ($partenaireError): ?>
+        <div class="error">
+            <?php 
+                // Remplacer les sauts de ligne par des <br> pour l'affichage HTML
+                echo nl2br(htmlspecialchars($partenaireError)); 
+            ?>
+        </div>
+    <?php endif; ?>
 
     <table>
+        <!-- Le reste du code pour les partenaires reste inchangé -->
         <thead>
             <tr>
                 <th>ID</th>
@@ -146,7 +158,7 @@ $recompenses = $recController->listAll();
         <tbody>
         <?php foreach ($partenaires as $partenaire) : ?>
             <tr>
-                <form method="post">
+                <form method="post" novalidate>
                     <td><?= $partenaire->getIdPart(); ?>
                         <input type="hidden" name="id_part" value="<?= $partenaire->getIdPart(); ?>">
                     </td>
@@ -177,7 +189,7 @@ $recompenses = $recController->listAll();
     </table>
 
     <h2>Ajouter un partenaire</h2>
-    <form method="post">
+    <form method="post" novalidate>
         <input type="text" name="nom_part" placeholder="Nom" required>
         <input type="text" name="tel" placeholder="Téléphone" required>
         <input type="email" name="mail" placeholder="Email" required>
@@ -187,7 +199,17 @@ $recompenses = $recController->listAll();
 
     <h1>Gestion des Récompenses</h1>
 
+    <?php if ($recompenseError): ?>
+        <div class="error">
+            <?php 
+                // Remplacer les sauts de ligne par des <br> pour l'affichage HTML
+                echo nl2br(htmlspecialchars($recompenseError)); 
+            ?>
+        </div>
+    <?php endif; ?>
+
     <table>
+        <!-- Le reste du code pour les récompenses reste inchangé -->
         <thead>
             <tr>
                 <th>ID</th>
@@ -202,7 +224,7 @@ $recompenses = $recController->listAll();
         <tbody>
         <?php foreach ($recompenses as $rec) : ?>
             <tr>
-                <form method="post">
+                <form method="post" novalidate>
                     <td><?= $rec->getIdRec(); ?>
                         <input type="hidden" name="id_rec" value="<?= $rec->getIdRec(); ?>">
                     </td>
@@ -237,7 +259,7 @@ $recompenses = $recController->listAll();
     </table>
 
     <h2>Ajouter une récompense</h2>
-    <form method="post">
+    <form method="post" novalidate>
         <input type="text" name="nom_rec" placeholder="Nom" required>
         <input type="text" name="description" placeholder="Description" required>
         <input type="number" name="cout" placeholder="Coût" required>
