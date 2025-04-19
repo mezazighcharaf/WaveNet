@@ -3,7 +3,6 @@ require_once __DIR__ . '/../model/recompense.php';
 require_once __DIR__ . '/../model/partenaire.php';
 require_once __DIR__ . '/../config.php';
 
-
 class RecompenseController {
     private $model;
     private $pdo;
@@ -98,6 +97,7 @@ class RecompenseController {
             $this->model->setCout($data['cout']);
             $this->model->setDateFin($data['date_fin']);
             $this->model->setIdPart($data['id_part']);
+            $this->model->setNomPartenaire($data['nom_part']);
             
             return $this->model;
         } catch (PDOException $e) {
@@ -147,7 +147,8 @@ class RecompenseController {
     public function listAll() {
         try {
             $query = "SELECT r.*, p.nom_part FROM recompense r 
-                     JOIN partenaire p ON r.id_part = p.id_part";
+                     JOIN partenaire p ON r.id_part = p.id_part
+                     ORDER BY r.nom_rec";
             $stmt = $this->pdo->query($query);
             
             $recompenses = [];
@@ -159,6 +160,7 @@ class RecompenseController {
                 $recompense->setCout($data['cout']);
                 $recompense->setDateFin($data['date_fin']);
                 $recompense->setIdPart($data['id_part']);
+                $recompense->setNomPartenaire($data['nom_part']);
                 $recompenses[] = $recompense;
             }
             

@@ -67,5 +67,13 @@ class Recompense {
     public function setIdPart($id_part) {
         $this->id_part = $id_part;
     }
+    
+    public function getNomPartenaire() {
+        return $this->nomPartenaire;
+    }
+
+    public function setNomPartenaire($nomPartenaire) {
+        $this->nomPartenaire = $nomPartenaire;
+    }
 }
 ?>

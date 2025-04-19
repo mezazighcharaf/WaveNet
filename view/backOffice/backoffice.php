@@ -197,76 +197,88 @@ $recompenses = $recController->listAll();
         <button type="submit" name="add">Ajouter</button>
     </form>
 
-    <h1>Gestion des Récompenses</h1>
+<!-- ... (partie précédente inchangée jusqu'à la section des récompenses) ... -->
 
-    <?php if ($recompenseError): ?>
-        <div class="error">
-            <?php 
-                // Remplacer les sauts de ligne par des <br> pour l'affichage HTML
-                echo nl2br(htmlspecialchars($recompenseError)); 
-            ?>
-        </div>
-    <?php endif; ?>
+<h1>Gestion des Récompenses</h1>
 
-    <table>
-        <!-- Le reste du code pour les récompenses reste inchangé -->
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Coût</th>
-                <th>Date fin</th>
-                <th>ID Partenaire</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($recompenses as $rec) : ?>
-            <tr>
-                <form method="post" novalidate>
-                    <td><?= $rec->getIdRec(); ?>
-                        <input type="hidden" name="id_rec" value="<?= $rec->getIdRec(); ?>">
-                    </td>
-                    <td class="editable" onclick="makeEditable(this)">
-                        <span><?= htmlspecialchars($rec->getNomRec()); ?></span>
-                        <input type="text" name="nom_rec" value="<?= htmlspecialchars($rec->getNomRec()); ?>" style="display:none;">
-                    </td>
-                    <td class="editable" onclick="makeEditable(this)">
-                        <span><?= htmlspecialchars($rec->getDescription()); ?></span>
-                        <input type="text" name="description" value="<?= htmlspecialchars($rec->getDescription()); ?>" style="display:none;">
-                    </td>
-                    <td class="editable" onclick="makeEditable(this)">
-                        <span><?= $rec->getCout(); ?></span>
-                        <input type="number" name="cout" value="<?= $rec->getCout(); ?>" style="display:none;">
-                    </td>
-                    <td class="editable" onclick="makeEditable(this)">
-                        <span><?= $rec->getDateFin(); ?></span>
-                        <input type="date" name="date_fin" value="<?= $rec->getDateFin(); ?>" style="display:none;">
-                    </td>
-                    <td class="editable" onclick="makeEditable(this)">
-                        <span><?= $rec->getIdPart(); ?></span>
-                        <input type="number" name="id_part" value="<?= $rec->getIdPart(); ?>" style="display:none;">
-                    </td>
-                    <td>
-                        <button type="submit" name="update_rec">Modifier</button>
-                        <button type="submit" name="delete_rec" onclick="return confirm('Supprimer cette récompense ?');">Supprimer</button>
-                    </td>
-                </form>
-            </tr>
+<?php if ($recompenseError): ?>
+    <div class="error">
+        <?php echo nl2br(htmlspecialchars($recompenseError)); ?>
+    </div>
+<?php endif; ?>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Coût</th>
+            <th>Date fin</th>
+            <th>Partenaire</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($recompenses as $rec) : ?>
+        <tr>
+            <form method="post">
+                <td><?= $rec->getIdRec(); ?>
+                    <input type="hidden" name="id_rec" value="<?= $rec->getIdRec(); ?>">
+                </td>
+                <td class="editable" onclick="makeEditable(this)">
+                    <span><?= htmlspecialchars($rec->getNomRec()); ?></span>
+                    <input type="text" name="nom_rec" value="<?= htmlspecialchars($rec->getNomRec()); ?>" style="display:none;">
+                </td>
+                <td class="editable" onclick="makeEditable(this)">
+                    <span><?= htmlspecialchars($rec->getDescription()); ?></span>
+                    <input type="text" name="description" value="<?= htmlspecialchars($rec->getDescription()); ?>" style="display:none;">
+                </td>
+                <td class="editable" onclick="makeEditable(this)">
+                    <span><?= $rec->getCout(); ?></span>
+                    <input type="number" name="cout" value="<?= $rec->getCout(); ?>" style="display:none;">
+                </td>
+                <td class="editable" onclick="makeEditable(this)">
+                    <span><?= $rec->getDateFin(); ?></span>
+                    <input type="date" name="date_fin" value="<?= $rec->getDateFin(); ?>" style="display:none;">
+                </td>
+                <td>
+                    <select name="id_part">
+                        <?php foreach ($partenaires as $partenaire): ?>
+                            <option value="<?= $partenaire->getIdPart(); ?>" <?= $partenaire->getIdPart() == $rec->getIdPart() ? 'selected' : ''; ?>>
+                                <?= htmlspecialchars($partenaire->getNomPart()); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+                <td>
+                    <button type="submit" name="update_rec">Modifier</button>
+                    <button type="submit" name="delete_rec" onclick="return confirm('Supprimer cette récompense ?');">Supprimer</button>
+                </td>
+            </form>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2>Ajouter une récompense</h2>
+<form method="post">
+    <input type="text" name="nom_rec" placeholder="Nom" required>
+    <input type="text" name="description" placeholder="Description" required>
+    <input type="number" name="cout" placeholder="Coût" required >
+    <input type="date" name="date_fin" required>
+    <select name="id_part" required>
+        <option value="">-- Sélectionner un partenaire --</option>
+        <?php foreach ($partenaires as $partenaire): ?>
+            <option value="<?= $partenaire->getIdPart(); ?>">
+                <?= htmlspecialchars($partenaire->getNomPart()); ?>
+            </option>
         <?php endforeach; ?>
-        </tbody>
-    </table>
+    </select>
+    <button type="submit" name="add_rec">Ajouter</button>
+</form>
 
-    <h2>Ajouter une récompense</h2>
-    <form method="post" novalidate>
-        <input type="text" name="nom_rec" placeholder="Nom" required>
-        <input type="text" name="description" placeholder="Description" required>
-        <input type="number" name="cout" placeholder="Coût" required>
-        <input type="date" name="date_fin" required>
-        <input type="number" name="id_part" placeholder="ID Partenaire" required>
-        <button type="submit" name="add_rec">Ajouter</button>
-    </form>
+<!-- ... (suite du fichier inchangée) ... -->
     </main>
 
     <script>
