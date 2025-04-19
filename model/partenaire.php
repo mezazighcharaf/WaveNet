@@ -1,4 +1,5 @@
 <?php
+
 class Partenaire {
     // Attributs
     private $id_part;

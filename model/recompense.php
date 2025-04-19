@@ -1,4 +1,5 @@
 <?php
+
 class Recompense {
     // Attributs
     private $id_rec;
@@ -67,7 +68,7 @@ class Recompense {
     public function setIdPart($id_part) {
         $this->id_part = $id_part;
     }
-    
+
     public function getNomPartenaire() {
         return $this->nomPartenaire;
     }

@@ -17,7 +17,7 @@ class RecompenseController {
 
         // Validation du nom
         if (empty($nom)) {
-            $errors[] = "Le nom de la récompense est obligatoire";
+            $errors[] = "Le nom de la  récompense est obligatoire";
         } elseif (strlen($nom) > 255) {
             $errors[] = "Le nom ne doit pas dépasser 255 caractères";
         }

@@ -165,7 +165,7 @@ class PartenaireController {
             
             return $partenaires;
         } catch (PDOException $e) {
-            throw new Exception("Erreur lors de la récupération des partenaires: " . $e->getMessage());
+            throw new Exception("Erreur  lors de la récupération des partenaires: " . $e->getMessage());
         }
     }
 }

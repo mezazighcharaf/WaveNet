@@ -2,6 +2,7 @@
 require_once(__DIR__ . '/../../controller/partenaireController.php');
 require_once(__DIR__ . '/../../controller/recompenseController.php');
 
+
 // Contrôleurs
 $controller = new PartenaireController();
 $recController = new RecompenseController();
