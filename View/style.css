@@ -565,14 +565,14 @@ footer {
 .actions-disponibles {
   padding-top: 7rem;
   min-height: 80vh;
-  max-width: var(--max-width);
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 .actions-disponibles h2 {
   text-align: center;
   font-size: 2rem;
-  color: var(--accent-green);
+  color: #2e7d32;
   margin-bottom: 2rem;
 }
 
@@ -580,56 +580,101 @@ footer {
 .actions-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 3rem; /* Augmenté l'espace entre les cartes */
+  gap: 2.5rem;
 }
 
 /* Style de chaque carte */
 .action-card {
-  background-color: var(--white);
-  border-radius: var(--border-radius);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  margin-bottom: 2rem; /* Espace supplémentaire sous chaque carte */
+  position: relative;
 }
 
-/* Animation au survol */
 .action-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Titre de la carte */
 .action-card h3 {
-  color: var(--accent-green);
+  color: #2e7d32;
   font-size: 1.25rem;
   margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
-/* Texte dans les cartes */
+/* Description */
 .action-card p {
   font-size: 0.95rem;
   opacity: 0.9;
   margin-bottom: 0.5rem;
 }
 
-/* Bouton de participation */
+/* Détails */
+.action-details {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.action-details li {
+  margin-bottom: 0.5rem;
+}
+
+/* Groupe de boutons */
+.action-buttons {
+  display: flex;
+  justify-content: flex-end; /* Aligné à droite */
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  flex-wrap: wrap;
+}
+
+/* Bouton participer */
 .btn-participer {
-  background-color: var(--accent-green);
+  background-color: #2e7d32;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: var(--border-radius);
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  width: fit-content;
+  font-size: 1rem;
 }
 
 .btn-participer:hover {
-  background-color: #2e7d32;
+  background-color: #1b5e20;
+}
+
+/* Bouton annuler */
+.btn-annuler {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn-annuler:hover {
+  background-color: #c82333;
+}
+
+/* Message de confirmation */
+.confirmation-message {
+  margin-top: 1rem;
+  color: #28a745;
+  font-weight: bold;
 }
 
 /* ========== PROPOSER ACTION ========= */
@@ -637,9 +682,9 @@ footer {
 .proposer-action {
   margin-top: 4rem;
   padding: 2rem;
-  background-color: var(--light-gray);
-  border-radius: var(--border-radius);
-  max-width: var(--max-width);
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -647,7 +692,7 @@ footer {
 .proposer-action h2 {
   text-align: center;
   font-size: 1.8rem;
-  color: var(--accent-green);
+  color: #2e7d32;
   margin-bottom: 2rem;
 }
 
@@ -662,17 +707,17 @@ footer {
 .proposer-action select {
   padding: 0.75rem;
   border: 1px solid #ccc;
-  border-radius: var(--border-radius);
+  border-radius: 6px;
   font-size: 1rem;
   width: 100%;
 }
 
 .btn-soumettre {
-  background-color: var(--accent-green);
+  background-color: #2e7d32;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: var(--border-radius);
+  border-radius: 6px;
   font-size: 1rem;
   cursor: pointer;
   align-self: flex-start;
@@ -680,6 +725,5 @@ footer {
 }
 
 .btn-soumettre:hover {
-  background-color: #2e7d32;
+  background-color: #1b5e20;
 }
-

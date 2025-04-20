@@ -1,19 +1,8 @@
-
 <?php
-require_once '../Controller/AdminActionController.php';
-$model = new EcoActionBackModel();
-//$controller = new EcoActionController(); // Initialize the controller
-
-// Fetch all eco actions
-$ecoActions = $model->getAllEcoActions();
-
-// Check if there's an action to modify
-$actionToModify = null;
-if (isset($_GET['id_action'])) {
-    $actionToModify = $model->getEcoActionById($_GET['id_action']);
-}
+// Inclure le contrôleur pour récupérer les données des participants
+require_once('../Controller/AdminParticipantController.php');
+require_once('../Controller/AdminActionController.php');
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -27,82 +16,91 @@ if (isset($_GET['id_action'])) {
         <h2>WaveNet</h2>
         <ul>
             <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="utilisateurs.html">utilisateurs</a></li>
+            <li><a href="utilisateurs.html">Utilisateurs</a></li>
             <li><a href="Infrastructures.html">Infrastructures</a></li>
-            <li><a href="defis.html">défis</a></li>
-            <li><a href="eco_actionsB.php" class="active">Eco Action</a></li>
-            <li><a href="recompenses.html">récompenses</a></li>
-            <li><a href="signalements.html">signalements</a></li>
+            <li><a href="defis.html">Défis</a></li>
+            <li><a href="eco_actionsB.html" class="active">Eco Actions</a></li>
+            <li><a href="recompenses.html">Récompenses</a></li>
+            <li><a href="signalements.html">Signalements</a></li>
             <li><a href="#">Paramètres</a></li>
             <li><a href="#">Déconnexion</a></li>
-            <li class="home-link"><a href="index.html">Retour à l'accueil</a></li>
+            <li class="home-link"><a href="index.html">Accueil</a></li>
         </ul>
     </nav>
 
     <main>
-        <h1>Gestion des Actions Écologiques</h1>
+        <h1>Actions Écologiques</h1>
 
-        <!-- Form for adding or modifying an action -->
-        <form method="POST" action="../Controller/AdminActionController.php">
-            <input type="hidden" name="action" value="<?= isset($actionToModify) ? 'update' : 'add' ?>">
-            <input type="hidden" name="id_action" value="<?= $actionToModify ? $actionToModify['id_action'] : '' ?>">
-            <input type="text" name="nom" placeholder="Nom de l'action" value="<?= $actionToModify ? $actionToModify['nom_action'] : '' ?>" required>
-            <textarea name="description" placeholder="Description" required><?= $actionToModify ? $actionToModify['description_action'] : '' ?></textarea>
-            <input type="date" name="date" value="<?= $actionToModify ? $actionToModify['date'] : '' ?>" required>
-            <select name="statut" required>
+        <form>
+            <input type="text" placeholder="Nom de l'action" required>
+            <textarea placeholder="Description de l'action" required></textarea>
+            <input type="date" required>
+
+            <select required>
                 <option value="">Statut</option>
-                <option value="encours" <?= $actionToModify && $actionToModify['etat'] == 'encours' ? 'selected' : '' ?>>En cours</option>
-                <option value="termine" <?= $actionToModify && $actionToModify['etat'] == 'termine' ? 'selected' : '' ?>>Terminée</option>
-                <option value="annule" <?= $actionToModify && $actionToModify['etat'] == 'annule' ? 'selected' : '' ?>>Annulée</option>
+                <option value="encours">En cours</option>
+                <option value="termine">Terminée</option>
+                <option value="annule">Annulée</option>
             </select>
-            <input type="text" name="points_verts" placeholder="Nombre de points verts" required>
-            <select name="categorie" required>
+
+            <input type="number" placeholder="Points verts" required>
+
+            <select required>
                 <option value="">Catégorie</option>
-                <option value="environnement" <?= $actionToModify && $actionToModify['categorie'] == 'environnement' ? 'selected' : '' ?>>Environnement</option>
-                <option value="biodiversite" <?= $actionToModify && $actionToModify['categorie'] == 'biodiversite' ? 'selected' : '' ?>>Biodiversité</option>
-                <option value="recyclage" <?= $actionToModify && $actionToModify['categorie'] == 'recyclage' ? 'selected' : '' ?>>Recyclage</option>
-                <option value="energie" <?= $actionToModify && $actionToModify['categorie'] == 'energie' ? 'selected' : '' ?>>Énergie</option>
+                <option value="environnement">Environnement</option>
+                <option value="biodiversite">Biodiversité</option>
+                <option value="recyclage">Recyclage</option>
+                <option value="energie">Énergie</option>
             </select>
-            <button type="submit"><?= isset($actionToModify) ? 'Modifier' : 'Ajouter' ?></button>
+
+            <button type="submit" class="btn-primary">Ajouter Action</button>
         </form>
 
-        <!-- List of actions -->
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Description</th>
-                    <th>Date</th>
-                    <th>Statut</th>
-                    <th>Points Verts</th>
-                    <th>Catégorie</th>
-                    <th>Actions</th>
+                    <th>ID</th><th>Nom</th><th>Description</th><th>Date</th><th>Statut</th><th>Points</th><th>Catégorie</th><th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($ecoActions as $action): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($action['id_action']) ?></td>
-                        <td><?= htmlspecialchars($action['nom_action']) ?></td>
-                        <td><?= htmlspecialchars($action['description_action']) ?></td>
-                        <td><?= htmlspecialchars($action['date']) ?></td>
-                        <td><?= htmlspecialchars($action['etat']) ?></td>
-                        <td><?= htmlspecialchars($action['point_vert']) ?></td>
-                        <td><?= htmlspecialchars($action['categorie']) ?></td>
-                        <td>
-                        <a href="eco_actionsB.php?id_action=<?= $action['id_action'] ?>"><button>Modifier</button></a>
-                            <form action="../Controller/AdminActionController.php" method="POST" style="display:inline;">
-                                <input type="hidden" name="action" value="delete">
-                                <input type="hidden" name="id_action" value="<?= $action['id_action'] ?>">
-                                <button type="submit">Supprimer</button>
-                            </form>
-
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                <tr>
+                    <td>1</td><td>Nettoyage plage</td><td>Nettoyage collectif de la plage</td><td>2025-04-22</td><td>En cours</td><td>100</td><td>Environnement</td>
+                    <td>
+                        <button class="btn-edit">Modifier</button>
+                        <button class="btn-delete">Supprimer</button>
+                    </td>
+                </tr>
+                <!-- autres lignes ici -->
             </tbody>
         </table>
+
+        <h1>Participants</h1>
+
+        <form>
+            <input type="text" placeholder="Nom du participant" required>
+            <input type="email" placeholder="Email du participant" required>
+            <input type="date" required>
+            <button type="submit" class="btn-primary">Ajouter Participant</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>Nom</th><th>Email</th><th>Date d'inscription</th><th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td><td>Sarah Ben Ali</td><td>sarah@example.com</td><td>2025-04-01</td>
+                    <td>
+                        <button class="btn-edit">Modifier</button>
+                        <button class="btn-delete">Supprimer</button>
+                    </td>
+                </tr>
+                <!-- autres lignes ici -->
+            </tbody>
+        </table>
+
     </main>
 
 </body>

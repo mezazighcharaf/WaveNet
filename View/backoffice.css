@@ -6,12 +6,12 @@
   --dark-color: #2e4f3e;      /* Vert foncé */
   --light-color: #ecf7ed;     /* Vert très clair */
   --accent-color: #f1c40f;    /* Jaune */
-  --text-color: #333;
-  --white: #fff;
-  --max-width: 1200px;
-  --border-radius: 12px;
-  --transition-speed: 0.3s;
-  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --text-color: #333;         /* Couleur de texte */
+  --white: #fff;              /* Blanc */
+  --max-width: 1200px;        /* Largeur maximale pour le contenu */
+  --border-radius: 12px;      /* Rayon de bordure des éléments */
+  --transition-speed: 0.3s;   /* Vitesse de transition */
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Ombre de carte */
 }
 
 * {
@@ -282,6 +282,7 @@ body {
     height: 250px;
   }
 }
+
 .backoffice-main {
   margin-top: 70px;
   padding: 2rem;

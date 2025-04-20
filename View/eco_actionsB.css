@@ -1,138 +1,145 @@
-body {
+/* Reset de base */
+* {
     margin: 0;
-    font-family: Arial, sans-serif;
-    display: flex;
-    background-color: #f7faf7;
-    color: #333;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
 }
 
+/* Sidebar */
 .sidebar {
-    width: 240px;
-    background-color: #20523f;
-    color: #fff;
+    width: 220px;
+    height: 100vh;
+    background-color: #2c3e50;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
     padding: 20px;
-    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar h2 {
-    font-size: 24px;
+    font-size: 22px;
     margin-bottom: 30px;
+    text-align: center;
 }
 
 .sidebar ul {
     list-style: none;
-    padding: 0;
 }
 
-.sidebar li {
-    margin-bottom: 20px;
+.sidebar ul li {
+    margin-bottom: 15px;
 }
 
-.sidebar a {
-    color: #fff;
+.sidebar ul li a {
+    color: white;
     text-decoration: none;
-    font-size: 16px;
     display: block;
-    padding: 8px;
+    padding: 8px 12px;
     border-radius: 6px;
+    transition: background 0.3s;
 }
 
-.sidebar .active a {
-    background-color: #b8f1c3;
-    color: #124d3d;
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+    background-color: #1abc9c;
 }
 
+/* Main content */
 main {
-    flex: 1;
+    margin-left: 240px;
     padding: 30px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
 }
 
-h1 {
-    margin-top: 0;
-    font-size: 28px;
-    color: #124d3d;
+/* Form styles */
+form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.add-action {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-}
-
-.add-action input[type="text"],
-.add-action textarea,
-.add-action input[type="date"],
-.add-action select,
-.add-action input[type="number"] {
-    padding: 8px;
+form input,
+form textarea,
+form select {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    flex: 1;
-    min-width: 200px;
+    font-size: 14px;
 }
 
-.add-action textarea {
-    resize: vertical;
-    min-height: 40px;
-}
-
-.add-action button {
-    background-color: #124d3d;
-    color: #fff;
-    padding: 10px 18px;
+form button {
+    background-color: #27ae60;
+    color: white;
     border: none;
+    padding: 10px 16px;
+    font-size: 15px;
     border-radius: 6px;
     cursor: pointer;
-    min-width: 120px;
+    transition: background 0.3s;
 }
 
-.add-action button:hover {
-    background-color: #0b3b2c;
+form button:hover {
+    background-color: #219150;
 }
 
+/* Tables */
 table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #fff;
+    margin-bottom: 40px;
+    background-color: white;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-th, td {
-    padding: 12px 16px;
+table th,
+table td {
+    padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
 }
 
-th {
-    background-color: #20523f;
-    color: #fff;
+table th {
+    background-color: #ecf0f1;
 }
 
-td button {
-    background-color: #20523f;
-    color: #fff;
+table td button {
+    background-color: #2980b9;
+    color: white;
     border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
+    padding: 6px 12px;
     margin-right: 5px;
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
-td button:hover {
-    background-color: #1a4133;
+table td button:hover {
+    background-color: #2471a3;
 }
 
-td {
-    text-align: center; /* Pour mieux centrer les éléments dans la table */
+table td form button {
+    background-color: #e74c3c;
 }
 
-td input[type="number"] {
-    text-align: center;
+table td form button:hover {
+    background-color: #c0392b;
 }
 
-td select {
-    text-align: center;
+/* Headings */
+h1, h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
 }

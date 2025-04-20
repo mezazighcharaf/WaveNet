@@ -1,8 +1,13 @@
 <?php
-// Inclure le contrôleur pour récupérer les données des participants
-require_once('../Controller/participantController.php');
-require_once('../Controller/EcoActionController.php');
+require_once(__DIR__ . '/../Controller/EcoActionController.php'); // Include controller
+
+// Create an instance of EcoActionController
+$controller = new EcoActionController();
+
+// Get all eco actions from the controller
+$actions = $controller->getAllActions();
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -38,37 +43,37 @@ require_once('../Controller/EcoActionController.php');
   <main class="main-content">
     <section class="actions-disponibles">
       <h2>🌱 Actions disponibles</h2>
-  
+
+      <?php foreach ($actions as $action): ?>
       <div class="action-card">
         <div class="action-header">
-          <h3>Action de nettoyage <span class="action-id">#1234</span></h3>
+          <h3><?= htmlspecialchars($action['nom_action']) ?> <span class="action-id">#<?= $action['id_action'] ?></span></h3>
         </div>
-  
+
         <p class="action-description">
-          <strong>Description :</strong> Nettoyage des plages pour préserver l'environnement.
+          <strong>Description :</strong> <?= htmlspecialchars($action['description_action']) ?>
         </p>
-  
+
         <ul class="action-details">
-          <li><strong>Points verts :</strong> 20</li>
-          <li><strong>Catégorie :</strong> Nettoyage</li>
-          <li><strong>État :</strong> Disponible</li>
-          <li><strong>Date :</strong> 2025-04-22</li>
+          <li><strong>Points verts :</strong> <?= $action['point_vert'] ?></li>
+          <li><strong>Catégorie :</strong> <?= htmlspecialchars($action['categorie']) ?></li>
+          <li><strong>État :</strong> <?= htmlspecialchars($action['etat']) ?></li>
+          <li><strong>Date :</strong> <?= $action['date'] ?></li>
         </ul>
-  
-        <!-- Conteneur des boutons -->
-        <div class="action-buttons">
-          <button class="btn-participer" id="btn-participer-1234">Je participe</button>
-          <button class="btn-annuler" id="btn-annuler-1234">J'annule ma participation</button>
-        </div>
-  
+
+        <!-- Boutons de participation -->
+        <button class="btn-participer" id="btn-participer-<?= $action['id_action'] ?>" onclick="participerAction(<?= $action['id_action'] ?>)">Je participe</button>
+
+        <button class="btn-annuler" id="btn-annuler-<?= $action['id_action'] ?>" onclick="annulerParticipation(<?= $action['id_action'] ?>)" style="display: none;">J'annule ma participation</button>
+
         <!-- Message de confirmation -->
-        <div class="confirmation-message" id="confirmation-1234" style="display: none;">
+        <div class="confirmation-message" id="confirmation-<?= $action['id_action'] ?>" style="display: none;">
           🌱 Merci pour votre participation !
         </div>
       </div>
+      <?php endforeach; ?>
     </section>
   </main>
-  
 
 <!-- FOOTER -->
 <footer>
@@ -100,5 +105,12 @@ require_once('../Controller/EcoActionController.php');
     </div>
   </footer>
 
+
+  <script>
+    function participerAction(actionId) {
+      const confirmationElement = document.getElementById(`confirmation-${actionId}`);
+      confirmationElement.style.display = 'block';
+    }
+  </script>
 </body>
 </html>
