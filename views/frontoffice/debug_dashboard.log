@@ -1,0 +1,355 @@
+[20-Apr-2025 18:21:46 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:11:42 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:11:42 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\WaveNet\models\Utilisateur.php:123
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(34): Utilisateur::findById(NULL, 1)
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Utilisateur.php on line 123
+[20-Apr-2025 21:11:42 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:11:42 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\WaveNet\models\Utilisateur.php:123
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(34): Utilisateur::findById(NULL, 1)
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Utilisateur.php on line 123
+[20-Apr-2025 21:13:22 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:13:22 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\WaveNet\models\Utilisateur.php:123
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(34): Utilisateur::findById(NULL, 1)
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Utilisateur.php on line 123
+[20-Apr-2025 21:13:22 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:13:22 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\WaveNet\models\Utilisateur.php:123
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(34): Utilisateur::findById(NULL, 1)
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Utilisateur.php on line 123
+[20-Apr-2025 21:13:23 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:13:23 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\WaveNet\models\Utilisateur.php:123
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(34): Utilisateur::findById(NULL, 1)
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Utilisateur.php on line 123
+[20-Apr-2025 21:13:23 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:13:23 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\WaveNet\models\Utilisateur.php:123
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(34): Utilisateur::findById(NULL, 1)
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Utilisateur.php on line 123
+[20-Apr-2025 21:18:22 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:18:22 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php:78
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 78
+[20-Apr-2025 21:18:22 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:18:22 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php:78
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 78
+[20-Apr-2025 21:18:23 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:18:23 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php:78
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 78
+[20-Apr-2025 21:18:23 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:18:23 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php:78
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 78
+[20-Apr-2025 21:19:00 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:19:00 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'wavenet.defi' doesn't exist in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:19:00 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:19:00 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'wavenet.defi' doesn't exist in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:19:00 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:19:00 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'wavenet.defi' doesn't exist in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:19:00 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:19:00 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'wavenet.defi' doesn't exist in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:19:01 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:19:01 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'wavenet.defi' doesn't exist in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:19:01 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:19:01 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'wavenet.defi' doesn't exist in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:26:22 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:26:22 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_utilisateur' in 'where clause' in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:26:23 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:26:23 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_utilisateur' in 'where clause' in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:26:23 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:26:23 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_utilisateur' in 'where clause' in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:26:23 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:26:23 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_utilisateur' in 'where clause' in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:26:23 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:26:23 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_utilisateur' in 'where clause' in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:26:23 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:26:23 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_utilisateur' in 'where clause' in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:26:23 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:26:23 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_utilisateur' in 'where clause' in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:26:23 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:26:23 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_utilisateur' in 'where clause' in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:29:43 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:29:43 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_utilisateur' in 'where clause' in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:29:43 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:29:43 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_utilisateur' in 'where clause' in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:29:44 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:29:44 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_utilisateur' in 'where clause' in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:29:44 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:29:44 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_utilisateur' in 'where clause' in C:\xampp\htdocs\WaveNet\models\Defi.php:44
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\models\Defi.php(44): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(84): Defi::countDefisCompletes(Object(PDO), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\WaveNet\models\Defi.php on line 44
+[20-Apr-2025 21:32:26 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:32:26 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php:3
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(104): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php on line 3
+[20-Apr-2025 21:32:26 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:32:26 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php:3
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(104): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php on line 3
+[20-Apr-2025 21:32:27 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:32:27 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php:3
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(104): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php on line 3
+[20-Apr-2025 21:32:27 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:32:27 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php:3
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(104): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php on line 3
+[20-Apr-2025 21:32:27 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:32:27 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php:3
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(104): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php on line 3
+[20-Apr-2025 21:32:27 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:32:27 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php:3
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(104): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php on line 3
+[20-Apr-2025 21:32:44 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:32:44 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php:3
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(120): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php on line 3
+[20-Apr-2025 21:32:45 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:32:45 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php:3
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(120): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php on line 3
+[20-Apr-2025 21:32:45 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:32:45 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php:3
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(120): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php on line 3
+[20-Apr-2025 21:32:45 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:32:45 Europe/Berlin] PHP Fatal error:  Uncaught Error: Cannot use object of type Utilisateur as array in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php:3
+Stack trace:
+#0 C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php(120): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\includes\userHeader.php on line 3
+[20-Apr-2025 21:33:30 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:33:30 Europe/Berlin] PHP Warning:  Undefined variable $message in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 474
+[20-Apr-2025 21:33:30 Europe/Berlin] PHP Warning:  Undefined variable $message in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 484
+[20-Apr-2025 21:33:31 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:33:31 Europe/Berlin] PHP Warning:  Undefined variable $message in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 474
+[20-Apr-2025 21:33:31 Europe/Berlin] PHP Warning:  Undefined variable $message in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 484
+[20-Apr-2025 21:34:24 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:34:24 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:41:25 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:41:25 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:41:45 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:41:45 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:41:45 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:41:45 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:42:08 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:42:08 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:42:45 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:42:45 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:58:55 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:58:55 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:58:57 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 21:58:57 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:01:22 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:01:22 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:03:12 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:03:13 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:03:14 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:03:14 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:03:14 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:03:14 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:03:14 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:03:15 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:04:10 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:04:10 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:05:10 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:05:10 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:07:17 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:07:17 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:07:39 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:07:39 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:55:20 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:55:20 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method Utilisateur::getIdUtilisateur() in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php:310
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 310
+[20-Apr-2025 22:55:20 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:55:20 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method Utilisateur::getIdUtilisateur() in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php:310
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 310
+[20-Apr-2025 22:55:21 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:55:21 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method Utilisateur::getIdUtilisateur() in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php:310
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 310
+[20-Apr-2025 22:55:21 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:55:21 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method Utilisateur::getIdUtilisateur() in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php:310
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 310
+[20-Apr-2025 22:56:04 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 22:56:04 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:07:31 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:07:31 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:15:51 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:15:51 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:15:52 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:15:52 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:15:53 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:15:54 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:15:54 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:15:54 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:17:27 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:17:27 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:19:21 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:19:21 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:22:41 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:22:42 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:23:10 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:23:10 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:23:44 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:23:44 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:30:58 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:30:58 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:31:02 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:31:02 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:33:17 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:33:17 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:34:14 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:34:14 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:34:30 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:34:30 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:36:10 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:36:10 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:36:11 Europe/Berlin] Démarrage de userDashboard.php
+[20-Apr-2025 23:36:11 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:03:04 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:03:04 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:04:35 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:04:36 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:05:36 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:05:36 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:06:00 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:06:00 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:06:26 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:06:26 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:06:27 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:06:27 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:08:49 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:08:49 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:08:49 Europe/Berlin] Démarrage de userDashboard.php
+[21-Apr-2025 00:08:49 Europe/Berlin] Démarrage de userDashboard.php
