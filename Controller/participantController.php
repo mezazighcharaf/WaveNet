@@ -1,49 +1,31 @@
 <?php
-require_once '../Model/participantModel.php';
-require_once '../config/database.php';
+require_once(__DIR__ . '/../Model/participantModel.php');  // Inclure le modèle
 
 class ParticipantController {
-    private $participantModel;
+    private $model;
 
     public function __construct() {
-        $this->participantModel = new ParticipantModel($pdo);
+        $this->model = new ParticipantModel();  // Créer une instance du modèle
     }
 
-    public function addParticipant($nom, $email) {
-        if (!empty($nom) && !empty($email)) {
-            $this->participantModel->addParticipant($nom, $email);
-            header('Location: ../View/eco_actionsB.php?status=success');
-        } else {
-            header('Location: ../View/eco_actionsB.php?status=error');
-        }
+    // Récupérer tous les participants
+    public function getAllParticipant() {
+        return $this->model->getAllParticipant();  // Retourner les données du modèle
     }
 
-    public function updateParticipant($id, $nom, $email) {
-        if (!empty($id) && !empty($nom) && !empty($email)) {
-            $this->participantModel->updateParticipant($id, $nom, $email);
-            header('Location: ../View/eco_actionsB.php?status=success');
-        } else {
-            header('Location: ../View/eco_actionsB.php?status=error');
-        }
+    // Ajouter un participant
+    public function addParticipant($nom_participant, $email_participant) {
+        return $this->model->addParticipant($nom_participant, $email_participant);  // Ajouter un participant
     }
 
-    public function deleteParticipant($id) {
-        if (!empty($id)) {
-            $this->participantModel->deleteParticipant($id);
-            header('Location: ../View/eco_actionsB.php?status=success');
-        } else {
-            header('Location: ../View/eco_actionsB.php?status=error');
-        }
+    // Annuler la participation d'un participant
+    public function cancelParticipation($id_participant) {
+        return $this->model->cancelParticipation($id_participant);  // Annuler la participation
     }
-
-    public function getAllParticipants() {
-        $participants = $this->participantModel->getAllParticipants();
-        include '../View/eco_actionsB.php';
-    }
-
-    public function getParticipantById($id) {
-        $participant = $this->participantModel->getParticipantById($id);
-        include '../View/eco_actions.php';
+    
+    // Inscrire un participant à un événement/action
+    public function participate($id_participant) {
+        return $this->model->participate($id_participant);  // Inscrire un participant
     }
 }
 ?>

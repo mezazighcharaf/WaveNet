@@ -1,38 +1,44 @@
 <?php
-require_once(__DIR__ . '/../Config/database.php');
+require_once(__DIR__ . '/../Database/Database.php');  // Inclure la classe Database pour la connexion
 
 class ParticipantModel {
-    private $conn;
+    private $db;
 
     public function __construct() {
-        $db = new Database();
-        $this->conn = $db->getConnection();
+        $this->db = Database::getConnection();  // Créer une instance de connexion à la base de données
     }
 
-    public function getAllParticipants() {
-        $stmt = $this->conn->prepare("SELECT * FROM participant");
+    // Récupérer tous les participants
+    public function getAllParticipant() {
+        $query = "SELECT * FROM participants";  // Requête pour obtenir tous les participants
+        $stmt = $this->db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);  // Retourner les résultats sous forme de tableau associatif
     }
 
-    public function addParticipant($nom, $email) {
-        $stmt = $this->conn->prepare("INSERT INTO participant (nom_participant, email_participant, date_inscrit) VALUES (?, ?, NOW())");
-        return $stmt->execute([$nom, $email]);
+    // Ajouter un participant
+    public function addParticipant($nom_participant, $email_participant) {
+        $query = "INSERT INTO participants (nom_participant, email_participant) VALUES (:nom_participant, :email_participant)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':nom_participant', $nom_participant);
+        $stmt->bindParam(':email_participant', $email_participant);
+        return $stmt->execute();  // Exécuter la requête d'ajout et retourner si elle a réussi
     }
 
-    public function deleteParticipant($id) {
-        $stmt = $this->conn->prepare("DELETE FROM participant WHERE id_participant = ?");
-        return $stmt->execute([$id]);
+    // Inscrire un participant
+    public function participate($id_participant) {
+        $query = "UPDATE participants SET is_participating = 1 WHERE id_participant = :id_participant";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':id_participant', $id_participant);
+        return $stmt->execute();  // Exécuter la mise à jour pour inscrire le participant
     }
 
-    public function updateParticipant($id, $nom, $email) {
-        $stmt = $this->conn->prepare("UPDATE participant SET nom_participant = ?, email_participant = ? WHERE id_participant = ?");
-        return $stmt->execute([$nom, $email, $id]);
-    }
-
-    public function getParticipantById($id) {
-        $stmt = $this->conn->prepare("SELECT * FROM participant WHERE id_participant = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    // Annuler la participation d'un participant
+    public function cancelParticipation($id_participant) {
+        $query = "UPDATE participants SET is_participating = 0 WHERE id_participant = :id_participant";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':id_participant', $id_participant);
+        return $stmt->execute();  // Exécuter la mise à jour pour annuler la participation du participant
     }
 }
+?>
