@@ -1,60 +1,73 @@
 <?php
-session_start();
-require_once '../Model/participantModel.php';  // Inclure le modèle
+// AdminParticipantController.php
+require_once(__DIR__ . '/../Model/participantBackModel.php');  // Include the correct model
 
-$model = new ParticipantModel();
+class AdminParticipantController {
+    private $model;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'];  // Récupérer l'action (participer ou annuler)
+    public function __construct() {
+        $this->model = new ParticipantBackModel();  // Use the ParticipantBackModel for admin actions
+    }
 
-    // Si l'action est "ajouter", on ajoute un participant
-    if ($action === 'add') {
-        // Validation des champs
-        if (empty($_POST['nom']) || empty($_POST['email'])) {
-            $_SESSION['error'] = "Tous les champs doivent être remplis.";
-            header('Location: ../View/admin_participants.php');
+    // Handle POST requests
+    public function handleRequest() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $action = $_POST['action'] ?? null;
+
+            switch ($action) {
+                case 'add':
+                    $nom_participant = $_POST['nom_participant'];
+                    $email_participant = $_POST['email_participant'];
+                    $nom_action = $_POST['nom_action'];
+                    $this->addParticipant($nom_participant, $email_participant,$nom_action);
+                    break;
+
+                case 'update':
+                    $id_participant = $_POST['id_participant'];
+                    $nom_participant = $_POST['nom_participant'];
+                    $email_participant = $_POST['email_participant'];
+                    $nom_action = $_POST['nom_action'];
+                    $this->updateParticipant($id_participant, $nom_participant, $email_participant, $nom_action);
+                    break;
+
+                case 'delete':
+                    $id_participant = $_POST['id_participant'];
+                    $this->cancelParticipation($id_participant);
+                    break;
+
+                default:
+                    // Invalid action
+                    break;
+            }
+
+            // Redirect back to the view after processing
+            header('Location: ../View/eco_actionsB.php');
             exit();
         }
-
-        // Ajouter le participant
-        $success = $model->addParticipant($_POST['nom'], $_POST['email']);
-        
-        if ($success) {
-            $_SESSION['success'] = "Participant ajouté avec succès.";
-        } else {
-            $_SESSION['error'] = "Erreur lors de l'ajout du participant.";
-        }
-
-        header('Location: ../View/admin_participants.php');
-        exit();
     }
 
-    // Si l'action est "participer", inscrire un participant
-    if ($action === 'participate') {
-        $id_participant = $_POST['id_participant'];
-        $success = $model->participate($id_participant);  // Inscrire un participant
-        
-        if ($success) {
-            $_SESSION['success'] = "Participant inscrit avec succès.";
-        } else {
-            $_SESSION['error'] = "Erreur lors de l'inscription.";
-        }
-        header('Location: ../View/admin_participants.php');
-        exit();
+    // Get all participants
+    public function getAllParticipants() {
+        return $this->model->getAllParticipants();  // Fetch all participants from the model
     }
 
-    // Si l'action est "annuler", annuler la participation d'un participant
-    if ($action === 'cancelParticipation') {
-        $id_participant = $_POST['id_participant'];
-        $success = $model->cancelParticipation($id_participant);  // Annuler la participation
-        
-        if ($success) {
-            $_SESSION['success'] = "Participation annulée avec succès.";
-        } else {
-            $_SESSION['error'] = "Erreur lors de l'annulation.";
-        }
-        header('Location: ../View/admin_participants.php');
-        exit();
+    // Add a participant
+    public function addParticipant($nom_participant, $email_participant, $nom_action) {
+        return $this->model->addParticipant($nom_participant, $email_participant, $nom_action);  // Add participant via model
+    }
+
+    // Update a participant
+    public function updateParticipant($id_participant, $nom_participant, $email_participant, $nom_action) {
+        return $this->model->updateParticipant($id_participant, $nom_participant, $email_participant, $nom_action);  // Update participant via model
+    }
+
+    // Cancel a participant's registration
+    public function cancelParticipation($id_participant) {
+        return $this->model->cancelParticipation($id_participant);  // Cancel participation via model
     }
 }
+
+// Instantiate the controller and handle the request
+$controller = new AdminParticipantController();
+$controller->handleRequest();
 ?>

@@ -1,31 +1,33 @@
 <?php
-require_once(__DIR__ . '/../Model/participantModel.php');  // Inclure le modèle
+// ParticipantController.php
+
+require_once(__DIR__ . '/../Model/participantModel.php');  // Include the correct model
 
 class ParticipantController {
     private $model;
 
     public function __construct() {
-        $this->model = new ParticipantModel();  // Créer une instance du modèle
+        $this->model = new ParticipantModel();  // Use the ParticipantModel for front-end actions
     }
 
-    // Récupérer tous les participants
-    public function getAllParticipant() {
-        return $this->model->getAllParticipant();  // Retourner les données du modèle
+    // Get all participants
+    public function getAllParticipants() {
+        return $this->model->getAllParticipants();  // Fetch all participants from the model
     }
 
-    // Ajouter un participant
+    // Add a participant
     public function addParticipant($nom_participant, $email_participant) {
-        return $this->model->addParticipant($nom_participant, $email_participant);  // Ajouter un participant
+        return $this->model->addParticipant($nom_participant, $email_participant);  // Add participant via model
     }
 
-    // Annuler la participation d'un participant
+    // Cancel a participant's registration
     public function cancelParticipation($id_participant) {
-        return $this->model->cancelParticipation($id_participant);  // Annuler la participation
+        return $this->model->cancelParticipation($id_participant);  // Cancel participation via model
     }
-    
-    // Inscrire un participant à un événement/action
+
+    // Register a participant
     public function participate($id_participant) {
-        return $this->model->participate($id_participant);  // Inscrire un participant
+        return $this->model->participate($id_participant);  // Register a participant via model
     }
 }
 ?>

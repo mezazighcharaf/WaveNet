@@ -2,26 +2,26 @@
 require_once '../config/database.php'; // Ensure your database connection is available
 
 class EcoActionModel {
-    private $pdo;
+    private $db;
 
     public function __construct() {
-        $this->pdo = Config::getConnexion();  // Use your Config class for DB connection
+        $this->db = Config::getConnexion();  // Correct method name
+        // Créer une instance de connexion à la base de données
     }
 
-    // Get all eco actions from the database
     public function getAllEcoActions() {
         $sql = "SELECT * FROM eco_action";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->db->prepare($sql);
         $stmt->execute();
-
+    
         $actions = [];
-
-        // Fetch all actions from the database
+    
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $actions[] = $row;
         }
-
+    
         return $actions;
     }
-}
+} // 👈 PAS de point-virgule ici !
+
 ?>

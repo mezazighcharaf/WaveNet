@@ -93,50 +93,54 @@ body {
 /* BOUTONS               */
 /* ===================== */
 .btn {
-  display: inline-block;
-  padding: 0.65rem 1.25rem;
-  border-radius: var(--border-radius);
+  padding: 0.8rem 1.4rem; /* Augmenter légèrement la taille pour un meilleur effet */
+  font-size: 1rem; /* Police de taille plus grande */
+  border-radius: 5px; /* Bordure légèrement plus arrondie */
   text-decoration: none;
   font-weight: 600;
-  transition: background var(--transition-speed), transform var(--transition-speed);
+  transition: all 0.3s ease; /* Transition fluide pour tous les effets */
   border: none;
   cursor: pointer;
+  display: inline-block; /* Pour les rendre côte à côte */
+  margin: 0.5rem; /* Espace autour des boutons */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre douce sous les boutons */
 }
 
+/* Bouton principal (Je participe) */
 .btn-primary {
-  background-color: var(--accent-green);
-  color: var(--white);
+  background-color: #4caf50; /* Couleur verte */
+  color: #ffffff;
 }
 
 .btn-primary:hover {
-  background-color: #43a047; /* Légèrement plus sombre */
-  transform: translateY(-2px);
+  background-color: #45a049; /* Un vert un peu plus foncé au survol */
+  transform: translateY(-3px); /* Légère élévation du bouton */
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15); /* Ombre plus marquée */
 }
 
+.btn-primary:active {
+  transform: translateY(1px); /* Clic : effet d'enfoncement */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ombre plus discrète au clic */
+}
+
+/* Bouton secondaire (J'annule ma participation) */
 .btn-secondary {
-  background-color: var(--white);
-  color: var(--accent-green);
-  border: 2px solid var(--accent-green);
+  background-color: #ffffff;
+  color: #4caf50; /* Texte vert */
+  border: 2px solid #4caf50; /* Bordure verte */
 }
 
 .btn-secondary:hover {
-  background-color: var(--accent-green);
-  color: var(--white);
-  transform: translateY(-2px);
+  background-color: #4caf50; /* Vert au survol */
+  color: #ffffff; /* Texte blanc au survol */
+  transform: translateY(-3px); /* Légère élévation au survol */
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15); /* Ombre plus marquée */
 }
 
-/* Nouveau style pour le bouton d'annulation */
-.btn-cancel {
-  background-color: var(--red); /* Rouge pour l'annulation */
-  color: var(--white);
-  border: 2px solid var(--red);
+.btn-secondary:active {
+  transform: translateY(1px); /* Clic : effet d'enfoncement */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ombre plus discrète au clic */
 }
-
-.btn-cancel:hover {
-  background-color: #c62828; /* Plus foncé au survol */
-  transform: translateY(-2px);
-}
-
 
 /* ===================== */
 /* HERO SECTION          */

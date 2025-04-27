@@ -47,7 +47,7 @@ $actions = $controller->getAllActions();
       <?php foreach ($actions as $action): ?>
       <div class="action-card">
         <div class="action-header">
-          <h3><?= htmlspecialchars($action['nom_action']) ?> <span class="action-id">#<?= $action['id_action'] ?></span></h3>
+          <h3><?= htmlspecialchars($action['nom_action']) ?> <!-- <span class="action-id">#<?= $action['id_action'] ?></span></h3-->
         </div>
 
         <p class="action-description">
@@ -60,9 +60,11 @@ $actions = $controller->getAllActions();
           <li><strong>État :</strong> <?= htmlspecialchars($action['etat']) ?></li>
           <li><strong>Date :</strong> <?= $action['date'] ?></li>
         </ul>
-        <button class="btn btn-primary">Participer</button>
-        <button class="btn btn-secondary">Annuler la participation</button>
         
+        <button class="btn btn-primary">Je participe</button>
+        <button class="btn btn-secondary">J'annule ma participation</button>
+        
+
         <div class="confirmation-message" id="confirmation-<?= $action['id_action'] ?>" style="display: none;">
           🌱 Merci pour votre participation !
         </div>
@@ -110,4 +112,4 @@ $actions = $controller->getAllActions();
     }
   </script>
 </body>
-</html>
+</html> 
