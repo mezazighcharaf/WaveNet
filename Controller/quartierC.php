@@ -5,8 +5,8 @@ include_once(__DIR__ . '/../Model/quartier.php');
 
 class quartierC {
     public function ajouterQuartier($quartier){
-        $sql = "INSERT INTO quartier (idq, nomq, ville, scoreeco, classement)
-                VALUES (:idq, :nomq, :ville, :scoreeco, :classement)";
+        $sql = "INSERT INTO quartier (idq, nomq, ville, localisation, scoreeco, classement)
+        VALUES (:idq, :nomq, :ville, :scoreeco, :classement, :localisation)";
         $db = Config::getConnection();
     
         try {
@@ -17,6 +17,7 @@ class quartierC {
                 'ville' => $quartier->getVille(),
                 'scoreeco' => $quartier->getscore_ecologique(),
                 'classement' => $quartier->getClassement(),
+                'localisation' => $quartier->getLocalisation(),
             ]);
         } catch(PDOException $e){
             echo "Erreur :" . $e->getMessage();
@@ -51,7 +52,7 @@ class quartierC {
 
     public function modifierQuartier($quartier) {
         $sql = "UPDATE quartier 
-                SET nomq = :nomq, ville = :ville, scoreeco = :scoreeco, classement = :classement 
+                SET nomq = :nomq, ville = :ville, scoreeco = :scoreeco, classement = :classement , localisation =:localisation
                 WHERE idq = :idq";
         $db = Config::getConnection();
     
@@ -63,6 +64,7 @@ class quartierC {
                 'ville' => $quartier->getVille(),
                 'scoreeco' => $quartier->getscore_ecologique(),
                 'classement' => $quartier->getClassement(),
+                'localisation' => $quartier->getLocalisation(),
             ]);
         } catch (PDOException $e) {
             echo "Erreur : " . $e->getMessage();

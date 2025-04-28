@@ -5,13 +5,15 @@ class quartier {
     private $ville;
     private $scoreeco;
     private $classement;
+    private $localisation;
 
-    public function __construct($idq,$nomq,$ville,$scoreeco,$classement){
+    public function __construct($idq,$nomq,$ville,$scoreeco,$classement,$localisation){
         $this->idq = $idq;
         $this->nomq = $nomq;
         $this->ville = $ville;
         $this->scoreeco = $scoreeco;
         $this->classement = $classement;
+        $this->localisation = $localisation;
     }
 
 
@@ -31,6 +33,9 @@ class quartier {
     public function getClassement(){
         return $this->classement;
     }
+    public function getLocalisation() {
+        return $this->localisation;
+    }
 
 
 
@@ -49,5 +54,9 @@ class quartier {
     public function setClassement(){
         $this->classement=$classement;
     }
+    public function setLocalisation($localisation) {
+        $this->localisation = $localisation;
+    }
 
 }
+

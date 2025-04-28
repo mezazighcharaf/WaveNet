@@ -1,6 +1,4 @@
-/* ===================== */
-/* VARIABLES & RESET     */
-/* ===================== */
+
 :root {
     --dark-green: #2e4f3e;
     --light-green: #ecf7ed;
@@ -27,9 +25,6 @@ body {
     padding-top: 80px;
 }
 
-/* ===================== */
-/* HEADER                */
-/* ===================== */
 .main-header {
     background-color: var(--dark-green);
     padding: 1rem;
@@ -92,9 +87,6 @@ body {
     border-radius: var(--border-radius);
 }
 
-/* ===================== */
-/* HERO SECTION          */
-/* ===================== */
 .hero-section {
     padding: 3rem 1rem;
     text-align: center;
@@ -111,9 +103,7 @@ body {
     margin: 0 auto 2rem;
 }
 
-/* ===================== */
-/* ADMIN TOOLS           */
-/* ===================== */
+
 .admin-tools {
     background-color: var(--white);
     padding: 1.5rem;
@@ -128,9 +118,7 @@ body {
     margin: 0 auto;
 }
 
-/* ===================== */
-/* CONTENT SECTIONS      */
-/* ===================== */
+
 .section-container {
     max-width: var(--max-width);
     margin: 0 auto;
@@ -153,9 +141,7 @@ body {
     margin-top: 0.5rem;
 }
 
-/* ===================== */
-/* CARDS SYSTEM          */
-/* ===================== */
+
 .quartiers-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -214,9 +200,7 @@ body {
     display: inline-block;
 }
 
-/* ===================== */
-/* BUTTONS               */
-/* ===================== */
+
 .btn {
     display: inline-block;
     padding: 0.6rem 1.2rem;
@@ -238,7 +222,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Backoffice specific buttons */
+
 .btn-add {
     background-color: var(--accent-green);
     color: var(--white);
@@ -277,9 +261,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* ===================== */
-/* FOOTER                */
-/* ===================== */
 .main-footer {
     background-color: var(--dark-green);
     color: var(--white);
@@ -325,9 +306,7 @@ body {
     opacity: 0.8;
 }
 
-/* ===================== */
-/* MEDIA QUERIES         */
-/* ===================== */
+
 @media (max-width: 768px) {
     .header-container {
         flex-direction: column;

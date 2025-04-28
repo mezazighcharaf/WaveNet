@@ -1,101 +1,110 @@
 <?php
-include_once "../../controller/quartierC.php"; // Assure-toi d’avoir cette classe qui gère les requêtes
+include_once "../../Controller/quartierC.php";
 $quartierC = new quartierC();
-$listeQuartiers = $quartierC->afficherQuartier(); // méthode à adapter selon ton code
+$listeQuartiers = $quartierC->afficherQuartier();
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>URBAVERSE Admin - Quartiers</title>
+    <title>Gestion des Quartiers - UrbaVerse</title>
     <link rel="stylesheet" href="index.css">
+    <style>
+        .btn-map {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 2px 8px;
+            background-color: #4285F4;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        .btn-map:hover {
+            background-color: #3367D6;
+        }
+        .location-cell {
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
-<body class="backoffice">
-    <header class="main-header">
-        <div class="header-container">
-            <h1 class="logo">URBAVERSE <span>Admin</span></h1>
-            <nav class="main-nav">
-                <ul class="nav-links">
-                    <li><a href="#">Tableau de bord</a></li>
-                    <li><a href="#" class="active">Quartiers</a></li>
-                    <li><a href="#">Infrastructures</a></li>
-                    <li><a href="#">Utilisateurs</a></li>
-                    <li><a href="#">Statistiques</a></li>
-                    <li><a href="#" class="btn-logout">Déconnexion</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<body>
+    <div class="sidebar">
+        <h2>Urbaverse</h2>
+        <ul>
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Signalements</a></li>
+            <li><a href="#">Utilisateurs</a></li>
+            <li><a href="#">Quartiers</a></li>
+            <li><a href="#">Paramètres</a></li>
+            <li><a href="#">Retour à l'accueil</a></li>
+        </ul>
+    </div>
 
-    <main class="main-content">
-        <section class="admin-tools">
-            <div class="section-container">
-                <h2 class="section-title">Gestion des Quartiers</h2>
-                <a href="ajouterquartier.php" class="btn btn-add">+ Ajouter un quartier</a>
-            </div>
-        </section>
+    <div class="main">
+        <div class="header">
+            <h1>Quartiers</h1>
+            <a href="ajouterquartier.php" class="add-btn">Ajouter Quartier</a>
+        </div>
 
         <section class="quartiers-section">
             <div class="section-container">
-                <div class="quartiers-grid">
-                    <?php if (is_array($listeQuartiers) && count($listeQuartiers) > 0): ?>
-                        <?php foreach ($listeQuartiers as $quartier): ?>
-                        <article class="quartier-card">
-                            <div class="card-image">
-                                <img src="<?= htmlspecialchars($quartier['image'] ?? 'default.jpg') ?>" alt="<?= htmlspecialchars($quartier['nomq']) ?>">
-                            </div>
-                            <div class="card-content">
-                                <h3><?= htmlspecialchars($quartier['idq']) ?> - <?= htmlspecialchars($quartier['nomq']) ?></h3>
-                                <div class="quartier-info">
-                                    <p><strong>Ville:</strong> <?= htmlspecialchars($quartier['ville']) ?></p>
-                                    <p><strong>scoreeco:</strong> <?= htmlspecialchars($quartier['scoreeco']) ?>/100</p>
-                                    <p><strong>Classement:</strong> <?= htmlspecialchars($quartier['classement']) ?></p>
-                                </div>
-                                <div class="card-actions">
-                                    <a href="modifierquartier.php?id=<?= $quartier['idq'] ?>" class="btn btn-edit">Modifier</a>
-                                    <a href="supprimerquartier.php?id=<?= $quartier['idq'] ?>" class="btn btn-delete" onclick="return confirm('Supprimer ce quartier ?')">Supprimer</a>
-                                </div>
-                            </div>
-                        </article>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p>Aucun quartier trouvé.</p>
-                    <?php endif; ?>
+                <div class="quartiers-table-container">
+                    <table class="quartiers-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Ville</th>
+                                <th>Score Eco</th>
+                                <th>Classement</th>
+                                <th>Localisation</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (is_array($listeQuartiers) && count($listeQuartiers) > 0): ?>
+                                <?php foreach ($listeQuartiers as $quartier): ?>
+                                <tr class="quartier-row">
+                                    <td><?= htmlspecialchars($quartier['idq']) ?></td>
+                                    <td><?= htmlspecialchars($quartier['nomq']) ?></td>
+                                    <td><?= htmlspecialchars($quartier['ville']) ?></td>
+                                    <td><?= htmlspecialchars($quartier['scoreeco']) ?>/100</td>
+                                    <td><?= htmlspecialchars($quartier['classement']) ?></td>
+                                    <td class="location-cell">
+                                        <?= htmlspecialchars($quartier['localisation'] ?? 'Non spécifiée') ?>
+                                        <?php if (!empty($quartier['localisation'])): ?>
+                                            <?php
+                                            $adresse_complete = urlencode($quartier['localisation'] . ', ' . $quartier['ville'] . ', Tunisie');
+                                            ?>
+                                            <a href="https://www.google.com/maps/search/?api=1&query=<?= $adresse_complete ?>" 
+                                            target="_blank" 
+                                            class="btn-map">
+                                            🗺 Voir sur carte
+                                            </a>
+                                        <?php endif; ?>
+                                    </td>
+                                    
+                                    <td class="actions-cell">
+                                        <div class="table-actions">
+                                            <a href="modifierquartier.php?id=<?= $quartier['idq'] ?>" class="btn btn-edit">Modifier</a>
+                                            <a href="supprimerquartier.php?id=<?= $quartier['idq'] ?>" class="btn btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce quartier ?')">Supprimer</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="7" class="no-data">Aucun quartier trouvé.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
-    </main>
-
-    <footer class="main-footer">
-    <div class="footer-content">
-            <div class="footer-section">
-                <h3>URBAVERSE</h3>
-                <p>Innovons ensemble pour des infrastructures urbaines durables et intelligentes.</p>
-            </div>
-            <div class="footer-section">
-                <h3>LIENS RAPIDES</h3>
-                <ul>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Confidentialité</a></li>
-                    <li><a href="#">Conditions</a></li>
-                    <li><a href="#">Backoffice</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>SUIVEZ-NOUS</h3>
-                <ul>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Instagram</a></li>
-                    <li><a href="#">LinkedIn</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="copyright">
-            <p>© 2025 URBAVERSE. Tous droits réservés.</p>
-        </div>
-
-    </footer>
+    </div>
 </body>
 </html>

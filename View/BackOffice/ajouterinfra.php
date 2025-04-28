@@ -1,54 +1,36 @@
 <?php
-include_once(__DIR__ . '/../../Controller/quartierC.php');
+include_once(__DIR__ . '/../../Controller/infraC.php');
 
 $message = null;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $idq = $_POST['idq'];
-    $nomq = $_POST['nomq'];
-    $ville = $_POST['ville'];
-    $scoreeco = $_POST['scoreeco'];
-    $classement = $_POST['classement'];
-    $localisation = $_POST['localisation'];
-    
+    $id_infra = $_POST['id_infra'];
+    $type = $_POST['type'];
+    $statut = $_POST['statut'];
 
-    if (
-        !empty($idq) && !empty($nomq) && !empty($ville) &&
-        !empty($scoreeco) && !empty($classement) && !empty($localisation)
-    ) {
+    if (!empty($id_infra) && !empty($type) && !empty($statut)) {
         
-if (!preg_match('/^\d{8}$/', $idq)) {
-    $message = "L'identifiant doit contenir exactement 8 chiffres ❌";
-}
+        if (!preg_match('/^\d+$/', $id_infra)) {
+            $message = "L'identifiant doit contenir uniquement des chiffres ❌";
+        }
+        elseif (!preg_match('/^[\p{L} ]+$/u', $type)) {
+            $message = "Le type doit contenir uniquement des lettres ❌";
+        }
+        elseif (!preg_match('/^[\p{L} ]+$/u', $statut)) {
+            $message = "Le statut doit contenir uniquement des lettres ❌";
+        }
+        else {
+            $infraC = new infraC();
 
-elseif (!preg_match('/^[\p{L} ]+$/u', $nomq)) {
-    $message = "Le nomq doit contenir uniquement des lettres ❌";
-}
-elseif (!preg_match('/^[\p{L} ]+$/u', $ville)) {
-    $message = "La ville doit contenir uniquement des lettres ❌";
-}
-
-elseif (!is_numeric($scoreeco)) {
-    $message = "scoreeco doit être un nombre ❌";
-}
-
-elseif (!is_numeric($classement)) {
-    $message = "classement doit être un nombre ❌";
-}
-
-else {
-    $quartierC = new quartierC();
-
-    $existant = $quartierC->recupererQuartierparId($idq);
-    if ($existant !== false) {
-        $message = "L'identifiant existe déjà, merci d'en choisir un autre ❌";
-    } else {
-        
-        $quartier = new quartier($idq, $nomq, $ville, $scoreeco, $classement, $localisation);
-        $quartierC->ajouterQuartier($quartier);
-        $message = "quartier ajouté avec succès ✅";
-    }
-}
+            $existant = $infraC->recupererInfrastructureParId($id_infra);
+            if ($existant !== false) {
+                $message = "L'identifiant existe déjà, merci d'en choisir un autre ❌";
+            } else {
+                $infrastructure = new infra($id_infra, $type, $statut);
+                $infraC->ajouterInfrastructure($infrastructure);
+                $message = "Infrastructure ajoutée avec succès ✅";
+            }
+        }
 
     } else {
         $message = "Tous les champs sont requis ❌";
@@ -56,16 +38,14 @@ else {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URBAVERSE Admin - Quartiers</title>
-    <link rel="stylesheet" href="index.css"> <!-- Chemin corrigé si nécessaire -->
+    <title>URBAVERSE Admin - Infrastructures</title>
+    <link rel="stylesheet" href="index.css">
     <style>
-        /* Styles spécifiques pour cette page */
         .form-container {
             max-width: 600px;
             margin: 2rem auto;
@@ -143,7 +123,7 @@ else {
             <li><a href="#">Dashboard</a></li>
             <li><a href="#">Signalements</a></li>
             <li><a href="#">Utilisateurs</a></li>
-            <li><a href="#" class="active">Quartiers</a></li>
+            <li><a href="#" class="active">Infrastructures</a></li>
             <li><a href="#">Paramètres</a></li>
         </ul>
     </div>
@@ -151,11 +131,11 @@ else {
     <!-- Contenu principal -->
     <div class="main">
         <div class="header">
-            <h1>Ajouter un Quartier</h1>
-            <a href="index.php" class="back-btn">← Retour</a>
+            <h1>Ajouter une Infrastructure</h1>
+            <a href="backinfra.php" class="back-btn">← Retour</a>
         </div>
 
-        <section class="quartiers-section">
+        <section class="infrastructures-section">
             <div class="section-container">
                 <?php if ($message): ?>
                     <div class="alert <?= strpos($message, '❌') ? 'alert-error' : 'alert-success' ?>">
@@ -166,35 +146,21 @@ else {
                 <div class="form-container">
                     <form method="POST" action="">
                         <div class="form-group">
-                            <label for="idq">Identifiant du quartier (8 chiffres)</label>
-                            <input type="text" id="idq" name="idq" required pattern="\d{8}">
+                            <label for="id_infra">Identifiant de l'infrastructure</label>
+                            <input type="text" id="id_infra" name="id_infra" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="nomq">Nom du quartier</label>
-                            <input type="text" id="nomq" name="nomq" required>
+                            <label for="type">Type</label>
+                            <input type="text" id="type" name="type" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="ville">Ville</label>
-                            <input type="text" id="ville" name="ville" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="scoreeco">Score écologique (0-100)</label>
-                            <input type="number" id="scoreeco" name="scoreeco" min="0" max="100" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="classement">Classement</label>
-                            <input type="number" id="classement" name="classement" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="localisation">Localisation (Adresse complète)</label>
-                            <input type="text" id="localisation" name="localisation" required>
+                            <label for="statut">Statut</label>
+                            <input type="text" id="statut" name="statut" required>
                         </div>
                         
+
                         <div class="form-actions">
                             <button type="reset" class="btn btn-secondary">Annuler</button>
                             <button type="submit" class="btn btn-primary">Enregistrer</button>

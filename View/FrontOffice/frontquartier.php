@@ -1,7 +1,7 @@
 <?php
-include_once "../../Controller/quartierC.php"; // Assure-toi d’avoir cette classe qui gère les requêtes
+include_once "../../Controller/quartierC.php"; 
 $quartierC = new quartierC();
-$listeQuartiers = $quartierC->afficherQuartier(); // méthode à adapter selon ton code
+$listeQuartiers = $quartierC->afficherQuartier(); 
 ?>
 
 <!DOCTYPE html>
@@ -36,17 +36,29 @@ $listeQuartiers = $quartierC->afficherQuartier(); // méthode à adapter selon t
                 <div class="quartiers-grid">
                     <?php if (is_array($listeQuartiers) && count($listeQuartiers) > 0): ?>
                         <?php foreach ($listeQuartiers as $quartier): ?>
-                        <article class="quartier-card">
-                            <div class="card-image">
-                                <img src="<?= htmlspecialchars($quartier['image'] ?? 'default.jpg') ?>" alt="<?= htmlspecialchars($quartier['nomq']) ?>">
-                            </div>
-                            <div class="card-content">
-                                <h3><?= htmlspecialchars($quartier['nomq']) ?></h3>
-                                <div class="card-actions">
-                                    <a href="afficherdetails.php?id=<?= $quartier['idq'] ?>" class="btn btn-details">Détails</a>
+                            <article class="quartier-card">
+                                <div class="card-image">
+                                    <img src="<?= htmlspecialchars($quartier['image'] ?? 'default.jpg') ?>" alt="<?= htmlspecialchars($quartier['nomq']) ?>">
                                 </div>
-                            </div>
-                        </article>
+                                <div class="card-content">
+                                    <h3><?= htmlspecialchars($quartier['nomq']) ?></h3>
+                                    <p class="quartier-location">
+                                    <?php if (!empty($quartier['localisation'])): ?>
+                                            <?php
+                                            $adresse_complete = urlencode($quartier['localisation'] . ', ' . $quartier['ville'] . ', Tunisie');
+                                            ?>
+                                            <a href="https://www.google.com/maps/search/?api=1&query=<?= $adresse_complete ?>" 
+                                            target="_blank" 
+                                            class="btn-map">
+                                            🗺 Voir sur carte
+                                            </a>
+                                        <?php endif; ?>
+                                    </p>
+                                    <div class="card-actions">
+                                        <a href="afficherdetails.php?id=<?= $quartier['idq'] ?>" class="btn btn-details">Détails</a>
+                                    </div>
+                                </div>
+                            </article>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <p>Aucun quartier disponible pour le moment.</p>
