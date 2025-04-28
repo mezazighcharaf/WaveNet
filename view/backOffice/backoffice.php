@@ -223,7 +223,7 @@ $recompenses = $recController->listAll();
     <tbody>
     <?php foreach ($recompenses as $rec) : ?>
         <tr>
-            <form method="post">
+            <form method="post" novalidate>
                 <td><?= $rec->getIdRec(); ?>
                     <input type="hidden" name="id_rec" value="<?= $rec->getIdRec(); ?>">
                 </td>
@@ -263,7 +263,7 @@ $recompenses = $recController->listAll();
 </table>
 
 <h2>Ajouter une récompense</h2>
-<form method="post">
+<form method="post" novalidate>
     <input type="text" name="nom_rec" placeholder="Nom" required>
     <input type="text" name="description" placeholder="Description" required>
     <input type="number" name="cout" placeholder="Coût" required >

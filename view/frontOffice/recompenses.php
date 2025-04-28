@@ -4,8 +4,15 @@ require_once(__DIR__ . '/../../controller/recompenseController.php');
 
 $recController = new RecompenseController();
 $recompenses = $recController->listAll();
-?>
 
+// Fonction pour déterminer si une récompense est en promotion (7 derniers jours)
+function isPromo($dateFin) {
+    $now = new DateTime();
+    $endDate = new DateTime($dateFin);
+    $interval = $now->diff($endDate);
+    return $interval->days <= 7 && $interval->invert == 0;
+}
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -14,6 +21,7 @@ $recompenses = $recController->listAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Récompenses - Urbaverse</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="promo-styles.css" />
 </head>
 <body>
     <header class="main-header">
@@ -47,8 +55,14 @@ $recompenses = $recController->listAll();
             </div>
 
             <div class="recompenses-cards">
-                <?php foreach ($recompenses as $rec): ?>
-                <div class="recompenses-card">
+                <?php foreach ($recompenses as $rec): 
+                    $isPromo = isPromo($rec->getDateFin());
+                    $dateFin = $rec->getDateFin();
+                ?>
+                <div class="recompenses-card <?= $isPromo ? 'promo-card' : '' ?>">
+                    <?php if ($isPromo): ?>
+                    <div class="promo-badge">DERNIERE CHANCE!</div>
+                    <?php endif; ?>
                     <img src="https://picsum.photos/600/400?random=<?= $rec->getIdRec() ?>&nature=1" alt="<?= htmlspecialchars($rec->getNomRec()) ?>">
                     <div class="card-content">
                         <h3><?= htmlspecialchars($rec->getNomRec()); ?></h3>
@@ -57,8 +71,11 @@ $recompenses = $recController->listAll();
                             <?= htmlspecialchars($rec->getDescription()); ?>
                         </p>
                         <p>
-                            👉 Valable jusqu'au <?= date('d/m/Y', strtotime($rec->getDateFin())); ?>
+                            👉 Valable jusqu'au <?= date('d/m/Y', strtotime($dateFin)); ?>
                         </p>
+                        <?php if ($isPromo): ?>
+                        <div class="countdown" data-end-date="<?= $dateFin ?>"></div>
+                        <?php endif; ?>
                         <a
                             href="#lire-plus"
                             class="btn btn-primary"
@@ -100,5 +117,7 @@ $recompenses = $recController->listAll();
             <p>&copy; 2025 Urbaverse. Tous droits réservés.</p>
         </div>
     </footer>
+
+    <script src="promo-script.js"></script>
 </body>
 </html>
