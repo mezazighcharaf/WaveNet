@@ -75,6 +75,16 @@
     opacity: 1;
   }
   
+  .nav-links a.active {
+    background: none;
+    color: var(--accent-green);
+    border-bottom: 3px solid var(--accent-green);
+    border-radius: 0;
+    font-weight: 700;
+    opacity: 1;
+    box-shadow: none;
+  }
+  
   .user-actions {
     display: flex;
     align-items: center;
@@ -130,14 +140,15 @@
   /* ===================== */
   .hero {
     width: 100%;
-    padding-top: 7rem; /* Pour ne pas être caché par le header fixe */
-    background: var(--light-green);
+    padding-top: 7rem;
+    background: linear-gradient(135deg, var(--dark-green) 0%, #1a3a2a 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
     min-height: 80vh;
+    color: var(--white);
   }
   
   /* Forme organique dans le hero (ex. pseudo-élément) */
@@ -165,14 +176,15 @@
   
   .hero-text {
     flex: 1 1 400px;
-    color: var(--text-color);
+    color: var(--white);
     margin-right: 2rem;
+    z-index: 2;
   }
   
   .hero-text h2 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
-    color: var(--accent-green);
+    color: var(--white) !important;
   }
   
   .hero-text p {
@@ -180,6 +192,8 @@
     margin-bottom: 1.5rem;
     line-height: 1.5;
     max-width: 600px;
+    color: var(--white) !important;
+    opacity: 0.9;
   }
   
   .hero-img {
@@ -556,5 +570,250 @@
     .group-photos img {
       width: 100%;
     }
+  }
+  
+  /* Etapes Section Styling */
+  .etapes-section {
+      margin-top: 2rem;
+      padding: 2rem;
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .section-title {
+      color: var(--dark-green);
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-green);
+      display: inline-block;
+  }
+  
+  .no-etapes {
+      padding: 1.5rem;
+      background-color: var(--light-green);
+      border-radius: var(--border-radius);
+      text-align: center;
+      color: #666;
+  }
+  
+  .etapes-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+  }
+  
+  .etape-card {
+      background-color: var(--light-green);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .etape-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .etape-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+  }
+  
+  .etape-header h3 {
+      color: var(--dark-green);
+      font-size: 1.2rem;
+      margin: 0;
+  }
+  
+  .etape-status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+  }
+  
+  .etape-status.active {
+      background-color: var(--accent-green);
+      color: var(--white);
+  }
+  
+  .etape-status.inactive {
+      background-color: #ccc;
+      color: #666;
+  }
+  
+  .etape-content {
+      margin-bottom: 1.5rem;
+  }
+  
+  .etape-content p {
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+  }
+  
+  .etape-meta {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1rem;
+  }
+  
+  .etape-order, .etape-points {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+  }
+  
+  .etape-meta .label {
+      font-weight: 600;
+      color: var(--dark-green);
+  }
+  
+  .etape-meta .value {
+      color: #555;
+  }
+  
+  .etape-actions {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: flex-end;
+  }
+  
+  .section-footer .btn {
+    margin-top: 2rem;
+  }
+  
+  .section-header h2 {
+    color: var(--dark-green) !important;
+  }
+  
+  /* Style pour les en-têtes de tableaux */
+  th {
+    background: var(--dark-green) !important;
+    color: var(--white) !important;
+    font-weight: bold !important;
+    border: none !important;
+  }
+  
+  .defis-table-header {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 2fr 3fr 1.5fr 1fr;
+    background: var(--dark-green);
+    color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    align-items: center;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  
+  .defis-table-header span {
+    padding-right: 0.5rem;
+  }
+  
+  table th {
+    background: var(--dark-green);
+    color: var(--white);
+    font-weight: bold;
+  }
+  
+  .defi-card-header {
+    padding: 1.5rem;
+    background: #f8fbf8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .defi-card-header .difficulty {
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 30px;
+    padding: 0.5rem 1.2rem;
+    background: #ffebee; /* Par défaut, sera écrasé par la classe de difficulté */
+    color: #c62828;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .defi-card-header .difficulty.facile {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+  .defi-card-header .difficulty.intermédiaire {
+    background: #fff8e1;
+    color: #f57f17;
+  }
+  .defi-card-header .difficulty.difficile {
+    background: #ffebee;
+    color: #c62828;
+  }
+  
+  .defi-card-header .points {
+    display: inline-block;
+    background: #e3f2fd;
+    color: #1565c0;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 30px;
+    padding: 0.5rem 1.2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  
+  .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--white);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(44,62,80,0.10);
+    margin-bottom: 2.5rem;
+    font-size: 1.12rem;
+  }
+  
+  .data-table th {
+    padding: 1.35rem 1.7rem;
+    text-align: left;
+    font-weight: 700;
+    font-size: 1.08rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--primary-color);
+    background: var(--dark-color);
+    color: var(--white);
+  }
+  
+  .data-table td {
+    padding: 1.15rem 1.7rem;
+    border-bottom: 1px solid var(--gray-200);
+    color: var(--text-color);
+    font-size: 1.08rem;
+    vertical-align: middle;
+    background: var(--white);
+  }
+  
+  .data-table tr {
+    transition: background 0.2s;
+  }
+  
+  .data-table tr:hover td {
+    background: #f5f8f6;
+  }
+  
+  .data-table tr:last-child td {
+    border-bottom: none;
   }
   

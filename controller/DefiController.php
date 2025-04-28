@@ -92,5 +92,66 @@ class DefiController {
             }
         }
     }
+    
+    /**
+     * Met à jour automatiquement les statuts des défis en fonction de la date actuelle
+     */
+    public function updateDefiStatuses() {
+        $today = date('Y-m-d');
+        
+        try {
+            // Pour tester, affichons la date actuelle
+            error_log("Date actuelle: " . $today);
+            
+            // Mettre à jour les défis "À venir" qui doivent commencer aujourd'hui ou avant
+            $query1 = "UPDATE defi 
+                      SET Statut_D = 'Actif' 
+                      WHERE Statut_D = 'À venir' AND Date_Debut <= :today";
+            $stmt1 = $this->db->prepare($query1);
+            $stmt1->bindParam(':today', $today);
+            $stmt1->execute();
+            
+            // Mettre à jour les défis "Actif" qui sont terminés
+            $query2 = "UPDATE defi 
+                      SET Statut_D = 'Terminé' 
+                      WHERE Statut_D = 'Actif' AND Date_Fin < :today";
+            $stmt2 = $this->db->prepare($query2);
+            $stmt2->bindParam(':today', $today);
+            $stmt2->execute();
+            
+            return true;
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la mise à jour des statuts de défis: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Met à jour les statuts des défis avec une date spécifique (pour tests)
+     */
+    public function updateDefiStatusesWithDate($testDate) {
+        try {
+            // Mettre à jour les défis "À venir" qui doivent commencer à la date de test ou avant
+            $query1 = "UPDATE defi 
+                      SET Statut_D = 'Actif' 
+                      WHERE Statut_D = 'À venir' AND Date_Debut <= :testDate";
+            $stmt1 = $this->db->prepare($query1);
+            $stmt1->bindParam(':testDate', $testDate);
+            $stmt1->execute();
+            
+            // Mettre à jour les défis "Actif" qui sont terminés à la date de test
+            $query2 = "UPDATE defi 
+                      SET Statut_D = 'Terminé' 
+                      WHERE Statut_D = 'Actif' AND Date_Fin < :testDate";
+            $stmt2 = $this->db->prepare($query2);
+            $stmt2->bindParam(':testDate', $testDate);
+            $stmt2->execute();
+            
+            return true;
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la mise à jour des statuts de défis avec date test: " . $e->getMessage());
+            return false;
+        }
+    }
 }
-?> 
+?>

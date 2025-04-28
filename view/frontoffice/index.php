@@ -2,12 +2,22 @@
   // Initializing session if needed
   session_start();
   
-  // Include defi controller for frontoffice with correct path
+  // Include controllers
   require_once __DIR__ . '/../../controller/FrontofficeDefiController.php';
+  require_once __DIR__ . '/../../controller/DefiController.php';
+  require_once __DIR__ . '/../../controller/EtapeController.php';
   
-  // Initialize controller and get popular defis
-  $defiController = new FrontofficeDefiController();
-  $popularDefis = $defiController->getPopularDefis(4); // Get top 4 popular defis
+  // Initialize controllers
+  $frontDefiController = new FrontofficeDefiController();
+  $defiController = new DefiController();
+  $etapeController = new EtapeController();
+  
+  // Update statuses automatically
+  $defiController->updateDefiStatuses();
+  $etapeController->updateEtapeStatuses();
+  
+  // Get popular defis
+  $popularDefis = $frontDefiController->getPopularDefis(4); // Get top 4 popular defis
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -15,43 +25,63 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Urbaverse - Accueil</title>
-  <link rel="stylesheet" href="../../assets/css/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Styles améliorés pour la page d'accueil */
+    /* Variables globales */
     :root {
-      --primary-color: var(--accent-green);
-      --secondary-color: var(--dark-green);
-      --accent-color: #81C784;
-      --dark-color: var(--dark-green);
-      --light-color: var(--light-green);
-      --text-color: #333;
-      --text-light: #666;
-      --border-radius: 10px;
-      --box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      --primary-color: #4caf50;
+      --primary-dark: #388e3c;
+      --primary-light: #81c784;
+      --accent-color: #f1c40f;
+      --accent-dark: #f39c12;
+      --dark-color: #2e4f3e;
+      --light-color: #ecf7ed;
+      --text-color: #2c3e50;
+      --text-light: #7f8c8d;
+      --white: #fff;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --max-width: 1200px;
+      --border-radius: 12px;
+      --border-radius-sm: 8px;
       --transition: all 0.3s ease;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --box-shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.1);
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    /* Reset et styles de base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
     
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-family);
       line-height: 1.6;
       color: var(--text-color);
       background-color: var(--light-color);
-      margin: 0;
-      padding: 0;
     }
     
     .container {
-      max-width: 1200px;
+      max-width: var(--max-width);
       margin: 0 auto;
       padding: 0 20px;
     }
     
-    /* Header Styles */
+    /* Header */
     .main-header {
-      background-color: var(--dark-green);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      background-color: var(--dark-color);
+      box-shadow: var(--box-shadow);
       position: fixed;
       top: 0;
       left: 0;
@@ -63,10 +93,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 70px;
+      height: 80px;
       padding: 0 30px;
-      max-width: 1200px;
-      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
     
     .logo a {
@@ -76,113 +110,91 @@
     }
     
     .logo img {
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      margin-right: 10px;
-      object-fit: cover;
-      border: 2px solid var(--accent-green);
-      transition: transform 0.3s ease;
+      border: 2px solid var(--primary-color);
+      transition: var(--transition);
     }
     
     .logo:hover img {
       transform: scale(1.05);
     }
     
-    .logo h1 {
-      font-size: 24px;
-      font-weight: 700;
+    .logo span {
       color: var(--white);
-      margin: 0;
+      font-weight: 700;
+      font-size: 24px;
     }
     
     .nav-links {
       display: flex;
       list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-    
-    .nav-links li {
-      margin: 0 15px;
+      gap: 2rem;
     }
     
     .nav-links a {
-      text-decoration: none;
       color: var(--white);
+      text-decoration: none;
       font-weight: 500;
-      padding: 8px 0;
-      border-bottom: 2px solid transparent;
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius-sm);
       transition: var(--transition);
       opacity: 0.9;
     }
     
-    .nav-links a:hover, .nav-links a.active {
-      color: var(--accent-green);
-      border-bottom-color: var(--accent-green);
+    .nav-links a:hover,
+    .nav-links a.active {
+      background-color: var(--primary-color);
       opacity: 1;
+      transform: translateY(-2px);
     }
     
     .user-actions {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 1.5rem;
     }
     
     .points {
-      background-color: rgba(255, 255, 255, 0.2);
-      color: var(--white);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 5px;
-    }
-    
-    .points::before {
-      content: "🍃";
-      font-size: 14px;
+      gap: 0.5rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      color: var(--white);
+      font-weight: 600;
     }
     
     .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      border-radius: var(--border-radius);
-      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius-sm);
       font-weight: 600;
+      text-decoration: none;
       transition: var(--transition);
-      text-align: center;
-    }
-    
-    .btn-primary {
-      background-color: var(--accent-green);
-      color: var(--white);
-      border: none;
-    }
-    
-    .btn-primary:hover {
-      background-color: #43a047; /* Légèrement plus sombre */
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
     
     .btn-secondary {
       background-color: var(--white);
-      color: var(--accent-green);
-      border: 2px solid var(--accent-green);
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
     }
     
     .btn-secondary:hover {
-      background-color: var(--accent-green);
+      background-color: var(--primary-color);
       color: var(--white);
+      transform: translateY(-2px);
     }
     
     /* Hero Section */
     .hero {
-      background: linear-gradient(135deg, var(--dark-green) 0%, #1a3a2a 100%);
+      background: linear-gradient(135deg, var(--dark-color) 0%, #1a3a2a 100%);
       color: var(--white);
-      padding: 120px 0 80px;
-      margin-top: 70px;
+      padding: 160px 0 80px;
       position: relative;
       overflow: hidden;
     }
@@ -204,29 +216,27 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
+      gap: 4rem;
       position: relative;
       z-index: 2;
     }
     
     .hero-text {
-      max-width: 500px;
-      margin-right: 40px;
+      flex: 1;
+      max-width: 600px;
     }
     
     .hero-text h2 {
-      font-size: 42px;
+      font-size: 3rem;
       font-weight: 800;
-      margin: 0 0 20px;
       line-height: 1.2;
+      margin-bottom: 1.5rem;
       color: var(--white);
     }
     
     .hero-text p {
-      font-size: 18px;
-      margin-bottom: 30px;
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
       opacity: 0.9;
       color: var(--white);
     }
@@ -253,18 +263,17 @@
     /* Popular Defis Section */
     .popular-defis {
       padding: 80px 0;
-      background-color: var(--light-color);
     }
     
     .section-header {
       text-align: center;
-      margin-bottom: 50px;
+      margin-bottom: 3rem;
     }
     
     .section-header h2 {
-      font-size: 32px;
-      color: var(--dark-green);
-      margin-bottom: 15px;
+      font-size: 2.5rem;
+      color: var(--dark-color);
+      margin-bottom: 1rem;
       position: relative;
       display: inline-block;
     }
@@ -273,24 +282,24 @@
       content: "";
       display: block;
       width: 70%;
-      height: 3px;
-      background-color: var(--accent-green);
-      margin: 10px auto 0;
+      height: 4px;
+      background-color: var(--primary-color);
+      margin: 1rem auto 0;
       border-radius: 2px;
     }
     
     .section-header p {
       color: var(--text-light);
-      font-size: 18px;
+      font-size: 1.25rem;
       max-width: 600px;
       margin: 0 auto;
     }
     
     .defis-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 30px;
-      margin-top: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
     }
     
     .defi-card {
@@ -299,18 +308,15 @@
       box-shadow: var(--box-shadow);
       overflow: hidden;
       transition: var(--transition);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
     }
     
     .defi-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+      box-shadow: var(--box-shadow-hover);
     }
     
     .defi-card-header {
-      padding: 15px 20px;
+      padding: 1.5rem;
       background-color: var(--light-color);
       display: flex;
       justify-content: space-between;
@@ -318,50 +324,41 @@
     }
     
     .difficulty {
-      padding: 5px 10px;
-      border-radius: 30px;
-      font-size: 14px;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.875rem;
       font-weight: 600;
+      text-transform: uppercase;
     }
     
     .difficulty.facile {
-      background-color: #E8F5E9;
-      color: #2E7D32;
+      background-color: #e8f5e9;
+      color: #2e7d32;
     }
     
     .difficulty.intermédiaire {
-      background-color: #FFF8E1;
-      color: #F57F17;
+      background-color: #fff8e1;
+      color: #f57f17;
     }
     
     .difficulty.difficile {
-      background-color: #FFEBEE;
-      color: #C62828;
-    }
-    
-    .points {
-      font-weight: 600;
-      color: var(--primary-color);
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      background-color: #ffebee;
+      color: #c62828;
     }
     
     .defi-card-body {
-      padding: 20px;
-      flex-grow: 1;
+      padding: 1.5rem;
     }
     
     .defi-card-body h3 {
-      font-size: 18px;
-      margin-top: 0;
-      margin-bottom: 15px;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
       color: var(--text-color);
     }
     
     .defi-card-body p {
       color: var(--text-light);
-      margin-bottom: 0;
+      margin-bottom: 1.5rem;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
@@ -369,115 +366,108 @@
     }
     
     .defi-card-footer {
-      padding: 15px 20px;
-      background-color: #f9f9f9;
+      padding: 1.5rem;
+      background-color: var(--gray-100);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid #eee;
+      border-top: 1px solid var(--gray-200);
     }
     
     .dates {
-      font-size: 14px;
+      font-size: 0.875rem;
       color: var(--text-light);
     }
     
     .btn-small {
-      display: inline-block;
-      padding: 8px 16px;
-      background-color: var(--accent-green);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background-color: var(--primary-color);
       color: var(--white);
-      border-radius: var(--border-radius);
-      font-size: 14px;
+      border-radius: var(--border-radius-sm);
+      font-size: 0.875rem;
       font-weight: 600;
       text-decoration: none;
       transition: var(--transition);
     }
     
     .btn-small:hover {
-      background-color: #43a047;
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
     }
     
-    .section-footer {
-      text-align: center;
-      margin-top: 50px;
-    }
-    
-    /* Footer Styles */
+    /* Footer */
     footer {
-      background-color: var(--dark-green);
+      background-color: var(--dark-color);
       color: var(--white);
       padding: 60px 0 20px;
     }
     
     .footer-content {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+      margin-bottom: 3rem;
     }
     
     .footer-section h4 {
-      font-size: 18px;
-      margin-top: 0;
-      margin-bottom: 20px;
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary-color);
       position: relative;
-      color: var(--accent-green);
     }
     
     .footer-section h4::after {
       content: "";
       display: block;
       width: 50px;
-      height: 2px;
-      background-color: var(--accent-green);
-      margin-top: 10px;
+      height: 3px;
+      background-color: var(--primary-color);
+      margin-top: 0.5rem;
     }
     
     .footer-section ul {
       list-style: none;
-      padding: 0;
-      margin: 0;
     }
     
     .footer-section ul li {
-      margin-bottom: 10px;
+      margin-bottom: 0.75rem;
     }
     
     .footer-section a {
-      color: #ddd;
+      color: var(--white);
       text-decoration: none;
       transition: var(--transition);
+      opacity: 0.9;
     }
     
     .footer-section a:hover {
-      color: var(--accent-green);
+      color: var(--primary-color);
+      opacity: 1;
+      transform: translateX(5px);
     }
     
     .social-links {
       display: flex;
-      gap: 15px;
+      gap: 1rem;
     }
     
     .footer-bottom {
       text-align: center;
-      padding-top: 30px;
-      margin-top: 30px;
-      border-top: 1px solid #444;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    /* Responsive Design */
+    /* Responsive */
     @media (max-width: 992px) {
       .hero-content {
         flex-direction: column;
+        text-align: center;
       }
       
       .hero-text {
-        margin-right: 0;
-        margin-bottom: 40px;
-        text-align: center;
         max-width: 100%;
       }
       
@@ -485,8 +475,8 @@
         max-width: 100%;
       }
       
-      .section-header h2 {
-        font-size: 28px;
+      .nav-links {
+        gap: 1rem;
       }
     }
     
@@ -494,30 +484,31 @@
       .nav-container {
         flex-direction: column;
         height: auto;
-        padding: 15px;
+        padding: 1rem;
       }
       
       .nav-links {
-        margin: 15px 0;
+        margin: 1rem 0;
       }
       
       .user-actions {
-        margin-top: 15px;
+        margin-top: 1rem;
       }
       
       .hero {
-        padding: 100px 0 60px;
+        padding: 120px 0 60px;
       }
       
       .hero-text h2 {
-        font-size: 32px;
+        font-size: 2rem;
       }
       
-      .defis-grid {
-        grid-template-columns: 1fr;
+      .section-header h2 {
+        font-size: 2rem;
       }
     }
   </style>
+  <link rel="stylesheet" href="../../assets/css/style.css" />
 </head>
 <body>
   <!-- HEADER -->
@@ -532,7 +523,7 @@
       <ul class="nav-links">
         <li><a href="index.php" class="active">Accueil</a></li>
         <li><a href="defis.php">Défis</a></li>
-        <li><a href="../backoffice/defis/index.php">Backoffice</a></li>
+        <li><a href="../backoffice/dashboard/index.php">Backoffice</a></li>
       </ul>
       <div class="user-actions">
         <?php if(isset($_SESSION['points'])): ?>
@@ -622,7 +613,7 @@
         <ul>
           <li><a href="index.php">Accueil</a></li>
           <li><a href="defis.php">Défis</a></li>
-          <li><a href="../backoffice/defis/index.php">Backoffice</a></li>
+          <li><a href="../backoffice/dashboard/index.php">Backoffice</a></li>
         </ul>
       </div>
       <div class="footer-section">
@@ -639,4 +630,4 @@
     </div>
   </footer>
 </body>
-</html> 
+</html>

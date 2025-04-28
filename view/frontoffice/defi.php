@@ -648,6 +648,29 @@
         justify-content: space-between;
       }
     }
+    
+    /* Styles améliorés pour les badges de statut dans la page de détail */
+    .defi-badge.status {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Actif - Vert */
+    .defi-badge.status.actif {
+      background-color: rgba(76, 175, 80, 0.3);
+      color: #e8f5e9;
+    }
+    
+    /* À venir - Bleu */
+    .defi-badge.status.à-venir {
+      background-color: rgba(33, 150, 243, 0.3);
+      color: #e3f2fd;
+    }
+    
+    /* Terminé - Rouge pâle */
+    .defi-badge.status.terminé {
+      background-color: rgba(239, 83, 80, 0.3);
+      color: #ffebee;
+    }
   </style>
 </head>
 <body>
@@ -694,6 +717,7 @@
             <span class="defi-badge difficulty <?php echo strtolower($defi['Difficulte']); ?>"><?php echo $defi['Difficulte']; ?></span>
             <span class="defi-badge points"><?php echo $defi['Points_verts']; ?> points</span>
             <span class="defi-badge dates"><?php echo date('d/m/Y', strtotime($defi['Date_Debut'])); ?> - <?php echo date('d/m/Y', strtotime($defi['Date_Fin'])); ?></span>
+            <span class="defi-badge status <?php echo strtolower(str_replace(' ', '-', $defi['Statut_D'])); ?>"><?php echo $defi['Statut_D']; ?></span>
           </div>
         </div>
         
@@ -755,6 +779,40 @@
               <p>Du <?php echo date('d/m/Y', strtotime($defi['Date_Debut'])); ?> au <?php echo date('d/m/Y', strtotime($defi['Date_Fin'])); ?></p>
             </div>
           </div>
+        </div>
+
+        <!-- Nouvelle section pour les étapes -->
+        <div class="defi-section">
+          <h2>Étapes</h2>
+          <?php
+            // Inclure le contrôleur des étapes
+            require_once __DIR__ . '/../../controller/EtapeController.php';
+            
+            // Récupérer les étapes de ce défi
+            $etapeController = new EtapeController();
+            $etapes = $etapeController->getEtapesByDefi($defi['Id_Defi']);
+            
+            if (empty($etapes)) {
+              echo '<p>Aucune étape n\'est disponible pour ce défi.</p>';
+            } else {
+          ?>
+            <div class="defi-details">
+              <?php foreach($etapes as $etape): ?>
+                <div class="detail-card">
+                  <h3><?php echo htmlspecialchars($etape['Titre_E']); ?></h3>
+                  <p><?php echo htmlspecialchars($etape['Description_E']); ?></p>
+                  <div style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                    <span style="display: block; margin-bottom: 5px;">
+                      <strong>Ordre:</strong> <?php echo htmlspecialchars($etape['Ordre']); ?>
+                    </span>
+                    <span style="display: block;">
+                      <strong>Points bonus:</strong> <?php echo htmlspecialchars($etape['Points_Bonus']); ?> points
+                    </span>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          <?php } ?>
         </div>
       </div>
     </div>

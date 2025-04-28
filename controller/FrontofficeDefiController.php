@@ -18,8 +18,14 @@ class FrontofficeDefiController {
     }
     
     // Retrieve all defis
-    public function getAllDefis() {
-        return $this->defi->readAll();
+    public function getAllDefis($orderBy = null) {
+        if ($orderBy === 'Titre_D_ASC') {
+            return $this->defi->readAllOrderByTitle('ASC');
+        } else if ($orderBy === 'Titre_D_DESC') {
+            return $this->defi->readAllOrderByTitle('DESC');
+        } else {
+            return $this->defi->readAll();
+        }
     }
     
     // Retrieve a single defi by ID
@@ -131,6 +137,47 @@ class FrontofficeDefiController {
         }
         
         return false;
+    }
+
+    // Ajoutez cette nouvelle méthode au contrôleur
+
+    public function getAllDefisSorted($sortDirection = 'asc') {
+        // Récupérer tous les défis
+        $stmt = $this->defi->readAll();
+        
+        // Convertir le résultat en tableau
+        $defis = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $defis[] = $row;
+        }
+        
+        // Trier le tableau par titre
+        usort($defis, function($a, $b) use ($sortDirection) {
+            if ($sortDirection === 'asc') {
+                return strcmp($a['Titre_D'], $b['Titre_D']);
+            } else {
+                return strcmp($b['Titre_D'], $a['Titre_D']);
+            }
+        });
+        
+        // Convertir le tableau trié en PDOStatement simulé
+        $mockPDOStatement = new MockPDOStatement($defis);
+        return $mockPDOStatement;
+    }
+
+    // Ajoutez cette méthode pour trier par statut
+    public function getDefisByStatus($status) {
+        $stmt = $this->defi->readAll();
+        $defis = [];
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($row['Statut_D'] === $status) {
+                $defis[] = $row;
+            }
+        }
+        
+        $mockPDOStatement = new MockPDOStatement($defis);
+        return $mockPDOStatement;
     }
 }
 ?> 

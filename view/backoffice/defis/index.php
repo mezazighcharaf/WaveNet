@@ -9,10 +9,20 @@ if(!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'admin') {
     $_SESSION['user_name'] = 'Admin';
 }
 
+// At the top of the file, add:
 require_once __DIR__ . '/../../../controller/DefiController.php';
+require_once __DIR__ . '/../../../controller/EtapeController.php';
 
-// Initialize controller
 $defiController = new DefiController();
+$etapeController = new EtapeController();
+
+// Forcer la mise à jour des statuts avec une date spécifique pour tester
+// Décommentez cette ligne pour tester avec une date spécifique
+// $defiController->updateDefiStatusesWithDate('2025-04-25'); // Date entre vos deux défis
+
+// Mise à jour normale avec la date actuelle
+$defiController->updateDefiStatuses();
+$etapeController->updateEtapeStatuses();
 
 // Get all defis
 $defis = $defiController->getAllDefis();
@@ -53,13 +63,73 @@ if(isset($_GET['action']) && $_GET['action'] == 'reset_auto_increment') {
     <link rel="stylesheet" href="../../../assets/css/backoffice.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Styles de tableau améliorés */
-        .content-table {
-            background-color: #fff;
+        body {
+            background-color: #f0f7f0;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #2c5e3e;
+            font-size: 28px;
+            margin: 0;
+        }
+        
+        .admin-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .admin-info a {
+            color: #6a1b9a;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .card {
+            background-color: white;
             border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            overflow: hidden;
-            margin-top: 2rem;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            color: #333;
+            margin: 0;
+        }
+        
+        .btn-add {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
         }
         
         table {
@@ -68,211 +138,48 @@ if(isset($_GET['action']) && $_GET['action'] == 'reset_auto_increment') {
         }
         
         thead {
-            background-color: #f8f9fa;
+            background-color: #2c5e3e;
+            color: white;
         }
         
-        th {
-            padding: 14px 18px;
+        th, td {
+            padding: 8px 10px;
             text-align: left;
-            font-weight: 600;
-            color: #34495e;
-            font-size: 0.9rem;
-            border-bottom: 1px solid #ecf0f1;
+            font-size: 14px;
         }
         
-        td {
-            padding: 16px 18px;
-            border-bottom: 1px solid #ecf0f1;
-            vertical-align: middle;
-            font-size: 0.95rem;
-        }
-        
-        tbody tr:hover {
-            background-color: #f9fafb;
-        }
-        
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .btn-small {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
+        .btn-view, .btn-edit, .btn-delete {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
             text-decoration: none;
-            transition: all 0.2s;
+            margin-right: 3px;
+            font-size: 13px;
         }
         
         .btn-view {
-            background-color: #e1ebf5;
-            color: #3498db;
-        }
-        
-        .btn-view:hover {
-            background-color: #d0e2f2;
+            background-color: #e0f2f1;
+            color: #0288d1;
         }
         
         .btn-edit {
-            background-color: #e1f5e9;
-            color: #27ae60;
-        }
-        
-        .btn-edit:hover {
-            background-color: #d0f0db;
+            background-color: #e8f5e9;
+            color: #4caf50;
         }
         
         .btn-delete {
-            background-color: #fdeaed;
-            color: #e74c3c;
+            background-color: #ffebee;
+            color: #f44336;
         }
         
-        .btn-delete:hover {
-            background-color: #fcdee2;
-        }
-        
-        /* Statut badges */
-        .status {
+        .status-badge {
             display: inline-block;
-            padding: 6px 12px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-align: center;
-        }
-        
-        .status.active {
-            background-color: #e1f5e9;
-            color: #27ae60;
-        }
-        
-        .status.inactive {
-            background-color: #fdeaed;
-            color: #e74c3c;
-        }
-        
-        .status.upcoming {
-            background-color: #e1ebf5;
-            color: #3498db;
-        }
-        
-        /* Page title and action button */
-        .header-with-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .page-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        .defi-table-container {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-            padding: 2rem;
-            margin: 24px 0;
-        }
-        
-        .truncate {
-            max-width: 200px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .truncate-content {
-            max-width: 250px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .table-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        .btn-add {
-            display: inline-flex;
-            align-items: center;
-            padding: 12px 24px;
-            background-color: #3498db;
-            color: white;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        
-        .btn-add:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-        }
-        
-        .btn-reset {
-            display: inline-flex;
-            align-items: center;
-            padding: 12px 24px;
-            background-color: #f39c12;
-            color: white;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-            margin-right: 12px;
-        }
-        
-        .btn-reset:hover {
-            background-color: #e67e22;
-            transform: translateY(-2px);
-        }
-        
-        .table-actions {
-            display: flex;
-            align-items: center;
-        }
-        
-        .alert {
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-        }
-        
-        .alert-success {
-            background-color: #e1f5e9;
-            color: #27ae60;
-            border-left: 4px solid #27ae60;
-        }
-        
-        .alert-danger {
-            background-color: #fdeaed;
-            color: #e74c3c;
-            border-left: 4px solid #e74c3c;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            background-color: #e3f2fd;
+            color: #1976D2;
         }
     </style>
 </head>
@@ -287,7 +194,9 @@ if(isset($_GET['action']) && $_GET['action'] == 'reset_auto_increment') {
         </div>
         <nav class="sidebar-nav">
             <ul>
+                <li><a href="../dashboard/index.php">Dashboard</a></li>
                 <li><a href="index.php">Défis</a></li>
+                <li><a href="../etapes/index.php">Étapes</a></li>
                 <li class="home-link"><a href="../../frontoffice/index.php">Retour à l'accueil</a></li>
             </ul>
         </nav>
@@ -295,39 +204,19 @@ if(isset($_GET['action']) && $_GET['action'] == 'reset_auto_increment') {
 
     <!-- MAIN CONTENT -->
     <main class="main-content">
-        <header class="content-header">
+        <div class="header" style="margin-bottom: 2.5rem;">
             <h1>Gestion des défis</h1>
-            <div class="user-info">
-                <span><?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Admin'; ?></span>
-                <a href="../../frontoffice/index.php" class="home-button">Accueil</a>
+            <div class="admin-info">
+                Admin <a href="../../frontoffice/index.php">Accueil</a>
             </div>
-        </header>
-
-        <?php if(isset($_GET['message'])): ?>
-            <div class="alert alert-success">
-                <?php echo $_GET['message']; ?>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Liste des défis écologiques</h2>
+                <a href="create.php" class="btn-add">Ajouter un nouveau défi</a>
             </div>
-        <?php endif; ?>
-
-        <?php if(isset($error)): ?>
-            <div class="alert alert-danger">
-                <?php echo $error; ?>
-            </div>
-        <?php endif; ?>
-
-        <div class="defi-table-container">
-            <div class="table-header">
-                <h2 class="table-title">Liste des défis écologiques</h2>
-                <div class="table-actions">
-                    <?php if($defis->rowCount() == 0): ?>
-                        <a href="index.php?action=reset_auto_increment" class="btn-reset" onclick="return confirm('Réinitialiser le compteur d\'ID? Le prochain défi aura l\'ID 1.')">Réinitialiser compteur ID</a>
-                    <?php endif; ?>
-                    <a href="create.php" class="btn-add">Ajouter un nouveau défi</a>
-                </div>
-            </div>
-
-            <div class="content-table">
-                <table>
+            <div class="table-container">
+                <table class="data-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -337,7 +226,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'reset_auto_increment') {
                             <th>Statut</th>
                             <th>Période</th>
                             <th>Difficulté</th>
-                            <th>Actions</th>
+                            <th class="actions-cell">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -345,20 +234,16 @@ if(isset($_GET['action']) && $_GET['action'] == 'reset_auto_increment') {
                             <?php while($row = $defis->fetch(PDO::FETCH_ASSOC)): ?>
                                 <tr>
                                     <td><?php echo isset($row['Id_Defi']) ? $row['Id_Defi'] : 'N/A'; ?></td>
-                                    <td class="truncate"><?php echo isset($row['Titre_D']) ? $row['Titre_D'] : 'N/A'; ?></td>
-                                    <td class="truncate-content"><?php echo isset($row['Description_D']) ? (substr($row['Description_D'], 0, 100) . (strlen($row['Description_D']) > 100 ? '...' : '')) : 'N/A'; ?></td>
-                                    <td><strong><?php echo isset($row['Points_verts']) ? $row['Points_verts'] : 'N/A'; ?></strong></td>
+                                    <td><?php echo isset($row['Titre_D']) ? $row['Titre_D'] : 'N/A'; ?></td>
+                                    <td><?php echo isset($row['Description_D']) ? (substr($row['Description_D'], 0, 100) . (strlen($row['Description_D']) > 100 ? '...' : '')) : 'N/A'; ?></td>
+                                    <td><?php echo isset($row['Points_verts']) ? $row['Points_verts'] : 'N/A'; ?></td>
                                     <td>
                                         <?php if(isset($row['Statut_D'])): ?>
-                                            <span class="status <?php 
-                                                if($row['Statut_D'] == 'Actif') echo 'active';
-                                                else if($row['Statut_D'] == 'Inactif') echo 'inactive';
-                                                else echo 'upcoming';
-                                            ?>">
+                                            <span class="status-badge">
                                                 <?php echo $row['Statut_D']; ?>
                                             </span>
                                         <?php else: ?>
-                                            <span class="status inactive">N/A</span>
+                                            <span class="status-badge">N/A</span>
                                         <?php endif; ?>
                                     </td>
                                     <td>
@@ -368,29 +253,17 @@ if(isset($_GET['action']) && $_GET['action'] == 'reset_auto_increment') {
                                             echo $debut . ' - ' . $fin; 
                                         ?>
                                     </td>
-                                    <td>
-                                        <?php if(isset($row['Difficulte'])): ?>
-                                            <span class="badge <?php 
-                                                if($row['Difficulte'] == 'Facile') echo 'badge-facile';
-                                                else if($row['Difficulte'] == 'Intermédiaire') echo 'badge-intermediaire';
-                                                else echo 'badge-difficile';
-                                            ?>">
-                                                <?php echo $row['Difficulte']; ?>
-                                            </span>
-                                        <?php else: ?>
-                                            <span>N/A</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="actions">
-                                        <a href="view.php?id=<?php echo isset($row['Id_Defi']) ? $row['Id_Defi'] : ''; ?>" class="btn-small btn-view">Voir</a>
-                                        <a href="edit.php?id=<?php echo isset($row['Id_Defi']) ? $row['Id_Defi'] : ''; ?>" class="btn-small btn-edit">Modifier</a>
-                                        <a href="index.php?action=delete&id=<?php echo isset($row['Id_Defi']) ? $row['Id_Defi'] : ''; ?>" class="btn-small btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce défi?')">Supprimer</a>
+                                    <td><?php echo isset($row['Difficulte']) ? $row['Difficulte'] : 'N/A'; ?></td>
+                                    <td class="actions-cell">
+                                        <a href="view.php?id=<?php echo isset($row['Id_Defi']) ? $row['Id_Defi'] : ''; ?>" class="btn-view">Voir</a>
+                                        <a href="edit.php?id=<?php echo isset($row['Id_Defi']) ? $row['Id_Defi'] : ''; ?>" class="btn-edit">Modifier</a>
+                                        <a href="index.php?action=delete&id=<?php echo isset($row['Id_Defi']) ? $row['Id_Defi'] : ''; ?>" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce défi?')">Supprimer</a>
                                     </td>
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="8" class="text-center">Aucun défi trouvé</td>
+                                <td colspan="8" style="text-align:center;">Aucun défi trouvé</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -399,4 +272,4 @@ if(isset($_GET['action']) && $_GET['action'] == 'reset_auto_increment') {
         </div>
     </main>
 </body>
-</html> 
+</html>

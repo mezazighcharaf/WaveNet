@@ -195,5 +195,13 @@ class Defi {
         
         return false;
     }
+
+    // READ all defis ordered by title
+    public function readAllOrderByTitle($order = 'ASC') {
+        $query = "SELECT * FROM " . $this->table_name . " ORDER BY Titre_D " . ($order === 'DESC' ? 'DESC' : 'ASC');
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
 }
 ?> 

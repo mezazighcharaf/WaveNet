@@ -5,11 +5,23 @@
   // Include defi controller for frontoffice
   require_once __DIR__ . '/../../controller/FrontofficeDefiController.php';
   
+  // Inclure la classe MockPDOStatement
+  require_once __DIR__ . '/../../controller/MockPDOStatement.php';
+  
   // Initialize controller
   $controller = new FrontofficeDefiController();
   
+  // Récupérer le type de tri
+  $sort = isset($_GET['sort']) ? $_GET['sort'] : 'difficulty';
+  
+  // Récupérer l'ordre de tri
+  $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
+  
   // Récupérer le filtre de difficulté s'il existe
   $difficulty = isset($_GET['difficulty']) ? $_GET['difficulty'] : 'all';
+  
+  // Récupérer le filtre de statut s'il existe
+  $status = isset($_GET['status']) ? $_GET['status'] : 'all';
   
   // Créer un utilisateur de démonstration si non connecté
   if (!isset($_SESSION['user_id'])) {
@@ -23,15 +35,24 @@
   // Liste des difficultés valides (avec première lettre en majuscule)
   $validDifficulties = ['Facile', 'Intermédiaire', 'Difficile'];
   
-  // Récupérer les défis selon le filtre
-  if ($difficulty !== 'all' && in_array(ucfirst(strtolower($difficulty)), $validDifficulties)) {
+  // Liste des statuts valides
+  $validStatuses = ['Actif', 'À venir', 'Terminé'];
+  
+  // Récupérer les défis selon le tri et le filtre
+  if ($sort === 'title') {
+      // Trier par ordre alphabétique du titre
+      $defis = $controller->getAllDefisSorted($order);
+  } else if ($sort === 'status' && $status !== 'all' && in_array($status, $validStatuses)) {
+      // Filtrer par statut
+      $defis = $controller->getDefisByStatus($status);
+  } else if ($sort === 'difficulty' && $difficulty !== 'all' && in_array(ucfirst(strtolower($difficulty)), $validDifficulties)) {
       // Standardiser le format de la difficulté
       $standardizedDifficulty = ucfirst(strtolower($difficulty));
       $defis = $controller->getDefisByDifficulty($standardizedDifficulty);
       $difficulty = $standardizedDifficulty; // Pour l'affichage des filtres actifs
   } else {
+      // Par défaut, récupérer tous les défis
       $defis = $controller->getAllDefis();
-      $difficulty = 'all'; // Réinitialiser à 'all' si une valeur invalide a été fournie
   }
 ?>
 <!DOCTYPE html>
@@ -174,6 +195,22 @@
     
     .filter-pill.difficile.active {
       background-color: #ef5350;
+    }
+    
+    .filter-pill.terminé,
+    a[href*="status=Terminé"],
+    .filter-pill.status-completed {
+      background-color: #ffebee !important;
+      color: #c62828 !important;
+      border: 1px solid #ef9a9a !important;
+    }
+    
+    .filter-pill.terminé.active,
+    a[href*="status=Terminé"].active,
+    .filter-pill.status-completed.active {
+      background-color: #e53935 !important;
+      color: white !important;
+      box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3) !important;
     }
     
     .defis-container {
@@ -391,6 +428,246 @@
         padding: 60px 0;
       }
     }
+    
+    .sort-select {
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 500;
+      font-size: 15px;
+      background-color: #4caf50;
+      color: white;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      cursor: pointer;
+      outline: none;
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
+      min-width: 200px;
+    }
+    
+    .sort-select:hover {
+      background-color: #387c3b;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .filter-form {
+      margin-bottom: 15px;
+    }
+    
+    .status-active {
+      border-color: #a5d6a7;
+    }
+    
+    .status-upcoming {
+      border-color: #bbdefb;
+    }
+    
+    .status-completed {
+      border-color: #d7ccc8;
+    }
+    
+    .status-active.active {
+      background-color: #4caf50;
+      color: white;
+    }
+    
+    .status-upcoming.active {
+      background-color: #2196f3;
+      color: white;
+    }
+    
+    .status-completed.active {
+      background-color: #795548;
+      color: white;
+    }
+    
+    /* Styles pour les boutons de tri */
+    .sorting-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .sorting-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .sort-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background-color: #f0f4f1;
+      color: var(--text-color);
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .sort-btn i {
+      font-size: 16px;
+    }
+    
+    .sort-btn:hover {
+      background-color: #e4ebe6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .sort-btn.active {
+      background-color: var(--accent-green);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(56, 124, 59, 0.2);
+    }
+    
+    @media (max-width: 768px) {
+      .sorting-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+      }
+      
+      .sorting-buttons {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+    }
+    
+    /* Styles améliorés pour les badges de statut */
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    .status-badge.à-venir {
+      background-color: #e3f2fd;
+      color: #1565c0;
+      border: 1px solid #90caf9;
+    }
+    
+    .status-badge.actif {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+    }
+    
+    .status-badge.terminé {
+      background-color: #ffebee;
+      color: #c62828;
+      border: 1px solid #ef9a9a;
+    }
+    
+    /* Même style pour les statuts intégrés directement dans le template */
+    .card-status {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    .card-status.à-venir {
+      background-color: #e3f2fd;
+      color: #1565c0;
+      border: 1px solid #90caf9;
+    }
+    
+    /* Styles pour les badges de statut tels qu'ils apparaissent dans les cartes de défi */
+    /* Ce sélecteur doit correspondre à la structure HTML de vos cartes */
+    .defi-card p + span, 
+    .card-body p + span,
+    .defi-card-body p + span {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      margin-top: 15px;
+    }
+    
+    /* Recherche également par contenu de texte pour s'assurer de cibler les bons éléments */
+    span:contains("Actif"), 
+    span.actif {
+      background-color: #e8f5e9 !important;
+      color: #2e7d32 !important;
+      border: 1px solid #a5d6a7 !important;
+    }
+    
+    span:contains("À venir"), 
+    span.à-venir {
+      background-color: #e3f2fd !important;
+      color: #1565c0 !important;
+      border: 1px solid #90caf9 !important;
+    }
+    
+    span:contains("Terminé"), 
+    span.terminé {
+      background-color: #ffebee !important;
+      color: #c62828 !important;
+      border: 1px solid #ef9a9a !important;
+    }
+    
+    /* Méthode alternative qui peut fonctionner sans pseudo-sélecteur non standard */
+    /* Cible les éléments span spécifiques qui contiennent uniquement ces textes */
+    span {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    
+    span:only-child {
+      display: inline-block;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    /* Cible spécifique basée sur le contenu exact */
+    /* Ces règles sont plus spécifiques et auront priorité */
+    .defi-card span, .card-body span {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      display: inline-block;
+      margin-top: 12px;
+    }
+    
+    .defi-card span:contains("Actif"), 
+    .card-body span:contains("Actif") {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+    }
+    
+    .defi-card span:contains("À venir"), 
+    .card-body span:contains("À venir") {
+      background-color: #e3f2fd;
+      color: #1565c0;
+      border: 1px solid #90caf9;
+    }
+    
+    .defi-card span:contains("Terminé"), 
+    .card-body span:contains("Terminé") {
+      background-color: #ffebee;
+      color: #c62828;
+      border: 1px solid #ef9a9a;
+    }
   </style>
 </head>
 <body>
@@ -436,13 +713,45 @@
   <section class="filters-section">
     <div class="container">
       <div class="filters-container">
-        <h3 class="filter-title">Filtrer par difficulté</h3>
-        <div class="filter-options">
-          <a href="defis.php?difficulty=all" class="filter-pill <?php echo $difficulty === 'all' ? 'active' : ''; ?>">Tous les défis</a>
-          <a href="defis.php?difficulty=Facile" class="filter-pill facile <?php echo $difficulty === 'Facile' ? 'active' : ''; ?>">Facile</a>
-          <a href="defis.php?difficulty=Intermédiaire" class="filter-pill intermediaire <?php echo $difficulty === 'Intermédiaire' ? 'active' : ''; ?>">Intermédiaire</a>
-          <a href="defis.php?difficulty=Difficile" class="filter-pill difficile <?php echo $difficulty === 'Difficile' ? 'active' : ''; ?>">Difficile</a>
+        <h3 class="filter-title">Trier et filtrer</h3>
+        <div class="sorting-controls">
+          <form method="get" action="defis.php" class="filter-form">
+            <select name="sort" id="sort-filter" class="sort-select" onchange="this.form.submit()">
+              <option value="title" <?php echo (isset($_GET['sort']) && $_GET['sort'] == 'title') ? 'selected' : ''; ?>>Ordre alphabétique</option>
+              <option value="status" <?php echo (isset($_GET['sort']) && $_GET['sort'] == 'status') ? 'selected' : ''; ?>>Par statut</option>
+              <option value="difficulty" <?php echo (!isset($_GET['sort']) || $_GET['sort'] == 'difficulty') ? 'selected' : ''; ?>>Par difficulté</option>
+            </select>
+          </form>
+          
+          <?php if(isset($_GET['sort']) && $_GET['sort'] == 'title'): ?>
+            <div class="sorting-buttons">
+              <a href="defis.php?sort=title&order=asc" class="sort-btn <?php echo (!isset($_GET['order']) || $_GET['order'] == 'asc') ? 'active' : ''; ?>">
+                <i class="fas fa-sort-alpha-down"></i>
+                <span>A-Z</span>
+              </a>
+              <a href="defis.php?sort=title&order=desc" class="sort-btn <?php echo (isset($_GET['order']) && $_GET['order'] == 'desc') ? 'active' : ''; ?>">
+                <i class="fas fa-sort-alpha-down-alt"></i>
+                <span>Z-A</span>
+              </a>
+            </div>
+          <?php endif; ?>
         </div>
+        
+        <?php if (!isset($_GET['sort']) || $_GET['sort'] == 'difficulty'): ?>
+          <div class="difficulty-filters">
+            <a href="defis.php?sort=difficulty&difficulty=all" class="filter-pill <?php echo $difficulty === 'all' ? 'active' : ''; ?>">Tous les défis</a>
+            <a href="defis.php?sort=difficulty&difficulty=Facile" class="filter-pill facile <?php echo $difficulty === 'Facile' ? 'active' : ''; ?>">Facile</a>
+            <a href="defis.php?sort=difficulty&difficulty=Intermédiaire" class="filter-pill intermediaire <?php echo $difficulty === 'Intermédiaire' ? 'active' : ''; ?>">Intermédiaire</a>
+            <a href="defis.php?sort=difficulty&difficulty=Difficile" class="filter-pill difficile <?php echo $difficulty === 'Difficile' ? 'active' : ''; ?>">Difficile</a>
+          </div>
+        <?php elseif ($_GET['sort'] == 'status'): ?>
+          <div class="status-filters">
+            <a href="defis.php?sort=status&status=all" class="filter-pill <?php echo (!isset($_GET['status']) || $_GET['status'] === 'all') ? 'active' : ''; ?>">Tous les statuts</a>
+            <a href="defis.php?sort=status&status=Actif" class="filter-pill status-active <?php echo (isset($_GET['status']) && $_GET['status'] === 'Actif') ? 'active' : ''; ?>">Actif</a>
+            <a href="defis.php?sort=status&status=À venir" class="filter-pill status-upcoming <?php echo (isset($_GET['status']) && $_GET['status'] === 'À venir') ? 'active' : ''; ?>">À venir</a>
+            <a href="defis.php?sort=status&status=Terminé" class="filter-pill status-completed <?php echo (isset($_GET['status']) && $_GET['status'] === 'Terminé') ? 'active' : ''; ?>">Terminé</a>
+        </div>
+        <?php endif; ?>
       </div>
     </div>
   </section>
@@ -461,10 +770,24 @@
               <div class="defi-card-body">
                 <h3><?php echo htmlspecialchars($defi['Titre_D']); ?></h3>
                 <p><?php echo htmlspecialchars(substr($defi['Description_D'], 0, 150)) . (strlen($defi['Description_D']) > 150 ? '...' : ''); ?></p>
+                <?php if($defi['Statut_D'] === 'Actif'): ?>
+                  <span style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
+                    <?php echo $defi['Statut_D']; ?>
+                  </span>
+                <?php elseif($defi['Statut_D'] === 'Terminé'): ?>
+                  <span style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
+                    <?php echo $defi['Statut_D']; ?>
+                  </span>
+                <?php elseif($defi['Statut_D'] === 'À venir'): ?>
+                  <span style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; background-color: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
+                    <?php echo $defi['Statut_D']; ?>
+                  </span>
+                <?php else: ?>
+                  <span><?php echo $defi['Statut_D']; ?></span>
+                <?php endif; ?>
               </div>
               <div class="defi-card-footer">
                 <span class="date-range"><?php echo date('d/m/Y', strtotime($defi['Date_Debut'])); ?> - <?php echo date('d/m/Y', strtotime($defi['Date_Fin'])); ?></span>
-                <a href="defi.php?id=<?php echo $defi['Id_Defi']; ?>" class="btn-view-defi">Voir le défi</a>
               </div>
             </div>
           <?php endwhile; ?>
@@ -510,4 +833,8 @@
     </div>
   </footer>
 </body>
+</html> 
+</body>
+</html> 
+</html> 
 </html> 
