@@ -9,7 +9,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 if (!isset($_SESSION['user_id'])) {
-    header("Location: /WaveNet/views/frontoffice/login.php");
+    $_SESSION['error'] = "Vous devez être connecté pour accéder à cette page.";
+    header('Location: /WaveNet/views/frontoffice/login.php');
     exit;
 }
 $pageTitle = 'Tableau de bord';
@@ -23,7 +24,11 @@ if (!$db) {
 require_once '../../models/Utilisateur.php';
 require_once '../../models/Defi.php';
 require_once '../../models/Transport.php';
+require_once '../../models/Quartier.php';
 $userId = $_SESSION['user_id'];
+$userName = $_SESSION['user_nom'] ?? 'Utilisateur';
+$userEmail = $_SESSION['user_email'] ?? 'N/A';
+$userLevel = $_SESSION['user_level'] ?? 'N/A';
 try {
     $userDbData = Utilisateur::findById($db, $userId);
     if (!$userDbData) {
@@ -34,8 +39,12 @@ try {
         exit;
     }
     $idQuartier = $userDbData->getIdQuartier();
-    $defisQuartier = [];
+    $quartierName = 'Non défini';
     if ($idQuartier) {
+        $quartierData = Quartier::findById($db, $idQuartier);
+        if ($quartierData) {
+            $quartierName = $quartierData['nom_quartier'];
+        }
         $defisQuartier = Defi::getDefisByQuartier($db, $idQuartier);
         $defisCompletes = 0;
         $defisEnCours = 0;
@@ -82,7 +91,7 @@ $userData = [
     'lastname' => $userDbData->getNom() ?? 'Inconnu',
     'email' => $userDbData->getEmail() ?? 'Inconnu',
     'city' => '', 
-    'district' => $idQuartier ?? 'Non défini',
+    'district' => $quartierName,
     'interests' => '', 
     'newsletter' => 0, 
     'points' => $userDbData->getPointsVerts() ?? 0,
@@ -360,17 +369,7 @@ require_once '../includes/userHeader.php';
                 <div style="font-weight: 600; color: var(--text-color);">Quartier :</div>
                 <div>
                   <?php
-                  $quartierNom = "Non défini";
-                  try {
-                      $queryQuartier = $db->prepare("SELECT nom FROM QUARTIER WHERE id_quartier = ?");
-                      $queryQuartier->execute([$userDbData->getIdQuartier()]);
-                      $quartier = $queryQuartier->fetch(PDO::FETCH_ASSOC);
-                      if ($quartier) {
-                          $quartierNom = htmlspecialchars($quartier['nom']);
-                      }
-                  } catch (PDOException $e) {
-                  }
-                  echo $quartierNom;
+                  echo $quartierName;
                   ?>
                 </div>
               </div>
@@ -433,6 +432,18 @@ require_once '../includes/userHeader.php';
               </div>
             </div>
           </div>
+        </div>
+        <!-- Lien vers la gestion de l'authentification à deux facteurs -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5><i class="fas fa-shield-alt"></i> Sécurité du compte</h5>
+            </div>
+            <div class="card-body">
+                <p>Renforcez la sécurité de votre compte en activant l'authentification à deux facteurs (2FA).</p>
+                <a href="/WaveNet/controller/UserController.php?action=gerer2FA" class="btn btn-primary">
+                    <i class="fas fa-lock"></i> Gérer l'authentification à deux facteurs
+                </a>
+            </div>
         </div>
       </div>
     </div>

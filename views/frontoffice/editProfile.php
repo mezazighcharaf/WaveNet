@@ -31,7 +31,7 @@ try {
 }
 try {
     $quartiers = [];
-    $stmt = $db->query("SELECT id_quartier, nom FROM QUARTIER ORDER BY nom");
+    $stmt = $db->query("SELECT id_quartier, nom_quartier as nom FROM QUARTIER ORDER BY nom_quartier");
     $quartiers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     error_log("Erreur lors de la récupération des quartiers: " . $e->getMessage());
@@ -72,7 +72,6 @@ require_once '../includes/userHeader.php';
             </div>
         </div>
     </section>
-    <!-- CONTENU PRINCIPAL -->
     <div class="container" style="margin-top: -3rem; position: relative; z-index: 10; margin-bottom: 3rem;">
         <div style="max-width: 800px; margin: 0 auto; background-color: var(--white); border-radius: var(--border-radius-lg); box-shadow: var(--shadow-md); padding: 2rem;">
             <!-- Messages d'erreur et de succès -->
@@ -93,9 +92,7 @@ require_once '../includes/userHeader.php';
                     <p style="color: #2e7d32; margin: 0;"><?= htmlspecialchars($successMessage) ?></p>
                 </div>
             <?php endif; ?>
-            <!-- Formulaire de modification du profil -->
             <form id="edit-profile-form" method="post" action="/WaveNet/controller/UserController.php?action=updateProfile">
-                <!-- Informations personnelles -->
                 <div style="margin-bottom: 2rem;">
                     <h2 style="font-size: 1.5rem; color: var(--dark-green); margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--gray-200);">
                         <i class="fas fa-user-circle" style="margin-right: 0.5rem;"></i>Informations personnelles

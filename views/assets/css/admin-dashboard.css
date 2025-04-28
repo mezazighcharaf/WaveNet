@@ -55,30 +55,65 @@
 
 /* Styles pour les badges de statut */
 .status-badge {
-  background-color: var(--primary-color);
   color: white;
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 0.8rem;
   display: inline-block;
+  text-align: center;
+  min-width: 50px;
 }
 
 .status-badge.waiting {
-  background-color: var(--accent-color);
+  background-color: #f44336;
+}
+
+/* Nouveaux styles spécifiques pour Admin/Client/Actif */
+.status-badge.admin {
+  background-color: var(--dark-color);
+}
+
+.status-badge.client {
+  background-color: var(--primary-color);
+}
+
+/* Style explicite pour Actif (même que client) */
+.status-badge.actif {
+  background-color: var(--primary-color);
 }
 
 /* Styles pour les boutons d'action */
 .action-button {
-  background: none;
-  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
   border-radius: 4px;
-  padding: 4px 8px;
+  padding: 5px 10px;
   cursor: pointer;
-  margin-right: 5px;
+  color: #495057;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.action-button i {
+  font-size: 0.9rem;
 }
 
 .action-button:hover {
-  background-color: #f5f5f5;
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+  color: #212529;
+}
+
+/* Centrer la dernière colonne (Actions) */
+.data-table td:last-child {
+  text-align: center;
+}
+
+.data-table td:last-child .action-buttons {
+  justify-content: center;
 }
 
 /* Styles pour les barres de progression */

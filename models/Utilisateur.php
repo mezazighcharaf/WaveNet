@@ -151,7 +151,7 @@ class Utilisateur {
                 'email' => $this->email,
                 'id_quartier' => $this->id_quartier,
                 'mot_de_passe' => $this->mot_de_passe,
-                'id_utilisateur' => $this->id
+                'id_utilisateur' => $this->id_utilisateur
             ];
             if ($hasNewsletterColumn) {
                 $params['newsletter'] = $this->newsletter ? 1 : 0;

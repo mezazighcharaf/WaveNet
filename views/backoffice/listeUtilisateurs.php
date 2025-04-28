@@ -115,7 +115,7 @@ try {
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <?php if ($u['niveau'] !== 'admin'): ?>
+                                        <?php if ($u['niveau'] !== 'admin' || $_SESSION['user_id'] != $u['id_utilisateur']): ?>
                                             <div class="action-buttons">
                                                 <?php if (isset($u['bloque']) && $u['bloque'] == 1): ?>
                                                     <a href="/WaveNet/controller/UserController.php?action=debloquerUtilisateur&id=<?php echo $u['id_utilisateur']; ?>" 
@@ -126,6 +126,17 @@ try {
                                                     <a href="/WaveNet/controller/UserController.php?action=bloquerUtilisateur&id=<?php echo $u['id_utilisateur']; ?>" 
                                                     class="action-button" onclick="return confirm('Confirmer le blocage de cet utilisateur ?');">
                                                         <i class="fas fa-ban"></i>
+                                                    </a>
+                                                <?php endif; ?>
+                                                <?php if ($u['niveau'] === 'admin'): ?>
+                                                    <a href="/WaveNet/controller/UserController.php?action=changerNiveau&id=<?php echo $u['id_utilisateur']; ?>&niveau=client" 
+                                                    class="action-button" title="Rétrograder en client" onclick="return confirm('Confirmer le changement de niveau de cet utilisateur en client ?');">
+                                                        <i class="fas fa-user"></i>
+                                                    </a>
+                                                <?php else: ?>
+                                                    <a href="/WaveNet/controller/UserController.php?action=changerNiveau&id=<?php echo $u['id_utilisateur']; ?>&niveau=admin" 
+                                                    class="action-button" title="Promouvoir en admin" onclick="return confirm('Confirmer la promotion de cet utilisateur en administrateur ?');">
+                                                        <i class="fas fa-user-shield"></i>
                                                     </a>
                                                 <?php endif; ?>
                                                 <a href="/WaveNet/controller/UserController.php?action=supprimerUtilisateurAdmin&id=<?php echo $u['id_utilisateur']; ?>" 
