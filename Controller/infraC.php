@@ -3,9 +3,20 @@ include_once(__DIR__ . '/../config/config.php');
 include_once(__DIR__ . '/../Model/infra.php');
 
 class infraC {
+    public function getQuartiers() {
+        $sql = "SELECT idq, nomq, ville FROM quartier";
+        $db = Config::getConnection();
+    
+        try {
+            return $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            die("Erreur : " . $e->getMessage());
+        }
+    }
+
     public function ajouterInfrastructure($infrastructure) {
-        $sql = "INSERT INTO infrastructure (id_infra, type, statut)
-                VALUES (:id_infra, :type, :statut)";
+        $sql = "INSERT INTO infrastructure (id_infra, type, statut, idq)
+                VALUES (:id_infra, :type, :statut, :idq)";
         $db = Config::getConnection();
     
         try {
@@ -13,12 +24,14 @@ class infraC {
             $query->execute([
                 'id_infra' => $infrastructure->getIdInfra(),
                 'type' => $infrastructure->getType(),
-                'statut' => $infrastructure->getStatut()
+                'statut' => $infrastructure->getStatut(),
+                'idq' => $infrastructure->getIdq()
             ]);
         } catch(PDOException $e) {
             echo "Erreur :" . $e->getMessage();
         }
     }
+        
     
 
     public function afficherInfrastructure() {
@@ -64,18 +77,21 @@ class infraC {
         }
     }
     
+    
     public function recupererInfrastructureParId($id_infra) {
         $sql = "SELECT * FROM infrastructure WHERE id_infra = :id_infra";
         $db = Config::getConnection();
-
+        
         try {
-            $stmt = $db->prepare($sql);
-            $stmt->execute(['id_infra' => $id_infra]);
-            return $stmt->fetch();
+            $query = $db->prepare($sql);
+            $query->execute(['id_infra' => $id_infra]);
+            return $query->fetch(PDO::FETCH_ASSOC); // Ajoutez FETCH_ASSOC ici
         } catch (PDOException $e) {
-            echo "Erreur : " . $e->getMessage();
+            die("Erreur : " . $e->getMessage());
         }
     }
+    
+
 
     public function getStatsInfrastructures() {
         $sql = "SELECT type, COUNT(*) as count, 
@@ -96,11 +112,21 @@ class infraC {
             'piste cyclable' => '#4CAF50',
             'route' => '#2196F3',
             'pont' => '#FFC107',
-            // Ajoutez d'autres types et couleurs au besoin
         ];
         
-        return $colors[$type] ?? '#9E9E9E'; // Couleur par défaut si type non trouvé
+        return $colors[$type] ?? '#9E9E9E'; 
     }
     
-    // Vous pouvez ajouter d'autres méthodes spécifiques aux infrastructures ici
+    public function rechercherInfrastructureParType($type) {
+        $sql = "SELECT * FROM infrastructure WHERE LOWER(type) = LOWER(:type)";
+        $db = Config::getConnection();
+    
+        try {
+            $query = $db->prepare($sql);
+            $query->execute(['type' => trim($type)]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            die("Erreur : " . $e->getMessage());
+        }
+    }
 }

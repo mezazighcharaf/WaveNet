@@ -2,13 +2,16 @@
 include_once(__DIR__ . '/../../Controller/infraC.php');
 
 $message = null;
+$infraC = new infraC();
+$quartiers = $infraC->getQuartiers(); // Récupère les quartiers disponibles
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id_infra = $_POST['id_infra'];
     $type = $_POST['type'];
     $statut = $_POST['statut'];
+    $idq = $_POST['idq'] ?? null; // Récupère l'id du quartier
 
-    if (!empty($id_infra) && !empty($type) && !empty($statut)) {
+    if (!empty($id_infra) && !empty($type) && !empty($statut) && !empty($idq)) {
         
         if (!preg_match('/^\d+$/', $id_infra)) {
             $message = "L'identifiant doit contenir uniquement des chiffres ❌";
@@ -20,18 +23,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $message = "Le statut doit contenir uniquement des lettres ❌";
         }
         else {
-            $infraC = new infraC();
-
             $existant = $infraC->recupererInfrastructureParId($id_infra);
             if ($existant !== false) {
                 $message = "L'identifiant existe déjà, merci d'en choisir un autre ❌";
             } else {
                 $infrastructure = new infra($id_infra, $type, $statut);
+                $infrastructure->setIdq($idq); // Définir l'ID du quartier
                 $infraC->ajouterInfrastructure($infrastructure);
                 $message = "Infrastructure ajoutée avec succès ✅";
             }
         }
-
     } else {
         $message = "Tous les champs sont requis ❌";
     }
@@ -71,7 +72,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-        
+
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+                
         .form-actions {
             display: flex;
             justify-content: flex-end;
@@ -144,7 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <?php endif; ?>
 
                 <div class="form-container">
-                    <form method="POST" action="">
+                    <form method="POST" action="" novalidate>
                         <div class="form-group">
                             <label for="id_infra">Identifiant de l'infrastructure</label>
                             <input type="text" id="id_infra" name="id_infra" required>
@@ -159,7 +168,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             <label for="statut">Statut</label>
                             <input type="text" id="statut" name="statut" required>
                         </div>
-                        
+
+                        <div class="form-group">
+                            <label for="idq">Quartier</label>
+                            <select id="idq" name="idq" required>
+                                <option value="">Sélectionnez un quartier</option>
+                                <?php foreach ($quartiers as $quartier): ?>
+                                    <option value="<?= htmlspecialchars($quartier['idq']) ?>">
+                                        <?= htmlspecialchars($quartier['nomq'] . ' - ' . $quartier['ville']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
 
                         <div class="form-actions">
                             <button type="reset" class="btn btn-secondary">Annuler</button>

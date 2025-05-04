@@ -39,15 +39,15 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                 <h2 class="section-title">Détails du quartier : <?= htmlspecialchars($quartier['nomq']) ?></h2>
                 
                 <div class="quartier-card">
-                    <div class="card-image">
-                        <img src="<?= htmlspecialchars($quartier['image'] ?? 'Ariana-Borj-Baccouche.jpg') ?>" alt="<?= htmlspecialchars($quartier['nomq']) ?>">
-                    </div>
                     <div class="card-content">
                         <p><strong>ID :</strong> <?= htmlspecialchars($quartier['idq']) ?></p>
                         <p><strong>Nom :</strong> <?= htmlspecialchars($quartier['nomq']) ?></p>
                         <p><strong>Ville :</strong> <?= htmlspecialchars($quartier['ville']) ?></p>
                         <p><strong>Score Écologique :</strong> <?= htmlspecialchars($quartier['scoreeco']) ?>/100</p>
                         <p><strong>Classement :</strong> <?= htmlspecialchars($quartier['classement']) ?></p>
+                        <p><strong>Localisation :</strong> <?= htmlspecialchars($quartier['localisation']) ?></p>
+
+</div>
                     </div>
                 </div>
             </div>

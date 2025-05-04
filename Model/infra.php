@@ -3,11 +3,13 @@ class infra{
     private $id_infra;
     private $type;
     private $statut;
+    private $idq;
 
-    public function __construct($id_infra,$type,$statut){
+    public function __construct($id_infra,$type,$statut,$idq = null){
         $this->id_infra = $id_infra;
         $this->type = $type;
         $this->statut = $statut;
+        $this->idq = $idq;
 
     }
 
@@ -22,7 +24,10 @@ class infra{
     public function getStatut(){
         return $this->statut;
     }
-    
+    public function getIdq() {
+        return $this->idq;
+    }
+
 
 
     public function setIdInfra($id_infra) {  
@@ -34,6 +39,8 @@ class infra{
     public function setStatut($statut) { 
         $this->statut = $statut;
     }
-    
+    public function setIdq($idq) {
+        $this->idq = $idq;
+    }
 
 }

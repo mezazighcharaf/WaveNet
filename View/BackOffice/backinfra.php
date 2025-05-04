@@ -2,6 +2,12 @@
 include_once "../../Controller/infraC.php";
 $infraC = new infraC();
 $listeInfrastructures = $infraC->afficherInfrastructure();
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+if (!empty($searchTerm)) {
+    $listeInfrastructures = $infraC->rechercherInfrastructureParType($searchTerm);
+} else {
+    $listeInfrastructures = $infraC->afficherInfrastructure(); 
+}
 $statsInfra = $infraC->getStatsInfrastructures();
 $totalInfra = array_sum(array_column($statsInfra, 'count'));
 ?>
@@ -32,9 +38,19 @@ $totalInfra = array_sum(array_column($statsInfra, 'count'));
             <h1>Infrastructures</h1>
             <a href="ajouterinfra.php" class="add-btn">Ajouter Infrastructure</a>
         </div>
-
+        
         <section class="infrastructures-section">
             <div class="section-container">
+                <div class="section-header">
+                    <form method="GET" action="" class="search-form">
+                        <input type="text" name="search" placeholder="Rechercher par type..." 
+                            value="<?= htmlspecialchars($searchTerm) ?>">
+                        <button type="submit" class="btn-search">Rechercher</button>
+                        <?php if (!empty($searchTerm)): ?>
+                            <a href="backinfra.php" class="btn-clear">Effacer</a>
+                        <?php endif; ?>
+                    </form>
+                </div>
                 <div class="infrastructures-table-container">
                     <table class="infrastructures-table">
                         <thead>
@@ -42,7 +58,9 @@ $totalInfra = array_sum(array_column($statsInfra, 'count'));
                                 <th>ID</th>
                                 <th>Type</th>
                                 <th>Statut</th>
+                                <th>id_quartier</th>
                                 <th>Actions</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -52,6 +70,7 @@ $totalInfra = array_sum(array_column($statsInfra, 'count'));
                                     <td><?= htmlspecialchars($infrastructure['id_infra']) ?></td>
                                     <td><?= htmlspecialchars($infrastructure['type']) ?></td>
                                     <td><?= htmlspecialchars($infrastructure['statut']) ?></td>
+                                    <td><?= htmlspecialchars($infrastructure['idq']) ?></td>
                                     <td class="actions-cell">
                                         <div class="table-actions">
                                             <a href="modifierinfra.php?id=<?= $infrastructure['id_infra'] ?>" class="btn btn-edit">Modifier</a>

@@ -83,5 +83,17 @@ class quartierC {
             echo "Erreur : " . $e->getMessage();
         }
     }
+    public function rechercherQuartierParNom($nomq) {
+        $sql = "SELECT * FROM quartier WHERE LOWER(nomq) = LOWER(:nomq)";
+        $db = Config::getConnection();
+    
+        try {
+            $query = $db->prepare($sql);
+            $query->execute(['nomq' => trim($nomq)]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            die("Erreur : " . $e->getMessage());
+        }
+    }
     
 }

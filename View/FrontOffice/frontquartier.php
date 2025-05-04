@@ -2,6 +2,27 @@
 include_once "../../Controller/quartierC.php"; 
 $quartierC = new quartierC();
 $listeQuartiers = $quartierC->afficherQuartier(); 
+
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+if (!empty($searchTerm)) {
+    $listeQuartiers= $quartierC->rechercherQuartierParNom($searchTerm);
+} else {
+    $listeQuartiers = $quartierC->afficherQuartier(); 
+}
+$sortByRank = isset($_GET['sort']) && $_GET['sort'] == 'rank';
+
+if (!empty($searchTerm)) {
+    $listeQuartiers = $quartierC->rechercherQuartierParNom($searchTerm);
+} else {
+    $listeQuartiers = $quartierC->afficherQuartier(); 
+}
+
+// Trier par classement si demandé
+if ($sortByRank && is_array($listeQuartiers)) {
+    usort($listeQuartiers, function($a, $b) {
+        return $a['classement'] <=> $b['classement'];
+    });
+}
 ?>
 
 <!DOCTYPE html>
@@ -10,6 +31,9 @@ $listeQuartiers = $quartierC->afficherQuartier();
     <meta charset="UTF-8">
     <title>URBAVERSE - Quartiers</title>
     <link rel="stylesheet" href="frontquartier.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 </head>
 <body class="frontoffice">
 <header class="main-header">
@@ -32,28 +56,45 @@ $listeQuartiers = $quartierC->afficherQuartier();
     <main class="main-content">
         <section class="quartiers-section">
             <div class="section-container">
-                <h2 class="section-title">Découvrir les Quartiers</h2>
+                <div class="section-header">
+                    <h2 class="section-title">Découvrir les Quartiers</h2>
+                    <div class="search-sort-container">
+                        <form method="GET" action="" class="search-form">
+                            <input type="text" name="search" placeholder="Rechercher par nom..." 
+                                value="<?= htmlspecialchars($searchTerm) ?>">
+                            <button type="submit" class="btn-search">Rechercher</button>
+                            <?php if (!empty($searchTerm)): ?>
+                                <a href="frontquartier.php" class="btn-clear">Effacer</a>
+                            <?php endif; ?>
+                        </form>
+                        <a href="frontquartier.php?sort=rank" class="btn-sort <?= $sortByRank ? 'active' : '' ?>">
+                            Trier par classement
+                        </a>
+                    </div>
+                </div>
                 <div class="quartiers-grid">
                     <?php if (is_array($listeQuartiers) && count($listeQuartiers) > 0): ?>
                         <?php foreach ($listeQuartiers as $quartier): ?>
                             <article class="quartier-card">
-                                <div class="card-image">
-                                    <img src="<?= htmlspecialchars($quartier['image'] ?? 'default.jpg') ?>" alt="<?= htmlspecialchars($quartier['nomq']) ?>">
-                                </div>
+                                
                                 <div class="card-content">
                                     <h3><?= htmlspecialchars($quartier['nomq']) ?></h3>
-                                    <p class="quartier-location">
-                                    <?php if (!empty($quartier['localisation'])): ?>
-                                            <?php
-                                            $adresse_complete = urlencode($quartier['localisation'] . ', ' . $quartier['ville'] . ', Tunisie');
-                                            ?>
-                                            <a href="https://www.google.com/maps/search/?api=1&query=<?= $adresse_complete ?>" 
-                                            target="_blank" 
-                                            class="btn-map">
-                                            🗺 Voir sur carte
-                                            </a>
-                                        <?php endif; ?>
-                                    </p>
+                                    <?php if (!empty($quartier['latitude']) && !empty($quartier['longitude'])): ?>
+                                        <div id="map-<?= $quartier['idq'] ?>" style="height: 300px; margin-top: 10px;"></div>
+                                        <script>
+                                            var map<?= $quartier['idq'] ?> = L.map('map-<?= $quartier['idq'] ?>').setView([<?= $quartier['latitude'] ?>, <?= $quartier['longitude'] ?>], 17);
+                                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                maxZoom: 19,
+                                            }).addTo(map<?= $quartier['idq'] ?>);
+                                            L.marker([<?= $quartier['latitude'] ?>, <?= $quartier['longitude'] ?>])
+                                                .addTo(map<?= $quartier['idq'] ?>)
+                                                .bindPopup("<?= htmlspecialchars($quartier['nomq']) ?>").openPopup();
+                                        </script>
+                                    <?php else: ?>
+                                        <p>Localisation non disponible</p>
+                                    <?php endif; ?>
+
+
                                     <div class="card-actions">
                                         <a href="afficherdetails.php?id=<?= $quartier['idq'] ?>" class="btn btn-details">Détails</a>
                                     </div>

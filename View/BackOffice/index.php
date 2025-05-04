@@ -2,6 +2,32 @@
 include_once "../../Controller/quartierC.php";
 $quartierC = new quartierC();
 $listeQuartiers = $quartierC->afficherQuartier();
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+if (!empty($searchTerm)) {
+    $listeQuartiers= $quartierC->rechercherQuartierParNom($searchTerm);
+} else {
+    $listeQuartiers = $quartierC->afficherQuartier(); 
+}
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+if (!empty($searchTerm)) {
+    $listeQuartiers= $quartierC->rechercherQuartierParNom($searchTerm);
+} else {
+    $listeQuartiers = $quartierC->afficherQuartier(); 
+}
+$sortByRank = isset($_GET['sort']) && $_GET['sort'] == 'rank';
+
+if (!empty($searchTerm)) {
+    $listeQuartiers = $quartierC->rechercherQuartierParNom($searchTerm);
+} else {
+    $listeQuartiers = $quartierC->afficherQuartier(); 
+}
+
+// Trier par classement si demandé
+if ($sortByRank && is_array($listeQuartiers)) {
+    usort($listeQuartiers, function($a, $b) {
+        return $a['classement'] <=> $b['classement'];
+    });
+}
 ?>
 
 <!DOCTYPE html>
@@ -51,6 +77,21 @@ $listeQuartiers = $quartierC->afficherQuartier();
 
         <section class="quartiers-section">
             <div class="section-container">
+                <div class="section-header">
+                    <div class="search-sort-container">
+                        <form method="GET" action="" class="search-form">
+                            <input type="text" name="search" placeholder="Rechercher par nom..." 
+                                value="<?= htmlspecialchars($searchTerm) ?>">
+                            <button type="submit" class="btn-search">Rechercher</button>
+                            <?php if (!empty($searchTerm)): ?>
+                                <a href="index.php" class="btn-clear">Effacer</a>
+                            <?php endif; ?>
+                        </form>
+                        <a href="index.php?sort=rank" class="btn-sort <?= $sortByRank ? 'active' : '' ?>">
+                            Trier par classement
+                        </a>
+                    </div>
+                </div>
                 <div class="quartiers-table-container">
                     <table class="quartiers-table">
                         <thead>
@@ -61,6 +102,8 @@ $listeQuartiers = $quartierC->afficherQuartier();
                                 <th>Score Eco</th>
                                 <th>Classement</th>
                                 <th>Localisation</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -73,19 +116,9 @@ $listeQuartiers = $quartierC->afficherQuartier();
                                     <td><?= htmlspecialchars($quartier['ville']) ?></td>
                                     <td><?= htmlspecialchars($quartier['scoreeco']) ?>/100</td>
                                     <td><?= htmlspecialchars($quartier['classement']) ?></td>
-                                    <td class="location-cell">
-                                        <?= htmlspecialchars($quartier['localisation'] ?? 'Non spécifiée') ?>
-                                        <?php if (!empty($quartier['localisation'])): ?>
-                                            <?php
-                                            $adresse_complete = urlencode($quartier['localisation'] . ', ' . $quartier['ville'] . ', Tunisie');
-                                            ?>
-                                            <a href="https://www.google.com/maps/search/?api=1&query=<?= $adresse_complete ?>" 
-                                            target="_blank" 
-                                            class="btn-map">
-                                            🗺 Voir sur carte
-                                            </a>
-                                        <?php endif; ?>
-                                    </td>
+                                    <td><?= htmlspecialchars($quartier['localisation']) ?></td>
+                                    <td><?= htmlspecialchars($quartier['latitude']) ?></td>
+                                    <td><?= htmlspecialchars($quartier['longitude']) ?></td>
                                     
                                     <td class="actions-cell">
                                         <div class="table-actions">

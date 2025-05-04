@@ -6,14 +6,18 @@ class quartier {
     private $scoreeco;
     private $classement;
     private $localisation;
+    private $latitude;
+    private $longitude;
 
-    public function __construct($idq,$nomq,$ville,$scoreeco,$classement,$localisation){
+    public function __construct($idq,$nomq,$ville,$scoreeco,$classement,$localisation,$latitude,$longitude){
         $this->idq = $idq;
         $this->nomq = $nomq;
         $this->ville = $ville;
         $this->scoreeco = $scoreeco;
         $this->classement = $classement;
         $this->localisation = $localisation;
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
     }
 
 
@@ -36,6 +40,12 @@ class quartier {
     public function getLocalisation() {
         return $this->localisation;
     }
+    public function getLatitude() {
+        return $this->latitude;
+    }
+    public function getLongitude() {
+        return $this->longitude;
+    }
 
 
 
@@ -56,6 +66,12 @@ class quartier {
     }
     public function setLocalisation($localisation) {
         $this->localisation = $localisation;
+    }
+    public function setLatitude($latitude) {
+        $this->latitude = $latitude;
+    }
+    public function setLongitude($longitude) {
+        $this->longitude= $longitude;
     }
 
 }
