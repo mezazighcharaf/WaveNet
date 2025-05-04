@@ -43,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Gestion des actions pour les récompenses
     if (isset($_POST['add_rec'])) {
         try {
             $recController->create($_POST['nom_rec'], $_POST['description'], $_POST['cout'], $_POST['date_fin'], $_POST['id_part']);
@@ -138,14 +137,12 @@ $recompenses = $recController->listAll();
     <?php if ($partenaireError): ?>
         <div class="error">
             <?php 
-                // Remplacer les sauts de ligne par des <br> pour l'affichage HTML
                 echo nl2br(htmlspecialchars($partenaireError)); 
             ?>
         </div>
     <?php endif; ?>
 
     <table>
-        <!-- Le reste du code pour les partenaires reste inchangé -->
         <thead>
             <tr>
                 <th>ID</th>
@@ -198,7 +195,6 @@ $recompenses = $recController->listAll();
         <button type="submit" name="add">Ajouter</button>
     </form>
 
-<!-- ... (partie précédente inchangée jusqu'à la section des récompenses) ... -->
 
 <h1>Gestion des Récompenses</h1>
 
@@ -279,7 +275,6 @@ $recompenses = $recController->listAll();
     <button type="submit" name="add_rec">Ajouter</button>
 </form>
 
-<!-- ... (suite du fichier inchangée) ... -->
     </main>
 
     <script>

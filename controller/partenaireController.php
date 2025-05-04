@@ -128,7 +128,6 @@ class PartenaireController {
 
     public function delete($id) {
         try {
-            // Vérifier s'il existe des récompenses liées
             $checkQuery = "SELECT COUNT(*) FROM recompense WHERE id_part = ?";
             $checkStmt = $this->pdo->prepare($checkQuery);
             $checkStmt->execute([$id]);
