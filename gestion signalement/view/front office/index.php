@@ -61,6 +61,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signaler - Urbaverse</title>
     <link rel="stylesheet" href="css/style11.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        .form-control-invalid {
+            border-color: #dc3545 !important;
+            background-color: #fff8f8;
+        }
+
+        .location-input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .location-input-group input {
+            flex: 1;
+            margin-right: 5px;
+        }
+
+        .location-input-group button {
+            padding: 8px 12px;
+            background-color: #2e4f3e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .location-input-group button:hover {
+            background-color: #263f32;
+        }
+
+        #mapModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 8px;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
     <header class="main-header">
@@ -88,6 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h2>Signaler une Anomalie</h2>
             <p>Aidez-nous à améliorer votre environnement urbain</p>
         </div>
+        <div id="mapAll" style="height: 400px; width: 100%; margin-bottom: 2rem; border-radius: 8px; box-shadow: 0 2px 8px #0001;"></div>
 
         <div class="report-form">
             <?php 
@@ -116,7 +189,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="form-group">
                     <label for="emplacement">Localisation</label>
-                    <input type="text" id="emplacement" name="emplacement" placeholder="Adresse ou description du lieu">
+                    <div class="location-input-group">
+                        <input type="text" id="emplacement" name="emplacement" placeholder="Adresse ou description du lieu" readonly>
+                        <button type="button" id="btnMap"><i class="fa fa-map-marker"></i> Choisir sur la carte</button>
+                    </div>
                     <span class="error-message" id="emplacement-error"></span>
                 </div>
 
@@ -159,33 +235,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p>&copy; 2024 Urbaverse. Tous droits réservés.</p>
         </div>
     </footer>
-    <style>
-        .error-message {
-            color: #dc3545;
-            font-size: 0.85rem;
-            margin-top: 5px;
-            display: block;
-        }
-        
-        .form-control-invalid {
-            border-color: #dc3545 !important;
-            background-color: #fff8f8;
-        }
-    </style>
+    <div id="mapModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Choisissez un emplacement sur la carte</h3>
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const reportForm = document.getElementById('reportForm');
             const titre = document.getElementById('titre');
             const emplacement = document.getElementById('emplacement');
             const description = document.getElementById('description');
+            const mapModal = document.getElementById('mapModal');
+            const btnMap = document.getElementById('btnMap');
+            const closeModal = document.querySelector('.close-modal');
+            let map;
+            let marker;
+
             
-            // Fonction de validation des caractères (uniquement lettres et chiffres)
+            function initMap() {
+                map = L.map('map').setView([36.8065, 10.1815], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+
+                map.on('click', function(e) {
+                    const { lat, lng } = e.latlng;
+                    if (marker) {
+                        marker.setLatLng(e.latlng);
+                    } else {
+                        marker = L.marker(e.latlng).addTo(map);
+                    }
+
+                    
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const address = data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+                            emplacement.value = address;
+                            mapModal.style.display = 'none';
+                        })
+                        .catch(() => {
+                            emplacement.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+                            mapModal.style.display = 'none';
+                        });
+                });
+            }
+
+            
+            btnMap.addEventListener('click', function() {
+                mapModal.style.display = 'block';
+                if (!map) {
+                    initMap();
+                }
+            });
+
+            closeModal.addEventListener('click', function() {
+                mapModal.style.display = 'none';
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target === mapModal) {
+                    mapModal.style.display = 'none';
+                }
+            });
+
+            
             function contientUniquementLettresEtChiffres(texte) {
-                // Expression régulière plus stricte - lettres, chiffres et espaces uniquement
+                
                 return /^[a-zA-Z0-9\sàáâäãåçéèêëîïôöùûüÿÀÁÂÄÃÅÇÉÈÊËÎÏÔÖÙÛÜŸ]+$/.test(texte);
             }
             
-            // Fonction pour nettoyer l'entrée (supprimer les caractères non autorisés)
+            function estAdresseValide(texte) {
+                
+                return /^[a-zA-Z0-9\sàáâäãåçéèêëîïôöùûüÿÀÁÂÄÃÅÇÉÈÊËÎÏÔÖÙÛÜŸ.,'\-()/]+$/.test(texte);
+            }
+            
+            
             function nettoyerInput(input) {
                 let valeurNettoyee = input.value.replace(/[^a-zA-Z0-9\sàáâäãåçéèêëîïôöùûüÿÀÁÂÄÃÅÇÉÈÊËÎÏÔÖÙÛÜŸ]/g, '');
                 if (valeurNettoyee !== input.value) {
@@ -195,7 +325,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 return true;
             }
             
-            // Fonction pour afficher une erreur
+            
             function afficherErreur(element, message) {
                 const errorElement = document.getElementById(element.id + '-error');
                 if (errorElement) {
@@ -205,7 +335,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 return false;
             }
             
-            // Fonction pour effacer une erreur
+            
             function effacerErreur(element) {
                 const errorElement = document.getElementById(element.id + '-error');
                 if (errorElement) {
@@ -214,17 +344,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             
-            // Écouter les événements de saisie pour effacer les erreurs et valider en temps réel
+            
             titre.addEventListener('change', function() {
                 effacerErreur(this);
             });
             
             emplacement.addEventListener('input', function() {
-                if (!nettoyerInput(this)) {
-                    afficherErreur(this, 'Seuls les lettres et les chiffres sont autorisés');
-                } else {
-                    effacerErreur(this);
-                }
+                
+                effacerErreur(this);
             });
             
             description.addEventListener('input', function() {
@@ -235,28 +362,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             });
             
-            // Validation du formulaire lors de la soumission
+            
             reportForm.addEventListener('submit', function(event) {
                 let isValid = true;
                 
-                // Réinitialiser toutes les erreurs
+                
                 effacerErreur(titre);
                 effacerErreur(emplacement);
                 effacerErreur(description);
                 
-                // Validation du titre
+                
                 if (!titre.value.trim()) {
                     isValid = afficherErreur(titre, 'Veuillez sélectionner un type d\'anomalie');
                 }
                 
-                // Validation de l'emplacement
+                
                 if (!emplacement.value.trim()) {
                     isValid = afficherErreur(emplacement, 'Veuillez indiquer la localisation');
-                } else if (!contientUniquementLettresEtChiffres(emplacement.value.trim())) {
-                    isValid = afficherErreur(emplacement, 'La localisation ne doit contenir que des lettres et des chiffres');
+                } else if (!estAdresseValide(emplacement.value.trim())) {
+                    isValid = afficherErreur(emplacement, 'La localisation ne doit contenir que des caractères d\'adresse valides');
                 }
                 
-                // Validation de la description
+                
                 if (!description.value.trim()) {
                     isValid = afficherErreur(description, 'Veuillez fournir une description');
                 } else if (description.value.trim().length < 10) {
@@ -270,6 +397,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             });
         });
+
+        
+        const signalements = <?php
+            $signalementC = new SignalementC();
+            $liste = $signalementC->afficherSignalement();
+            $data = [];
+            foreach($liste as $s) {
+                $data[] = [
+                    'id' => $s['id_signalement'],
+                    'titre' => $s['titre'],
+                    'description' => $s['description'],
+                    'emplacement' => $s['emplacement'],
+                    'statut' => $s['statut'],
+                    'date' => $s['date_signalement']
+                ];
+            }
+            echo json_encode($data);
+        ?>;
+
+        
+        const mapAll = L.map('mapAll').setView([36.8065, 10.1815], 7);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(mapAll);
+
+        
+        function geocodeAdresse(adresse) {
+            return fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adresse)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                    } else {
+                        return null;
+                    }
+                });
+        }
+
+        (async function() {
+            for (const sig of signalements) {
+                const coords = await geocodeAdresse(sig.emplacement);
+                if (coords) {
+                    const marker = L.marker(coords).addTo(mapAll);
+                    marker.bindPopup(
+                        `<b>${sig.titre}</b><br>` +
+                        `<b>Description :</b> ${sig.description}<br>` +
+                        `<b>Emplacement :</b> ${sig.emplacement}<br>` +
+                        `<b>Date :</b> ${sig.date}<br>` +
+                        `<b>Statut :</b> ${sig.statut}`
+                    );
+                }
+            }
+        })();
     </script>
 </body>
 </html>

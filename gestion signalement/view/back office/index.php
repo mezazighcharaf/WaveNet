@@ -5,10 +5,10 @@ include_once '../../../config.php';
 $signalementC = new Signalementc();
 $liste = $signalementC->afficherSignalement();
 
-// Gérer la suppression
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
     $signalementC->deleteSignalement($_POST['delete_id']);
-    // Rediriger pour éviter la resoumission du formulaire
+    
     header('Location: index.php');
     exit;
 }
@@ -23,11 +23,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="css/sb-admin-2.min.css" rel="stylesheet">
-  <!-- Meta tags pour SEO -->
+  
   <meta name="description" content="Gestion des signalements - Backoffice Urbaverse">
 </head>
 <body>
-  <!-- SIDEBAR -->
+  
   <aside class="sidebar">
     <div class="logo">
       <h1>Urbaverse</h1>
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
     </nav>
   </aside>
 
-  <!-- MAIN CONTENT -->
+  
   <main class="main-content">
     <header class="content-header">
       <h1>Gestion des Signalements</h1>
@@ -54,8 +54,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
       </div>
     </header>
 
-    <!-- Section Tableau des Signalements -->
+    
     <div class="container-fluid">
+        <div class="card shadow mb-4" style="background: linear-gradient(135deg, #e8f0ef 0%, #f9fafc 100%); border: none; box-shadow: 0 4px 24px #2e4f3e22;">
+            <div class="card-header py-3" style="background: transparent; border-bottom: none;">
+                <h5 class="m-0 font-weight-bold" style="color: #2e4f3e; font-size: 1.4rem; letter-spacing: 1px;">📊 Statistiques par type d'anomalie</h5>
+            </div>
+            <div class="card-body" style="padding: 2.5rem 2rem 2rem 2rem;">
+                <canvas id="chartType" style="max-height: 340px;"></canvas>
+            </div>
+        </div>
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Liste des Signalements</h6>
@@ -87,14 +95,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
                                 <td><?= htmlspecialchars($signalement['date_signalement']) ?></td>
                                 <td><span class="badge badge-<?= $signalement['statut'] == 'traité' ? 'success' : ($signalement['statut'] == 'en cours' ? 'warning' : 'danger') ?>"><?= htmlspecialchars($signalement['statut']) ?></span></td>
                                 <td>
-                                    <!-- Formulaire de suppression -->
+                                    
                                     <form action="index.php" method="POST" style="display: inline;">
                                         <input type="hidden" name="delete_id" value="<?= htmlspecialchars($signalement['id_signalement']) ?>" />
                                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce signalement ?');"><i class="fas fa-trash"></i></button>
                                     </form>
-                                    <!-- Lien de modification -->
+                                    
                                     <a href="modifiersignalement.php?id=<?= htmlspecialchars($signalement['id_signalement']) ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                    <!-- Lien vers les interventions liées -->
+                                    
                                     <a href="afficherintervention.php?signalement=<?= htmlspecialchars($signalement['id_signalement']) ?>" class="btn btn-info btn-sm"><i class="fas fa-tasks"></i></a>
                                 </td>
                                 </tr>
@@ -107,19 +115,90 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
     </div>
   </main>
 
-  <!-- Scripts -->
+  
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/sb-admin-2.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <?php
+  // Statistiques par type d'anomalie
+  $stats = [];
+  foreach ($liste as $s) {
+      $type = $s['titre'];
+      if (!isset($stats[$type])) $stats[$type] = 0;
+      $stats[$type]++;
+  }
+  $labels = json_encode(array_keys($stats));
+  $values = json_encode(array_values($stats));
+  // Couleurs variées pour chaque barre
+  $colors = ['#2e4f3e','#4caf50','#f1c40f','#e67e22','#e74c3c','#2980b9','#8e44ad','#16a085','#f39c12','#d35400'];
+  $barColors = [];
+  $i = 0;
+  foreach ($stats as $k=>$v) {
+      $barColors[] = $colors[$i % count($colors)];
+      $i++;
+  }
+  $barColors = json_encode($barColors);
+  ?>
   <script>
-    $(document).ready(function() {
-      $('#dataTable').DataTable({
-        "language": {
-          "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
-        }
-      });
-    });
+  const ctx = document.getElementById('chartType').getContext('2d');
+  const chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+          labels: <?php echo $labels; ?>,
+          datasets: [{
+              label: 'Nombre de signalements',
+              data: <?php echo $values; ?>,
+              backgroundColor: <?php echo $barColors; ?>,
+              borderColor: <?php echo $barColors; ?>,
+              borderWidth: 2,
+              borderRadius: 8,
+              hoverBackgroundColor: '#263f32',
+              hoverBorderColor: '#263f32',
+          }]
+      },
+      options: {
+          responsive: true,
+          plugins: {
+              legend: {
+                  display: true,
+                  labels: {
+                      color: '#2e4f3e',
+                      font: { size: 15, weight: 'bold' },
+                      padding: 20
+                  },
+                  position: 'top',
+                  align: 'end'
+              },
+              title: {
+                  display: false
+              },
+              tooltip: {
+                  backgroundColor: '#2e4f3e',
+                  titleColor: '#fff',
+                  bodyColor: '#fff',
+                  borderColor: '#4caf50',
+                  borderWidth: 1
+              }
+          },
+          scales: {
+              x: {
+                  grid: { display: false },
+                  ticks: { color: '#2e4f3e', font: { size: 14, weight: 'bold' } }
+              },
+              y: {
+                  beginAtZero: true,
+                  grid: { color: '#e8f0ef' },
+                  ticks: { color: '#2e4f3e', font: { size: 13 } }
+              }
+          },
+          animation: {
+              duration: 1200,
+              easing: 'easeOutBounce'
+          }
+      }
+  });
   </script>
 </body>
 </html>

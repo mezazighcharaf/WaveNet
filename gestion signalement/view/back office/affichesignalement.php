@@ -180,9 +180,14 @@ if (isset($_POST['id'])) {
         
         <h1 class="content-title">Gestion des Signalements</h1>
         
+        <a href="export_signalements_pdf.php" style="background:#2e4f3e;color:white;border-radius:4px;padding:8px 15px;text-decoration:none;font-weight:500;margin:20px 0 10px 0;display:inline-block;">Exporter en PDF</a>
         <div class="content-section">
-            <h2>Liste des Signalements</h2>
-            <a href="addsignalement.php" class="btn-add">+ Ajouter</a>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 style="margin: 0;">Liste des Signalements</h2>
+                <div>
+                    <a href="addsignalement.php" class="btn-add" style="float:none;display:inline-block;">+ Ajouter</a>
+                </div>
+            </div>
             
             <table>
                 <thead>
