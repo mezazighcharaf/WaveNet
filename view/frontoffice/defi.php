@@ -4,9 +4,14 @@
   
   // Include defi controller for frontoffice
   require_once __DIR__ . '/../../controller/FrontofficeDefiController.php';
+  require_once __DIR__ . '/../../model/Database.php';
   
   // Initialize controller
   $controller = new FrontofficeDefiController();
+  
+  // Créer une instance de la classe Database
+  $database = new Database();
+  $db = $database->getConnection();
   
   // Vérifier si un ID est fourni
   if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
@@ -32,8 +37,40 @@
     $_SESSION['role'] = 'user';
   }
   
-  // Vérifier si l'utilisateur a déjà participé à ce défi
-  $hasParticipated = $controller->hasUserParticipated($_SESSION['user_id'], $defiId);
+  // Vérifier si l'utilisateur a déjà participé à ce défi (défi terminé)
+  $defiTermine = false;
+  if ($_SESSION['user_id'] !== 'demo_user') {
+    try {
+      $query = "SELECT * FROM participation WHERE Id_Utilisateur = ? AND Id_Defi = ?";
+      $stmt = $db->prepare($query);
+      $stmt->bindParam(1, $_SESSION['user_id']);
+      $stmt->bindParam(2, $defiId);
+      $stmt->execute();
+      
+      $defiTermine = ($stmt->rowCount() > 0);
+    } catch (PDOException $e) {
+      // Gérer l'erreur
+    }
+  }
+  
+  // Vérifier si l'utilisateur a ce défi comme défi en cours
+  $defiEnCours = false;
+  if ($_SESSION['user_id'] !== 'demo_user' && !$defiTermine) {
+    try {
+      // Utilisation de l'instance Database déjà créée
+      // $db est déjà défini au début du fichier
+      
+      $query = "SELECT Defi_En_Cours FROM utilisateur WHERE Id_Utilisateur = ? AND Defi_En_Cours = ?";
+      $stmt = $db->prepare($query);
+      $stmt->bindParam(1, $_SESSION['user_id']);
+      $stmt->bindParam(2, $defiId);
+      $stmt->execute();
+      
+      $defiEnCours = ($stmt->rowCount() > 0);
+    } catch (PDOException $e) {
+      // Gérer l'erreur
+    }
+  }
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -197,6 +234,29 @@
       box-shadow: none;
     }
     
+    .btn-quit {
+      display: inline-block;
+      padding: 15px 30px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      width: 100%;
+    }
+    
+    .btn-quit:hover {
+      background-color: #c0392b;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    
     .btn-back {
       display: inline-flex;
       align-items: center;
@@ -251,6 +311,18 @@
       background-color: #ffebee;
       color: #c62828;
       border-left: 4px solid #ef5350;
+    }
+    
+    .notification.info {
+      background-color: #e3f2fd;
+      color: #1565c0;
+      border-left: 4px solid #42a5f5;
+    }
+    
+    .notification.warning {
+      background-color: #fff8e1;
+      color: #f57f17;
+      border-left: 4px solid #ffca28;
     }
     
     .defi-container {
@@ -802,6 +874,43 @@
       r: 6;
       fill: var(--accent-green);
     }
+    
+    .btn-primary {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .btn-primary:hover {
+      background-color: #388E3C;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+    
+    .btn-primary:disabled {
+      background-color: #A5D6A7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .stickman-controls {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    
+    #btnAccomplir {
+      min-width: 200px;
+      background-color: #4CAF50;
+    }
   </style>
 </head>
 <body>
@@ -854,21 +963,20 @@
         </div>
         
         <div class="defi-actions">
-          <?php if ($hasParticipated): ?>
-            <div class="notification success">
-              <i class="fas fa-check-circle"></i>
-              <div class="status-message">
-                <h3>Vous avez déjà participé à ce défi</h3>
-                <p>Merci pour votre contribution à l'environnement! Vous avez gagné <?php echo $defi['Points_verts']; ?> points verts.</p>
-              </div>
-            </div>
-          <?php else: ?>
             <div class="participation-cta">
-              <h3>Prêt à relever le défi?</h3>
-              <p>Participez à ce défi écologique et gagnez <?php echo $defi['Points_verts']; ?> points verts tout en contribuant à l'amélioration de votre quartier!</p>
-              <a href="participate.php?id=<?php echo $defi['Id_Defi']; ?>" class="btn-participate">Participer à ce défi</a>
-            </div>
+              <h3>Participer au défi</h3>
+              <p>Vous êtes prêt à relever ce défi ? Participez maintenant et gagnez des points pour chaque étape réussie !</p>
+              
+              <?php if ($_SESSION['user_id'] === 'demo_user'): ?>
+                  <a href="login.php" class="btn-participate">Connectez-vous pour participer</a>
+              <?php elseif ($defiTermine): ?>
+                  <div class="btn-participate" style="background-color: #4CAF50; cursor: default;">Défi accompli ✓</div>
+              <?php elseif ($defiEnCours): ?>
+                  <a href="quitter_defi.php?id=<?php echo $defiId; ?>" class="btn-quit">Quitter ce défi</a>
+              <?php else: ?>
+                  <a href="participer_defi.php?id=<?php echo $defiId; ?>" class="btn-participate">Participer à ce défi</a>
           <?php endif; ?>
+          </div>
         </div>
       </div>
     </div>
@@ -1002,8 +1110,7 @@
                   </div>
             
             <div class="stickman-controls">
-                <button id="btnAvancer" class="btn btn-primary">Avancer</button>
-                <button id="btnRetour" class="btn btn-secondary" disabled>Retour</button>
+                <button id="btnAccomplir" class="btn btn-primary">Étape accomplie</button>
                 </div>
             
             <!-- Conteneur pour l'infobulle -->
@@ -1062,9 +1169,159 @@
         const legRight = document.getElementById('leg-right');
         const armLeft = document.getElementById('arm-left');
         const armRight = document.getElementById('arm-right');
-        const btnAvancer = document.getElementById('btnAvancer');
-        const btnRetour = document.getElementById('btnRetour');
+        const btnAccomplir = document.getElementById('btnAccomplir');
         const tooltip = document.getElementById('tooltip');
+        
+        // Récupérer l'étape en cours depuis la base de données (si connecté)
+        <?php if ($_SESSION['user_id'] !== 'demo_user' && $defiEnCours): ?>
+        let etapeActuelle = <?php 
+        try {
+            // Requête plus spécifique pour s'assurer que nous obtenons la bonne étape pour ce défi particulier
+            $query = "SELECT Etape_En_Cours FROM utilisateur WHERE Id_Utilisateur = ? AND Defi_En_Cours = ?";
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(1, $_SESSION['user_id']);
+            $stmt->bindParam(2, $defiId);
+            $stmt->execute();
+            $etapeData = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($etapeData && isset($etapeData['Etape_En_Cours'])) {
+                echo intval($etapeData['Etape_En_Cours']);
+            } else {
+                echo 0;
+            }
+        } catch (PDOException $e) {
+            echo 0;
+        }
+        ?>;
+        console.log("Étape actuelle récupérée de la BD:", etapeActuelle);
+        <?php elseif ($defiTermine): ?>
+        // Si le défi est terminé, positionner à la fin
+        let etapeActuelle = etapes.length - 1;
+        console.log("Défi terminé, étape positionnée à la fin:", etapeActuelle);
+        <?php else: ?>
+        let etapeActuelle = 0;
+        console.log("Nouvel utilisateur ou défi non commencé, étape mise à 0");
+        <?php endif; ?>
+        
+        // Désactiver le bouton si le défi est terminé
+        <?php if ($defiTermine): ?>
+        if (btnAccomplir) {
+            btnAccomplir.disabled = true;
+            btnAccomplir.textContent = "Défi accompli";
+        }
+        <?php endif; ?>
+        
+        // Fonction pour initialiser la position du stickman et colorier les segments parcourus
+        function initialiserStickman() {
+            console.log("Initialisation du stickman à l'étape:", etapeActuelle);
+            
+            // Positionner le stickman à la position correspondant à son étape
+            if (etapeActuelle > 0 && etapeActuelle < etapes.length) {
+                // Positionner à l'étape actuelle
+                stickman.setAttribute('transform', `translate(${etapes[etapeActuelle]}, 200)`);
+                
+                // Colorier les segments parcourus
+                reinitialiserChemins(); // D'abord effacer toutes les colorations
+                
+                // Colorier tous les segments jusqu'à l'étape actuelle
+                const nbSegmentsAColorier = etapeActuelle > 1 ? etapeActuelle - 1 : 0;
+                
+                for (let i = 0; i < nbSegmentsAColorier; i++) {
+                    if (i < pathSegments.length) {
+                        pathSegments[i].setAttribute('stroke', '#4CAF50'); // Vert
+                        pathSegments[i].setAttribute('stroke-width', '4'); // Un peu plus épais
+                    }
+                }
+            } else if (etapeActuelle >= etapes.length) {
+                // Positionner à la fin si toutes les étapes sont terminées
+                stickman.setAttribute('transform', `translate(${etapes[etapes.length-1]}, 200)`);
+                
+                // Colorier tous les segments
+                for (let i = 0; i < pathSegments.length; i++) {
+                    pathSegments[i].setAttribute('stroke', '#4CAF50');
+                    pathSegments[i].setAttribute('stroke-width', '4');
+                }
+            }
+        }
+        
+        // Sauvegarder l'étape en cours dans la base de données
+        function sauvegarderEtape(etape) {
+            <?php if ($_SESSION['user_id'] !== 'demo_user'): ?>
+            console.log("Sauvegarde de l'étape:", etape, "pour le défi ID:", <?php echo $defiId; ?>);
+            
+            // Utiliser fetch pour envoyer l'étape au serveur
+            fetch('sauvegarder_etape.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'etape=' + etape + '&defi_id=<?php echo $defiId; ?>'
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Progression sauvegardée:', data);
+                
+                // Afficher notification de points gagnés
+                if (data.success && data.points > 0) {
+                    // Mettre à jour les points dans la session côté JavaScript
+                    let currentPoints = <?php echo isset($_SESSION['points']) ? $_SESSION['points'] : 0; ?>;
+                    currentPoints += data.points;
+                    
+                    // Afficher la notification avec les points gagnés
+                    afficherNotificationPoints(data.points);
+                    
+                    // Mettre à jour tous les compteurs de points visibles sur la page
+                    const pointsCounters = document.querySelectorAll('.user-info span:first-child');
+                    pointsCounters.forEach(counter => {
+                        counter.innerHTML = `<i class="fas fa-leaf"></i> ${currentPoints} points`;
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la sauvegarde:', error);
+            });
+            <?php endif; ?>
+        }
+        
+        // Fonction pour afficher une notification de points gagnés
+        function afficherNotificationPoints(points) {
+            const notification = document.createElement('div');
+            notification.className = 'points-notification';
+            notification.innerHTML = `<i class="fas fa-leaf"></i> +${points} points!`;
+            notification.style.position = 'fixed';
+            notification.style.top = '20%';
+            notification.style.left = '50%';
+            notification.style.transform = 'translate(-50%, -50%)';
+            notification.style.backgroundColor = 'rgba(76, 175, 80, 0.9)';
+            notification.style.color = 'white';
+            notification.style.padding = '15px 25px';
+            notification.style.borderRadius = '10px';
+            notification.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+            notification.style.zIndex = '10000';
+            notification.style.fontSize = '20px';
+            notification.style.fontWeight = 'bold';
+            notification.style.opacity = '0';
+            notification.style.transition = 'opacity 0.5s, transform 0.5s';
+            
+            document.body.appendChild(notification);
+            
+            // Animation d'apparition
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translate(-50%, -50%) scale(1.1)';
+            }, 10);
+            
+            // Animation de disparition
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translate(-50%, -50%) scale(0.9)';
+                
+                // Supprimer l'élément après la fin de l'animation
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 3000);
+        }
         
         // Vérification si le temps est écoulé (date de fin du défi dépassée)
         const dateFinDefi = new Date("<?php echo $defi['Date_Fin']; ?>");
@@ -1076,8 +1333,7 @@
             console.log("Temps écoulé pour ce défi!");
             
             // Désactiver les boutons
-            btnAvancer.disabled = true;
-            btnRetour.disabled = true;
+            btnAccomplir.disabled = true;
             
             // Afficher le message "Temps écoulé"
             const messageTempsEcoule = document.createElement('div');
@@ -1220,11 +1476,13 @@
         ];
         <?php endif; ?>
         
-        let etapeActuelle = 0;
         let enMouvement = false;
         let successCelebrated = false;
         let intervalMarche = null;
         let intervalCelebration = null;
+        
+        // Initialiser la position du stickman au chargement
+        initialiserStickman();
         
         // Fonction pour colorer le segment de chemin parcouru
         function colorerChemin(index) {
@@ -1312,6 +1570,18 @@
                 return;
             }
             
+            // Vérifier si le défi est terminé
+            <?php if ($defiTermine): ?>
+            console.log("Déplacement impossible - défi déjà accompli !");
+            return;
+            <?php endif; ?>
+            
+            // Ne pas permettre de revenir en arrière
+            if (vers < etapeActuelle) {
+                console.log("Impossible de revenir en arrière !");
+                return;
+            }
+            
             enMouvement = true;
             
             const depart = etapes[etapeActuelle];
@@ -1372,6 +1642,9 @@
                     etapeActuelle = vers;
                     enMouvement = false;
                     
+                    // Sauvegarder la progression
+                    sauvegarderEtape(etapeActuelle);
+                    
                     // Arrêter l'animation de marche
                     clearInterval(intervalMarche);
                     
@@ -1419,8 +1692,7 @@
                     }
                     
                     // Mettre à jour les boutons
-                    btnRetour.disabled = (etapeActuelle === 0);
-                    btnAvancer.disabled = (etapeActuelle === etapes.length - 1);
+                    btnAccomplir.disabled = (etapeActuelle === etapes.length - 1);
                     
                     // Si c'est l'étape finale, déclencher la célébration
                     if (etapeActuelle === etapes.length - 1 && !successCelebrated) {
@@ -1440,41 +1712,43 @@
         }
         
         // Gestionnaires d'événements pour les boutons
-        btnAvancer.addEventListener('click', function() {
+        btnAccomplir.addEventListener('click', function() {
             if (!enMouvement && etapeActuelle < etapes.length - 1) {
                 deplacerStickman(etapeActuelle + 1);
             }
         });
         
-        btnRetour.addEventListener('click', function() {
-            if (!enMouvement && etapeActuelle > 0) {
-                deplacerStickman(etapeActuelle - 1);
-                
-                // Réinitialiser l'état de célébration si on revient en arrière
-                if (successCelebrated) {
-                    successCelebrated = false;
-                    if (intervalCelebration) {
-                        clearInterval(intervalCelebration);
-                    }
-                    
-                    // Remettre les bras et les jambes en position normale
-                    armLeft.setAttribute('x1', '-20');
-                    armLeft.setAttribute('y1', '-60');
-                    armLeft.setAttribute('x2', '0');
-                    armLeft.setAttribute('y2', '-60');
-                    
-                    armRight.setAttribute('x1', '0');
-                    armRight.setAttribute('y1', '-60');
-                    armRight.setAttribute('x2', '20');
-                    armRight.setAttribute('y2', '-60');
-                    
-                    legLeft.setAttribute('x2', '-20');
-                    legLeft.setAttribute('y2', '0');
-                    legRight.setAttribute('x2', '20');
-                    legRight.setAttribute('y2', '0');
+        // Positionner le stickman à son étape actuelle au chargement
+        if (etapeActuelle > 0) {
+            // Colorier tous les segments jusqu'à l'étape actuelle
+            for (let i = 0; i < etapeActuelle - 1; i++) {
+                if (i < pathSegments.length) {
+                    pathSegments[i].setAttribute('stroke', '#4CAF50');
+                    pathSegments[i].setAttribute('stroke-width', '4');
                 }
             }
-        });
+            
+            // Positionner le stickman
+            const position = etapeActuelle < etapes.length ? etapes[etapeActuelle] : etapes[0];
+            stickman.setAttribute('transform', `translate(${position}, 200)`);
+            
+            // Désactiver le bouton si on est à la dernière étape
+            btnAccomplir.disabled = (etapeActuelle === etapes.length - 1);
+            
+            // Si c'est l'étape finale, mettre le stickman en mode célébration
+            if (etapeActuelle === etapes.length - 1) {
+                // Lever les bras en l'air
+                armLeft.setAttribute('x1', '0');
+                armLeft.setAttribute('y1', '-60');
+                armLeft.setAttribute('x2', '-15');
+                armLeft.setAttribute('y2', '-85');
+                
+                armRight.setAttribute('x1', '0');
+                armRight.setAttribute('y1', '-60');
+                armRight.setAttribute('x2', '15');
+                armRight.setAttribute('y2', '-85');
+            }
+        }
         
         // Fonction pour créer et afficher les confettis
         function celebrerSucces() {
@@ -1700,6 +1974,12 @@
             `;
             document.head.appendChild(styleElement);
         }
+        
+        // Appeler la fonction d'initialisation au chargement
+        initialiserStickman();
+        
+        // Remplacer l'ancien code de positionnement initial avec notre nouvelle fonction
+        // ce code était à la fin du script, nous l'avons remplacé par l'appel ci-dessus
     });
   </script>
 </body>

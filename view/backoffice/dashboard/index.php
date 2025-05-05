@@ -39,6 +39,68 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
     <title>Dashboard - Urbaverse</title>
     <link rel="stylesheet" href="../../../assets/css/backoffice.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Styles supplémentaires pour corriger les problèmes d'affichage */
+        .data-table {
+            table-layout: fixed;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: left;
+            vertical-align: middle;
+            border-bottom: 1px solid #e0e0e0;
+            word-wrap: break-word;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Ajuster la largeur des colonnes */
+        .data-table th:nth-child(1), .data-table td:nth-child(1) { width: 5%; } /* ID */
+        .data-table th:nth-child(2), .data-table td:nth-child(2) { width: 15%; } /* Titre */
+        .data-table th:nth-child(3), .data-table td:nth-child(3) { 
+            width: 20%; 
+            max-width: 200px;
+        } /* Description */
+        .data-table th:nth-child(4), .data-table td:nth-child(4) { width: 8%; } /* Points */
+        .data-table th:nth-child(5), .data-table td:nth-child(5) { width: 10%; } /* Statut */
+        .data-table th:nth-child(6), .data-table td:nth-child(6) { width: 15%; } /* Période */
+        .data-table th:nth-child(7), .data-table td:nth-child(7) { width: 10%; } /* Difficulté */
+        .data-table th:nth-child(8), .data-table td:nth-child(8) { width: 17%; } /* Actions */
+        
+        /* Limiter la hauteur des lignes pour éviter des cellules trop grandes */
+        .data-table tr {
+            max-height: 80px;
+        }
+        
+        /* Style pour le texte tronqué */
+        .truncated-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: 60px;
+        }
+        
+        /* Amélioration des boutons d'action */
+        .actions-cell {
+            white-space: nowrap;
+            text-align: center;
+        }
+        
+        .btn-view, .btn-edit, .btn-delete {
+            display: inline-block;
+            padding: 6px 10px;
+            margin: 2px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
     <!-- SIDEBAR -->
@@ -102,7 +164,9 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                                 <tr>
                                     <td><?php echo isset($row['Id_Defi']) ? $row['Id_Defi'] : 'N/A'; ?></td>
                                     <td><?php echo isset($row['Titre_D']) ? $row['Titre_D'] : 'N/A'; ?></td>
-                                    <td><?php echo isset($row['Description_D']) ? (substr($row['Description_D'], 0, 100) . (strlen($row['Description_D']) > 100 ? '...' : '')) : 'N/A'; ?></td>
+                                    <td><?php echo isset($row['Description_D']) ? 
+                                        '<div class="truncated-text">' . htmlspecialchars(substr($row['Description_D'], 0, 100) . (strlen($row['Description_D']) > 100 ? '...' : '')) . '</div>' 
+                                        : 'N/A'; ?></td>
                                     <td><?php echo isset($row['Points_verts']) ? $row['Points_verts'] : 'N/A'; ?></td>
                                     <td>
                                         <?php if(isset($row['Statut_D'])): ?>
@@ -184,7 +248,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                                 <tr>
                                     <td><?php echo htmlspecialchars($etape['Id_etape']); ?></td>
                                     <td><?php echo htmlspecialchars($etape['Titre_E']); ?></td>
-                                    <td><?php echo htmlspecialchars(mb_strimwidth($etape['Description_E'], 0, 50, '...')); ?></td>
+                                    <td><div class="truncated-text"><?php echo htmlspecialchars(mb_strimwidth($etape['Description_E'], 0, 50, '...')); ?></div></td>
                                     <td><?php echo htmlspecialchars($etape['Ordre']); ?></td>
                                     <td><?php echo htmlspecialchars($etape['Points_Bonus']); ?></td>
                                     <td><?php echo htmlspecialchars($etape['Statut_E']); ?></td>

@@ -100,9 +100,18 @@ class AuthController {
      */
     private function getUserPoints($userId) {
         try {
-            // Par défaut, on attribue un nombre de points arbitraire
-            // Dans une version complète, on récupérerait les points de la base de données
-            return 150; // Valeur par défaut
+            // Récupérer les points de l'utilisateur depuis la base de données
+            $query = "SELECT Points_verts FROM utilisateur WHERE Id_Utilisateur = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(1, $userId);
+            $stmt->execute();
+            
+            if ($stmt->rowCount() > 0) {
+                $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+                return (int)$userData['Points_verts'];
+            }
+            
+            return 0; // Aucun point si l'utilisateur n'est pas trouvé
         } catch (PDOException $e) {
             error_log("Erreur lors de la récupération des points : " . $e->getMessage());
             return 0;

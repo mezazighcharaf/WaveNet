@@ -71,21 +71,21 @@ require_once __DIR__ . '/../../../controller/EtapeController.php';
                         <line id="leg-right" x1="0" y1="-20" x2="20" y2="0" stroke="black" stroke-width="2"/>
                     </g>
                 </svg>
-            </div>
+                    </div>
             
             <div class="stickman-controls">
                 <button id="btnAvancer" class="btn btn-primary">Avancer</button>
                 <button id="btnRetour" class="btn btn-secondary" disabled>Retour</button>
-            </div>
+                            </div>
             
             <!-- Conteneur pour les confettis sur tout l'écran -->
             <div id="confetti-container"></div>
             
             <!-- Message de succès -->
             <div id="message-succes">Défi réussi avec succès !</div>
-        </div>
-    <?php endif; ?>
-</div>
+                        </div>
+                    <?php endif; ?>
+                </div>
 
 <!-- CSS Styles pour Stickman et Confettis -->
 <style>
@@ -492,3 +492,33 @@ require_once __DIR__ . '/../../../controller/EtapeController.php';
         }
     });
 </script>
+
+<!-- Dans defi.php, remplacer le bouton Participer -->
+<?php
+// Vérifier si l'utilisateur participe déjà à ce défi
+$defiEnCours = false;
+if (isset($_SESSION['user_id'])) {
+    $userId = $_SESSION['user_id'];
+    $defiId = $defi['Id_Defi'];
+    
+    $query = "SELECT Defi_En_Cours FROM utilisateur WHERE Id_Utilisateur = ? AND Defi_En_Cours = ?";
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(1, $userId);
+    $stmt->bindParam(2, $defiId);
+    $stmt->execute();
+    
+    $defiEnCours = ($stmt->rowCount() > 0);
+}
+?>
+
+<div class="participation-cta">
+    <?php if (isset($_SESSION['user_id'])): ?>
+        <?php if ($defiEnCours): ?>
+            <a href="quitter_defi.php?id=<?php echo $defi['Id_Defi']; ?>" class="btn-quit">Quitter ce défi</a>
+        <?php else: ?>
+            <a href="participer_defi.php?id=<?php echo $defi['Id_Defi']; ?>" class="btn-participate">Participer à ce défi</a>
+        <?php endif; ?>
+    <?php else: ?>
+        <a href="login.php" class="btn-login">Connectez-vous pour participer</a>
+    <?php endif; ?>
+</div>
