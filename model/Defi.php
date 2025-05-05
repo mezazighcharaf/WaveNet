@@ -203,5 +203,30 @@ class Defi {
         $stmt->execute();
         return $stmt;
     }
+
+    // READ all defis ordered by title (ascending)
+    public function readAllOrderByTitleAsc() {
+        $query = "SELECT * FROM " . $this->table_name . " ORDER BY Titre_D ASC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    // READ all defis ordered by title (descending)
+    public function readAllOrderByTitleDesc() {
+        $query = "SELECT * FROM " . $this->table_name . " ORDER BY Titre_D DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    // READ defis by status
+    public function readByStatus($status) {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE Statut_D = ? ORDER BY Date_Debut DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $status);
+        $stmt->execute();
+        return $stmt;
+    }
 }
 ?> 

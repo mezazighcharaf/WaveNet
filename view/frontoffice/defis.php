@@ -5,9 +5,6 @@
   // Include defi controller for frontoffice
   require_once __DIR__ . '/../../controller/FrontofficeDefiController.php';
   
-  // Inclure la classe MockPDOStatement
-  require_once __DIR__ . '/../../controller/MockPDOStatement.php';
-  
   // Initialize controller
   $controller = new FrontofficeDefiController();
   
@@ -683,7 +680,7 @@
       <ul class="nav-links">
         <li><a href="index.php">Accueil</a></li>
         <li><a href="defis.php" class="active">Défis</a></li>
-        <li><a href="../backoffice/defis/index.php">Backoffice</a></li>
+        <li><a href="../backoffice/dashboard/index.php">Backoffice</a></li>
       </ul>
       <div class="user-actions">
         <?php if(isset($_SESSION['points'])): ?>
@@ -788,6 +785,7 @@
               </div>
               <div class="defi-card-footer">
                 <span class="date-range"><?php echo date('d/m/Y', strtotime($defi['Date_Debut'])); ?> - <?php echo date('d/m/Y', strtotime($defi['Date_Fin'])); ?></span>
+                <a href="defi.php?id=<?php echo $defi['Id_Defi']; ?>" class="btn-view-defi">Voir le défi</a>
               </div>
             </div>
           <?php endwhile; ?>
@@ -816,7 +814,7 @@
         <ul>
           <li><a href="index.php">Accueil</a></li>
           <li><a href="defis.php">Défis</a></li>
-          <li><a href="../backoffice/defis/index.php">Backoffice</a></li>
+          <li><a href="../backoffice/dashboard/index.php">Backoffice</a></li>
         </ul>
       </div>
       <div class="footer-section">
@@ -833,8 +831,4 @@
     </div>
   </footer>
 </body>
-</html> 
-</body>
-</html> 
-</html> 
 </html> 

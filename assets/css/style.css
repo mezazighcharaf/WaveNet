@@ -147,7 +147,7 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
-    min-height: 80vh;
+    /*min-height: 80vh;*/
     color: var(--white);
   }
   

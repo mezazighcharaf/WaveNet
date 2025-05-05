@@ -18,11 +18,9 @@ class FrontofficeDefiController {
     }
     
     // Retrieve all defis
-    public function getAllDefis($orderBy = null) {
-        if ($orderBy === 'Titre_D_ASC') {
-            return $this->defi->readAllOrderByTitle('ASC');
-        } else if ($orderBy === 'Titre_D_DESC') {
-            return $this->defi->readAllOrderByTitle('DESC');
+    public function getAllDefis($order = null) {
+        if ($order === 'asc' || $order === 'desc') {
+            return $this->getAllDefisSorted($order);
         } else {
             return $this->defi->readAll();
         }
@@ -139,45 +137,48 @@ class FrontofficeDefiController {
         return false;
     }
 
-    // Ajoutez cette nouvelle méthode au contrôleur
-
     public function getAllDefisSorted($sortDirection = 'asc') {
-        // Récupérer tous les défis
-        $stmt = $this->defi->readAll();
-        
-        // Convertir le résultat en tableau
-        $defis = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $defis[] = $row;
+        if ($sortDirection === 'asc') {
+            return $this->defi->readAllOrderByTitleAsc();
+        } else {
+            return $this->defi->readAllOrderByTitleDesc();
         }
-        
-        // Trier le tableau par titre
-        usort($defis, function($a, $b) use ($sortDirection) {
-            if ($sortDirection === 'asc') {
-                return strcmp($a['Titre_D'], $b['Titre_D']);
-            } else {
-                return strcmp($b['Titre_D'], $a['Titre_D']);
-            }
-        });
-        
-        // Convertir le tableau trié en PDOStatement simulé
-        $mockPDOStatement = new MockPDOStatement($defis);
-        return $mockPDOStatement;
     }
 
     // Ajoutez cette méthode pour trier par statut
     public function getDefisByStatus($status) {
-        $stmt = $this->defi->readAll();
-        $defis = [];
-        
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            if ($row['Statut_D'] === $status) {
-                $defis[] = $row;
+        return $this->defi->readByStatus($status);
+    }
+
+    /**
+     * Récupère tous les défis auxquels un utilisateur a participé
+     * 
+     * @param string|int $userId ID de l'utilisateur
+     * @return array Liste des défis avec informations de participation
+     */
+    public function getUserParticipations($userId) {
+        try {
+            // Requête pour récupérer les défis avec informations de participation
+            $query = "SELECT d.*, p.Date_Participation 
+                      FROM participation p
+                      JOIN defi d ON p.Id_Defi = d.Id_Defi
+                      WHERE p.Id_Utilisateur = ?
+                      ORDER BY p.Date_Participation DESC";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(1, $userId);
+            $stmt->execute();
+            
+            $participations = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $participations[] = $row;
             }
+            
+            return $participations;
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération des participations : " . $e->getMessage());
+            return [];
         }
-        
-        $mockPDOStatement = new MockPDOStatement($defis);
-        return $mockPDOStatement;
     }
 }
 ?> 

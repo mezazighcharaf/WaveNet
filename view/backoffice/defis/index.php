@@ -16,10 +16,6 @@ require_once __DIR__ . '/../../../controller/EtapeController.php';
 $defiController = new DefiController();
 $etapeController = new EtapeController();
 
-// Forcer la mise à jour des statuts avec une date spécifique pour tester
-// Décommentez cette ligne pour tester avec une date spécifique
-// $defiController->updateDefiStatusesWithDate('2025-04-25'); // Date entre vos deux défis
-
 // Mise à jour normale avec la date actuelle
 $defiController->updateDefiStatuses();
 $etapeController->updateEtapeStatuses();
