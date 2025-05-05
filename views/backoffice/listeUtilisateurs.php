@@ -106,7 +106,7 @@ try {
                                             <?php echo htmlspecialchars($u['niveau']); ?>
                                         </span>
                                     </td>
-                                    <td><?php echo htmlspecialchars($u['points_verts']); ?></td>
+                                    <td><?php echo htmlspecialchars($u['point_vert']); ?></td>
                                     <td>
                                         <?php if (isset($u['bloque']) && $u['bloque'] == 1): ?>
                                             <span class="status-badge waiting">Bloqué</span>
@@ -143,6 +143,15 @@ try {
                                                 class="action-button" onclick="return confirm('Confirmer la suppression de cet utilisateur ? Cette action est irréversible.');">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </a>
+                                                
+                                                <!-- Bouton d'impersonation - n'apparaît pas pour l'admin lui-même -->
+                                                <?php if ($_SESSION['user_id'] != $u['id_utilisateur']): ?>
+                                                    <a href="/WaveNet/controller/UserController.php?action=impersonate&id=<?php echo $u['id_utilisateur']; ?>" 
+                                                    class="action-button" title="Se connecter en tant que <?php echo htmlspecialchars($u['nom'] . ' ' . $u['prenom']); ?>" 
+                                                    onclick="return confirm('Se connecter en tant que <?php echo htmlspecialchars($u['nom'] . ' ' . $u['prenom']); ?> ?');">
+                                                        <i class="fas fa-user-secret"></i>
+                                                    </a>
+                                                <?php endif; ?>
                                             </div>
                                         <?php else: ?>
                                             <span style="color: var(--gray-500); font-style: italic;">Non disponible</span>

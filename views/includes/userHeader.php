@@ -1,6 +1,9 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
+// DEBUG - SUPPRIMER APRÈS TEST
+echo "<!-- userHeader.php chargé - Version: " . date('Y-m-d H:i:s') . " -->";
+
 // Données utilisateur
 $userId = $_SESSION['user_id'] ?? null;
 $userNom = $_SESSION['user_nom'] ?? '';
@@ -102,7 +105,7 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
         .dropdown-menu {
             display: none;
             position: absolute;
-            top: calc(100% + 10px); /* Position sous le bouton */
+            top: calc(100% + 0px); /* Réduit l'espace entre le bouton et le menu */
             right: 0;
             background-color: var(--white, #fff);
             border-radius: var(--border-radius, 4px);
@@ -112,8 +115,25 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
             padding: 0.5rem 0;
             overflow: hidden;
         }
-        .user-profile-dropdown:hover .dropdown-menu, 
-        .user-profile-dropdown .dropdown-menu.show { /* Ajout classe show pour JS si besoin */
+        /* Ajout d'un padding supérieur invisible pour éviter les "trous" entre le bouton et le menu */
+        .dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: transparent;
+        }
+        /* Active le menu au hover du conteneur du dropdown, pas seulement le bouton */
+        .user-profile-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        /* S'assurer que le menu reste visible quand on le survole */
+        .dropdown-menu:hover {
+            display: block;
+        }
+        .dropdown-menu.show {
             display: block;
         }
         .dropdown-menu a, .dropdown-menu .dropdown-header {
@@ -174,11 +194,15 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
             <li><a href="/WaveNet/views/frontoffice/defis.php" class="<?php echo ($activePage === 'defis') ? 'active' : ''; ?>">Défis</a></li>
             <li><a href="/WaveNet/views/frontoffice/activites.php" class="<?php echo ($activePage === 'activites') ? 'active' : ''; ?>">Activités</a></li>
             <li><a href="/WaveNet/views/frontoffice/manageTransport.php" class="<?php echo ($activePage === 'transport') ? 'active' : ''; ?>">Transports</a></li>
+            <li><a href="/WaveNet/views/frontoffice/account_activity.php" class="<?php echo ($activePage === 'account_activity') ? 'active' : ''; ?>">Activité du compte</a></li>
         <?php else: ?>
              <li><a href="/WaveNet/views/backoffice/index.php" class="<?php echo ($currentScript === 'index.php') ? 'active' : ''; ?>">Dashboard Admin</a></li>
              <li><a href="/WaveNet/views/backoffice/listeUtilisateurs.php" class="<?php echo ($currentScript === 'listeUtilisateurs.php') ? 'active' : ''; ?>">Utilisateurs</a></li>
              <li><a href="/WaveNet/views/backoffice/defis.php" class="<?php echo ($currentScript === 'defis.php') ? 'active' : ''; ?>">Défis</a></li>
              <li><a href="/WaveNet/views/backoffice/quartiers.php" class="<?php echo ($currentScript === 'quartiers.php') ? 'active' : ''; ?>">Quartiers</a></li>
+             <li><a href="/WaveNet/views/frontoffice/account_activity.php" class="<?php echo ($activePage === 'account_activity') ? 'active' : ''; ?>">Activité du compte</a></li>
+
+             
         <?php endif; ?>
       </ul>
     </nav>
@@ -204,8 +228,10 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
                 <?php else: ?>
                     <a href="/WaveNet/views/frontoffice/userDashboard.php"><i class="fas fa-tachometer-alt"></i>Tableau de bord</a>
                     <a href="/WaveNet/views/frontoffice/editProfile.php"><i class="fas fa-user-edit"></i>Modifier mon profil</a>
+                    <a href="/WaveNet/views/frontoffice/account_activity.php"><i class="fas fa-history"></i>Activité du compte</a>
                     <a href="/WaveNet/controller/UserController.php?action=gerer2FA"><i class="fas fa-shield-alt"></i>Sécurité du compte</a>
                     <div class="dropdown-divider"></div>
+                    <a href="/WaveNet/views/frontoffice/account_activity.php#rgpd"><i class="fas fa-download"></i>Exporter mes données (RGPD)</a>
                 <?php endif; ?>
                 <a href="/WaveNet/controller/UserController.php?action=logout"><i class="fas fa-sign-out-alt"></i>Déconnexion</a>
             </div>
@@ -213,3 +239,47 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
     </div>
   </div>
 </header>
+
+<!-- Bandeau d'impersonation pour les administrateurs -->
+<?php if (isset($_SESSION['impersonation_active']) && $_SESSION['impersonation_active'] === true): ?>
+<div style="background-color: #dc3545; color: white; padding: 10px; text-align: center; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+    <div style="flex: 1;">
+        <i class="fas fa-user-secret"></i> 
+        Vous êtes connecté en tant que <?php echo htmlspecialchars($_SESSION['user_prenom'] . ' ' . $_SESSION['user_nom']); ?> 
+        (Administration)
+    </div>
+    <a href="/WaveNet/controller/UserController.php?action=stopImpersonation" 
+       style="background-color: white; color: #dc3545; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-weight: bold;">
+        <i class="fas fa-sign-out-alt"></i> Revenir à mon compte
+    </a>
+</div>
+<?php endif; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Sélectionner les éléments du dropdown
+    const dropdownButton = document.querySelector('.user-profile-button');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    
+    // Ajouter un écouteur d'événement au clic sur le bouton
+    dropdownButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        dropdownMenu.classList.toggle('show');
+    });
+    
+    // Fermer le dropdown quand on clique ailleurs sur la page
+    document.addEventListener('click', function(e) {
+        if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.remove('show');
+        }
+    });
+    
+    // Empêcher la propagation des clics à l'intérieur du menu
+    dropdownMenu.addEventListener('click', function(e) {
+        // Ne pas empêcher les clics sur les liens
+        if (e.target.tagName !== 'A' && !e.target.closest('a')) {
+            e.stopPropagation();
+        }
+    });
+});
+</script>

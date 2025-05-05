@@ -9,8 +9,8 @@ class Defi {
     private $objectif;
     private $points_verts;
     private $difficulte;
-    private $id_quartier;
-    public function __construct($id_defi, $titre, $description, $objectif, $points_verts, $statut, $date_debut, $date_fin, $difficulte, $id_quartier) {
+    private $idq;
+    public function __construct($id_defi, $titre, $description, $objectif, $points_verts, $statut, $date_debut, $date_fin, $difficulte, $idq) {
         $this->id_defi = $id_defi;
         $this->titre = $titre;
         $this->description = $description;
@@ -20,7 +20,7 @@ class Defi {
         $this->date_debut = $date_debut;
         $this->date_fin = $date_fin;
         $this->difficulte = $difficulte;
-        $this->id_quartier = $id_quartier;
+        $this->idq = $idq;
     }
     public function getId() { return $this->id_defi; }
     public function getTitre() { return $this->titre; }
@@ -31,10 +31,11 @@ class Defi {
     public function getDateDebut() { return $this->date_debut; }
     public function getDateFin() { return $this->date_fin; }
     public function getDifficulte() { return $this->difficulte; }
-    public function getIdQuartier() { return $this->id_quartier; }
-    public static function getDefisByQuartier($db, $id_quartier) {
-        $stmt = $db->prepare("SELECT * FROM Defi WHERE Id_Quartier = :id_quartier");
-        $stmt->execute(['id_quartier' => $id_quartier]);
+    public function getIdQuartier() { return $this->idq; }
+    public function getIdq() { return $this->idq; }
+    public static function getDefisByQuartier($db, $idq) {
+        $stmt = $db->prepare("SELECT * FROM Defi WHERE Id_Quartier = :idq");
+        $stmt->execute(['idq' => $idq]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public static function countDefisEnCours($db, $id_utilisateur) {

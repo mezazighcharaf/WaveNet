@@ -6,18 +6,18 @@ class Utilisateur {
     private $email;
     private $mot_de_passe;
     private $niveau;
-    private $points_verts;
-    private $id_quartier;
+    private $point_vert;
+    private $idq;
     private $newsletter = 0;
     private $evenements = 0;
-    public function __construct($nom, $prenom, $email, $mot_de_passe, $niveau = 'client', $points_verts = 0, $id_quartier = null) {
+    public function __construct($nom, $prenom, $email, $mot_de_passe, $niveau = 'client', $point_vert = 0, $idq = null) {
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->email = $email;
         $this->mot_de_passe = $mot_de_passe;
         $this->niveau = $niveau;
-        $this->points_verts = $points_verts;
-        $this->id_quartier = $id_quartier;
+        $this->point_vert = $point_vert;
+        $this->idq = $idq;
     }
     public function getId() { return $this->id_utilisateur; }
     public function getNom() { return $this->nom; }
@@ -25,8 +25,9 @@ class Utilisateur {
     public function getEmail() { return $this->email; }
     public function getMotDePasse() { return $this->mot_de_passe; }
     public function getNiveau() { return $this->niveau; }
-    public function getPointsVerts() { return $this->points_verts; }
-    public function getIdQuartier() { return $this->id_quartier; }
+    public function getPointsVerts() { return $this->point_vert; }
+    public function getIdQuartier() { return $this->idq; }
+    public function getIdq() { return $this->idq; }
     public function getNewsletter() {
         return $this->newsletter;
     }
@@ -46,8 +47,9 @@ class Utilisateur {
     public function setEmail($email) { $this->email = $email; }
     public function setMotDePasse($mot_de_passe) { $this->mot_de_passe = $mot_de_passe; }
     public function setNiveau($niveau) { $this->niveau = $niveau; }
-    public function setPointsVerts($points) { $this->points_verts = $points; }
-    public function setIdQuartier($id) { $this->id_quartier = $id; }
+    public function setPointsVerts($points) { $this->point_vert = $points; }
+    public function setIdQuartier($id) { $this->idq = $id; }
+    public function setIdq($id) { $this->idq = $id; }
     public static function findByEmail($db, $email) {
         $stmt = $db->prepare("SELECT * FROM UTILISATEUR WHERE email = :email");
         $stmt->execute(['email' => $email]);
@@ -59,7 +61,7 @@ class Utilisateur {
                 $result['email'],
                 $result['mot_de_passe'],
                 $result['niveau'],
-                $result['points_verts'],
+                $result['point_vert'],
                 $result['id_quartier']
             );
             $user->id_utilisateur = $result['id_utilisateur'];
@@ -70,15 +72,15 @@ class Utilisateur {
     public static function create($db, $data) {
         try {
             error_log("Tentative d'insertion utilisateur: " . json_encode($data, JSON_UNESCAPED_UNICODE));
-            $stmt = $db->prepare("INSERT INTO UTILISATEUR (nom, prenom, email, mot_de_passe, niveau, points_verts, id_quartier) VALUES (:nom, :prenom, :email, :mot_de_passe, :niveau, :points_verts, :id_quartier)");
+            $stmt = $db->prepare("INSERT INTO UTILISATEUR (nom, prenom, email, mot_de_passe, niveau, point_vert, id_quartier) VALUES (:nom, :prenom, :email, :mot_de_passe, :niveau, :point_vert, :id_quartier)");
             $params = [
                 'nom' => $data['nom'],
                 'prenom' => $data['prenom'],
                 'email' => $data['email'],
                 'mot_de_passe' => '***hidden***', 
                 'niveau' => $data['niveau'] ?? 'client',
-                'points_verts' => $data['points_verts'] ?? 0,
-                'id_quartier' => $data['id_quartier'] ?? null
+                'point_vert' => $data['point_vert'] ?? 0,
+                'id_quartier' => $data['idq'] ?? null
             ];
             error_log("Paramètres d'exécution: " . json_encode($params, JSON_UNESCAPED_UNICODE));
             $execParams = [
@@ -87,8 +89,8 @@ class Utilisateur {
                 'email' => $data['email'],
                 'mot_de_passe' => $data['mot_de_passe'],
                 'niveau' => $data['niveau'] ?? 'client',
-                'points_verts' => $data['points_verts'] ?? 0,
-                'id_quartier' => $data['id_quartier'] ?? null
+                'point_vert' => $data['point_vert'] ?? 0,
+                'id_quartier' => $data['idq'] ?? null
             ];
             $result = $stmt->execute($execParams);
             if ($result) {
@@ -105,7 +107,7 @@ class Utilisateur {
                 if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
                     error_log("Email déjà utilisé");
                 } elseif (strpos($e->getMessage(), 'foreign key constraint') !== false) {
-                    error_log("Erreur de clé étrangère - vérifier id_quartier");
+                    error_log("Erreur de clé étrangère - vérifier idq/id_quartier");
                 }
             }
             throw new Exception("Erreur lors de la création de l'utilisateur: " . $e->getMessage());
@@ -122,7 +124,7 @@ class Utilisateur {
                 $result['email'],
                 $result['mot_de_passe'],
                 $result['niveau'],
-                $result['points_verts'],
+                $result['point_vert'],
                 $result['id_quartier']
             );
             $user->id_utilisateur = $result['id_utilisateur'];
@@ -149,7 +151,7 @@ class Utilisateur {
                 'nom' => $this->nom,
                 'prenom' => $this->prenom,
                 'email' => $this->email,
-                'id_quartier' => $this->id_quartier,
+                'id_quartier' => $this->idq,
                 'mot_de_passe' => $this->mot_de_passe,
                 'id_utilisateur' => $this->id_utilisateur
             ];

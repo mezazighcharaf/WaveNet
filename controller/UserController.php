@@ -30,6 +30,14 @@ class UserController {
                 exit;
             }
     
+            // Vérifier la robustesse du mot de passe
+            list($isStrongPassword, $passwordError) = $this->checkPasswordStrength($password);
+            if (!$isStrongPassword) {
+                $_SESSION['register_error'] = $passwordError;
+                header('Location: /WaveNet/views/frontoffice/register.php');
+                exit;
+            }
+    
             require_once __DIR__ . '/../models/Utilisateur.php';
             require_once __DIR__ . '/../views/includes/config.php';
     
@@ -49,7 +57,7 @@ class UserController {
                 'email' => $email,
                 'mot_de_passe' => $hashedPassword,
                 'niveau' => 'client',
-                'points_verts' => 0,
+                'point_vert' => 0,
                 'quartier_id' => null
             ];
     
@@ -253,6 +261,10 @@ class UserController {
                 $user = Utilisateur::findByEmail($db, $email);
                 
                 if ($user && password_verify($password, $user->getMotDePasse())) {
+                    // Journaliser la connexion réussie
+                    require_once __DIR__ . '/../models/security_functions.php';
+                    logConnection($user->getId(), true);
+                    
                     // Vérifier si l'utilisateur est bloqué
                     if ($columnExists) {
                         $stmt = $db->prepare("SELECT bloque FROM UTILISATEUR WHERE email = :email");
@@ -280,6 +292,14 @@ class UserController {
                     if ($twofa_enabled) {
                         // Stocker l'ID utilisateur temporairement pour la vérification 2FA
                         $_SESSION['temp_user_id'] = $user->getId();
+                        $_SESSION['auth_requires_2fa'] = true;
+                        
+                        // Effacer user_id pour bloquer l'accès
+                        if (isset($_SESSION['user_id'])) {
+                            unset($_SESSION['user_id']);
+                        }
+                        
+                        // Rediriger vers la page de vérification 2FA
                         header('Location: /WaveNet/controller/UserController.php?action=verifier2FA');
                         exit;
                     }
@@ -300,6 +320,12 @@ class UserController {
                     }
                     exit;
                 } else {
+                    // Journaliser la connexion échouée
+                    if ($user) {
+                        require_once __DIR__ . '/../models/security_functions.php';
+                        logConnection($user->getId(), false, "Mot de passe incorrect");
+                    }
+                    
                     $_SESSION['login_error'] = "Email ou mot de passe incorrect.";
                     header('Location: /WaveNet/views/frontoffice/login.php');
                     exit;
@@ -345,6 +371,14 @@ class UserController {
                 exit;
             }
             
+            // Vérifier la robustesse du mot de passe
+            list($isStrongPassword, $passwordError) = $this->checkPasswordStrength($password);
+            if (!$isStrongPassword) {
+                $_SESSION['register_error'] = $passwordError;
+                header('Location: /WaveNet/views/frontoffice/register.php');
+                exit;
+            }
+            
             require_once __DIR__ . '/../models/Utilisateur.php';
             require_once __DIR__ . '/../views/includes/config.php';
             
@@ -379,8 +413,8 @@ class UserController {
                     'email' => $email,
                     'mot_de_passe' => $hashedPassword,
                     'niveau' => 'client',
-                    'points_verts' => 0,
-                    'id_quartier' => $id_quartier
+                    'point_vert' => 0,
+                    'idq' => $id_quartier
                 ];
                 
                 $userId = Utilisateur::create($db, $userData);
@@ -526,6 +560,11 @@ class UserController {
             }
             
             if (!empty($newPassword) && !empty($currentPassword) && password_verify($currentPassword, $user->getMotDePasse())) {
+                // Enregistrer l'ancien mot de passe dans l'historique
+                $stmt = $db->prepare("INSERT INTO password_history (id_utilisateur, mot_de_passe_hash) VALUES (?, ?)");
+                $stmt->execute([$userId, $user->getMotDePasse()]);
+                
+                // Mise à jour du mot de passe (code existant)
                 $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
                 $user->setMotDePasse($hashedPassword);
             }
@@ -647,6 +686,22 @@ class UserController {
             case 'handleResetPassword':
                 error_log("[UserController::route] Exécution case 'handleResetPassword'."); // LOG AJOUTÉ
                 $controller->handleResetPassword();
+                break;
+            case 'impersonate':
+                error_log("[UserController::route] Exécution case 'impersonate'."); // LOG AJOUTÉ
+                $controller->impersonate();
+                break;
+            case 'stopImpersonation':
+                error_log("[UserController::route] Exécution case 'stopImpersonation'."); // LOG AJOUTÉ
+                $controller->stopImpersonation();
+                break;
+            case 'sendEmailVerification':
+                error_log("[UserController::route] Exécution case 'sendEmailVerification'."); // LOG
+                $controller->sendEmailVerification();
+                break;
+            case 'verifyEmail':
+                error_log("[UserController::route] Exécution case 'verifyEmail'."); // LOG
+                $controller->verifyEmail();
                 break;
             default:
                 error_log("[UserController::route] Action par défaut ('" . $action . "'), redirection vers index.php."); // LOG AJOUTÉ
@@ -1367,7 +1422,11 @@ class UserController {
             session_start();
         }
         
+        error_log("[verifier2FA] Début de la méthode verifier2FA");
+        
+        // Vérifier si l'ID temporaire existe pour attendre la vérification 2FA
         if (!isset($_SESSION['temp_user_id'])) {
+            error_log("[verifier2FA] Aucun ID temporaire trouvé, redirection vers login");
             header('Location: /WaveNet/views/frontoffice/login.php');
             exit;
         }
@@ -1409,6 +1468,9 @@ class UserController {
                 
                 // Supprimer les variables temporaires
                 unset($_SESSION['temp_user_id']);
+                unset($_SESSION['auth_requires_2fa']);
+                
+                error_log("[verifier2FA] 2FA validé avec succès pour l'utilisateur " . $user['id_utilisateur']);
                 
                 // Rediriger selon le niveau de l'utilisateur
                 if ($user['niveau'] === 'admin') {
@@ -1418,12 +1480,17 @@ class UserController {
                 }
                 exit;
             } else {
+                // Journaliser l'échec de vérification 2FA
+                require_once __DIR__ . '/../models/security_functions.php';
+                logConnection($_SESSION['temp_user_id'], false, "Code 2FA invalide");
+                
                 $_SESSION['error'] = "Code de vérification incorrect. Veuillez réessayer.";
                 header('Location: /WaveNet/views/frontoffice/verifier2FA.php');
                 exit;
             }
         } else {
             // Afficher le formulaire de vérification 2FA
+            error_log("[verifier2FA] Affichage du formulaire 2FA pour l'utilisateur " . $_SESSION['temp_user_id']);
             require __DIR__ . '/../views/frontoffice/verifier2FA.php';
             exit;
         }
@@ -1942,7 +2009,7 @@ class UserController {
             if ($user) {
                 error_log("[handleForgotPasswordRequest] Utilisateur trouvé, génération token..."); // LOG AJOUTÉ
                 $token = bin2hex(random_bytes(32));
-                $expires_at = new DateTime('+1 hour');
+                $expires_at = new DateTime('+30 minutes');
                 $expires_at_formatted = $expires_at->format('Y-m-d H:i:s');
 
                 $stmtDelete = $db->prepare("DELETE FROM password_resets WHERE email = ?");
@@ -1981,8 +2048,8 @@ class UserController {
                     // Contenu
                     $mail->isHTML(true);
                     $mail->Subject = 'Réinitialisation de votre mot de passe WaveNet';
-                    $mail->Body    = "Bonjour,<br><br>Vous avez demandé une réinitialisation de mot de passe. Cliquez sur le lien ci-dessous pour choisir un nouveau mot de passe :<br><a href='{$resetLink}'>Réinitialiser mon mot de passe</a><br><br>Ce lien expirera dans une heure.<br><br>Si vous n'avez pas demandé cette réinitialisation, veuillez ignorer cet e-mail.<br><br>Cordialement,<br>L'équipe WaveNet";
-                    $mail->AltBody = "Bonjour,\n\nVous avez demandé une réinitialisation de mot de passe. Copiez et collez le lien suivant dans votre navigateur pour choisir un nouveau mot de passe :\n{$resetLink}\n\nCe lien expirera dans une heure.\n\nSi vous n'avez pas demandé cette réinitialisation, veuillez ignorer cet e-mail.\n\nCordialement,\nL'équipe WaveNet";
+                    $mail->Body    = "Bonjour,<br><br>Vous avez demandé une réinitialisation de mot de passe. Cliquez sur le lien ci-dessous pour choisir un nouveau mot de passe :<br><a href='{$resetLink}'>Réinitialiser mon mot de passe</a><br><br>Ce lien expirera dans 30 minutes.<br><br>Si vous n'avez pas demandé cette réinitialisation, veuillez ignorer cet e-mail.<br><br>Cordialement,<br>L'équipe WaveNet";
+                    $mail->AltBody = "Bonjour,\n\nVous avez demandé une réinitialisation de mot de passe. Copiez et collez le lien suivant dans votre navigateur pour choisir un nouveau mot de passe :\n{$resetLink}\n\nCe lien expirera dans 30 minutes.\n\nSi vous n'avez pas demandé cette réinitialisation, veuillez ignorer cet e-mail.\n\nCordialement,\nL'équipe WaveNet";
 
                     $mail->send();
                     error_log("[handleForgotPasswordRequest] E-mail de réinitialisation envoyé à {$email}");
@@ -2054,7 +2121,7 @@ class UserController {
                 $stmtDelete = $db->prepare("DELETE FROM password_resets WHERE token = ?");
                 $stmtDelete->execute([$token]);
 
-                $_SESSION['error'] = "Le lien de réinitialisation a expiré. Veuillez refaire une demande.";
+                $_SESSION['error'] = "Le lien de réinitialisation a expiré après 30 minutes. Veuillez refaire une demande.";
                 header('Location: /WaveNet/views/frontoffice/forgot_password_request.php');
                 exit;
             }
@@ -2111,6 +2178,15 @@ class UserController {
             exit;
         }
 
+        // Vérifier la robustesse du mot de passe
+        list($isStrongPassword, $passwordError) = $this->checkPasswordStrength($newPassword);
+        if (!$isStrongPassword) {
+            $_SESSION['error'] = $passwordError;
+            error_log("[handleResetPassword] ERREUR: Mot de passe insuffisamment robuste: " . $passwordError); // LOG
+            header('Location: /WaveNet/controller/UserController.php?action=showResetPasswordForm&token=' . urlencode($token));
+            exit;
+        }
+
         if (strlen($newPassword) < 8) { // Exemple: minimum 8 caractères
             $_SESSION['error'] = "Le mot de passe doit contenir au moins 8 caractères.";
             error_log("[handleResetPassword] ERREUR: Mot de passe trop court."); // LOG
@@ -2147,7 +2223,7 @@ class UserController {
                 // Supprimer le token expiré
                 $stmtDelete = $db->prepare("DELETE FROM password_resets WHERE token = ?");
                 $stmtDelete->execute([$token]);
-                $_SESSION['error'] = "Le lien de réinitialisation a expiré. Veuillez refaire une demande.";
+                $_SESSION['error'] = "Le lien de réinitialisation a expiré après 30 minutes. Veuillez refaire une demande.";
                 error_log("[handleResetPassword] ERREUR: Token expiré."); // LOG
                 header('Location: /WaveNet/views/frontoffice/forgot_password_request.php');
                 exit;
@@ -2156,7 +2232,18 @@ class UserController {
             $email = $resetRequest['email'];
             error_log("[handleResetPassword] Token valide pour email: " . $email); // LOG
 
-            // 4. Mettre à jour le mot de passe de l'utilisateur
+            // Vérifier si le nouveau mot de passe est identique à l'ancien
+            $stmtGetUser = $db->prepare("SELECT mot_de_passe FROM UTILISATEUR WHERE email = ?");
+            $stmtGetUser->execute([$email]);
+            $userData = $stmtGetUser->fetch(PDO::FETCH_ASSOC);
+            
+            if ($userData && password_verify($newPassword, $userData['mot_de_passe'])) {
+                $_SESSION['error'] = "Le nouveau mot de passe ne peut pas être identique à l'ancien. Veuillez choisir un mot de passe différent.";
+                error_log("[handleResetPassword] ERREUR: Tentative de réutilisation du même mot de passe."); // LOG
+                header('Location: /WaveNet/controller/UserController.php?action=showResetPasswordForm&token=' . urlencode($token));
+                exit;
+            }
+
             $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
             error_log("[handleResetPassword] Hashage du nouveau mot de passe effectué."); // LOG
             $stmtUpdate = $db->prepare("UPDATE UTILISATEUR SET mot_de_passe = ? WHERE email = ?");
@@ -2194,6 +2281,415 @@ class UserController {
             // Essayer de préserver le token si possible pour que l'utilisateur puisse réessayer
             $redirectToken = isset($token) ? urlencode($token) : '';
             header('Location: /WaveNet/controller/UserController.php?action=showResetPasswordForm&token=' . $redirectToken);
+            exit;
+        }
+    }
+
+    /**
+     * Vérifie la robustesse du mot de passe selon les critères spécifiés
+     * @param string $password Le mot de passe à vérifier
+     * @return array [bool $isValid, string $errorMessage]
+     */
+    private function checkPasswordStrength($password) {
+        $errors = [];
+        
+        // Vérifier la longueur minimum
+        if (strlen($password) < 8) {
+            $errors[] = "Le mot de passe doit contenir au moins 8 caractères";
+        }
+        
+        // Vérifier la présence d'une majuscule
+        if (!preg_match('/[A-Z]/', $password)) {
+            $errors[] = "Le mot de passe doit contenir au moins une lettre majuscule";
+        }
+        
+        // Vérifier la présence d'un chiffre
+        if (!preg_match('/[0-9]/', $password)) {
+            $errors[] = "Le mot de passe doit contenir au moins un chiffre";
+        }
+        
+        // Vérifier la présence d'un caractère spécial
+        if (!preg_match('/[^A-Za-z0-9]/', $password)) {
+            $errors[] = "Le mot de passe doit contenir au moins un caractère spécial";
+        }
+        
+        if (empty($errors)) {
+            return [true, ""];
+        } else {
+            return [false, implode(". ", $errors)];
+        }
+    }
+
+    /**
+     * Permet à un administrateur de se connecter en tant qu'un autre utilisateur (impersonation)
+     * Cette méthode est réservée aux administrateurs
+     */
+    public function impersonate() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Vérifier que l'utilisateur est admin
+        if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_niveau']) || $_SESSION['user_niveau'] !== 'admin') {
+            $_SESSION['error'] = "Vous n'avez pas les droits pour effectuer cette action.";
+            header('Location: /WaveNet/views/frontoffice/login.php');
+            exit;
+        }
+        
+        $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+        if (!$id) {
+            $_SESSION['error'] = "Utilisateur invalide.";
+            header('Location: /WaveNet/views/backoffice/listeUtilisateurs.php');
+            exit;
+        }
+        
+        // Vérifier que l'utilisateur n'essaie pas de s'impersonate lui-même
+        if ($_SESSION['user_id'] == $id) {
+            $_SESSION['error'] = "Vous ne pouvez pas vous connecter en tant que vous-même.";
+            header('Location: /WaveNet/views/backoffice/listeUtilisateurs.php');
+            exit;
+        }
+        
+        try {
+            // Récupérer le DB
+            require_once __DIR__ . '/../views/includes/config.php';
+            $db = connectDB();
+            
+            // Vérifier que l'utilisateur cible existe
+            require_once __DIR__ . '/../models/Utilisateur.php';
+            $targetUser = Utilisateur::findById($db, $id);
+            
+            if (!$targetUser) {
+                $_SESSION['error'] = "L'utilisateur cible n'existe pas.";
+                header('Location: /WaveNet/views/backoffice/listeUtilisateurs.php');
+                exit;
+            }
+            
+            // Stocker l'ID de l'administrateur
+            $adminId = $_SESSION['user_id'];
+            $adminNom = $_SESSION['user_nom'];
+            $adminPrenom = $_SESSION['user_prenom'];
+            $adminNiveau = $_SESSION['user_niveau'];
+            
+            // Enregistrer dans les logs
+            $stmt = $db->prepare("INSERT INTO logs_impersonation (id_admin, id_user, date_debut) VALUES (?, ?, NOW())");
+            $success = $stmt->execute([$adminId, $id]);
+            
+            if (!$success) {
+                // Gérer l'erreur sans bloquer la fonctionnalité
+                error_log("Erreur lors de l'enregistrement de l'impersonation dans les logs: " . implode(', ', $stmt->errorInfo()));
+            }
+            
+            // Récupérer l'ID du log pour la mise à jour ultérieure
+            $logId = $db->lastInsertId();
+            
+            // Remplacer les variables de session par celles de l'utilisateur cible
+            $_SESSION['impersonator_id'] = $adminId;
+            $_SESSION['impersonator_nom'] = $adminNom;
+            $_SESSION['impersonator_prenom'] = $adminPrenom;
+            $_SESSION['impersonator_niveau'] = $adminNiveau;
+            $_SESSION['impersonation_log_id'] = $logId;
+            
+            $_SESSION['user_id'] = $targetUser->getId();
+            $_SESSION['user_nom'] = $targetUser->getNom();
+            $_SESSION['user_prenom'] = $targetUser->getPrenom();
+            $_SESSION['user_niveau'] = $targetUser->getNiveau();
+            $_SESSION['user_email'] = $targetUser->getEmail();
+            
+            // Ajouter un message pour confirmer l'impersonation
+            $_SESSION['impersonation_active'] = true;
+            $_SESSION['success'] = "Vous êtes maintenant connecté en tant que " . $targetUser->getPrenom() . " " . $targetUser->getNom() . ".";
+            
+            // Rediriger vers le tableau de bord de l'utilisateur
+            header('Location: /WaveNet/views/frontoffice/userDashboard.php');
+            exit;
+            
+        } catch (Exception $e) {
+            error_log("Erreur lors de l'impersonation: " . $e->getMessage());
+            $_SESSION['error'] = "Une erreur est survenue lors de l'impersonation.";
+            header('Location: /WaveNet/views/backoffice/listeUtilisateurs.php');
+            exit;
+        }
+    }
+    
+    /**
+     * Permet à un administrateur de revenir à son propre compte après une impersonation
+     */
+    public function stopImpersonation() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Vérifier qu'une impersonation est active
+        if (!isset($_SESSION['impersonator_id'])) {
+            header('Location: /WaveNet/views/frontoffice/userDashboard.php');
+            exit;
+        }
+        
+        try {
+            // Récupérer le DB
+            require_once __DIR__ . '/../views/includes/config.php';
+            $db = connectDB();
+            
+            // Mettre à jour la date de fin dans les logs
+            if (isset($_SESSION['impersonation_log_id'])) {
+                $stmt = $db->prepare("UPDATE logs_impersonation SET date_fin = NOW() WHERE id = ?");
+                $stmt->execute([$_SESSION['impersonation_log_id']]);
+            }
+            
+            // Récupérer les infos de l'admin
+            $adminId = $_SESSION['impersonator_id'];
+            $adminNom = $_SESSION['impersonator_nom'];
+            $adminPrenom = $_SESSION['impersonator_prenom'];
+            $adminNiveau = $_SESSION['impersonator_niveau'];
+            
+            // Restaurer les variables de session de l'admin
+            $_SESSION['user_id'] = $adminId;
+            $_SESSION['user_nom'] = $adminNom;
+            $_SESSION['user_prenom'] = $adminPrenom;
+            $_SESSION['user_niveau'] = $adminNiveau;
+            
+            // Supprimer les variables d'impersonation
+            unset($_SESSION['impersonator_id']);
+            unset($_SESSION['impersonator_nom']);
+            unset($_SESSION['impersonator_prenom']);
+            unset($_SESSION['impersonator_niveau']);
+            unset($_SESSION['impersonation_log_id']);
+            unset($_SESSION['impersonation_active']);
+            
+            $_SESSION['success'] = "Vous êtes revenu à votre compte administrateur.";
+            
+            // Rediriger vers le tableau de bord administrateur
+            header('Location: /WaveNet/views/backoffice/listeUtilisateurs.php');
+            exit;
+            
+        } catch (Exception $e) {
+            error_log("Erreur lors de l'arrêt de l'impersonation: " . $e->getMessage());
+            $_SESSION['error'] = "Une erreur est survenue lors du retour à votre compte.";
+            header('Location: /WaveNet/views/frontoffice/userDashboard.php');
+            exit;
+        }
+    }
+
+    // After setup2FADatabase() and before verifier2FA() method
+    /**
+     * Méthode pour vérifier si la 2FA est terminée pour la session actuelle
+     * À utiliser dans les pages pour rediriger vers la vérification si nécessaire
+     */
+    public static function check2FAVerified() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Si l'utilisateur a un ID temporaire en attente de 2FA, c'est qu'il n'a pas encore vérifié son 2FA
+        if (isset($_SESSION['temp_user_id']) && !isset($_SESSION['user_id'])) {
+            header('Location: /WaveNet/controller/UserController.php?action=verifier2FA');
+            exit;
+        }
+        
+        return true;
+    }
+
+    /**
+     * Envoie un email de vérification à l'utilisateur
+     */
+    public function sendEmailVerification() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /WaveNet/views/frontoffice/login.php');
+            exit;
+        }
+        
+        require_once __DIR__ . '/../views/includes/config.php';
+        require_once __DIR__ . '/../models/Utilisateur.php';
+        $db = connectDB();
+        
+        // Récupérer l'utilisateur
+        $user = Utilisateur::findById($db, $_SESSION['user_id']);
+        if (!$user) {
+            $_SESSION['error_message'] = "Utilisateur non trouvé.";
+            header('Location: /WaveNet/views/frontoffice/account_activity.php');
+            exit;
+        }
+        
+        $email = $user->getEmail();
+        $userId = $_SESSION['user_id'];
+        
+        try {
+            // Générer un token de vérification
+            $token = bin2hex(random_bytes(32));
+            $expires = date('Y-m-d H:i:s', strtotime('+24 hours'));
+            
+            // Vérifier si la table email_verification existe
+            $tableCheck = $db->query("SHOW TABLES LIKE 'email_verification'");
+            if ($tableCheck->rowCount() === 0) {
+                // Créer la table si elle n'existe pas
+                $db->exec("CREATE TABLE email_verification (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    id_utilisateur INT NOT NULL,
+                    token VARCHAR(64) NOT NULL,
+                    expires_at DATETIME NOT NULL,
+                    FOREIGN KEY (id_utilisateur) REFERENCES UTILISATEUR(id_utilisateur) ON DELETE CASCADE
+                )");
+            }
+            
+            // Vérifier si la colonne email_verified existe dans la table UTILISATEUR
+            $columnCheck = $db->query("SHOW COLUMNS FROM UTILISATEUR LIKE 'email_verified'");
+            if ($columnCheck->rowCount() === 0) {
+                // Ajouter la colonne si elle n'existe pas
+                $db->exec("ALTER TABLE UTILISATEUR ADD COLUMN email_verified TINYINT(1) DEFAULT 0");
+            }
+            
+            // Supprimer les anciens tokens pour cet utilisateur
+            $stmt = $db->prepare("DELETE FROM email_verification WHERE id_utilisateur = ?");
+            $stmt->execute([$userId]);
+            
+            // Insérer le nouveau token
+            $stmt = $db->prepare("INSERT INTO email_verification (id_utilisateur, token, expires_at) VALUES (?, ?, ?)");
+            $stmt->execute([$userId, $token, $expires]);
+            
+            // Construire l'URL de vérification
+            $verificationUrl = "http://" . $_SERVER['HTTP_HOST'] . "/WaveNet/views/frontoffice/verify_email.php?token=" . $token;
+            
+            // Envoyer l'email avec PHPMailer
+            require_once __DIR__ . '/../vendor/autoload.php';
+            
+            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+            
+            try {
+                // Paramètres du serveur SMTP
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'mezazighcharaf@gmail.com'; // Remplacer par votre adresse Gmail
+                $mail->Password = 'ypzrvgxootlwsgta'; // Remplacer par votre mot de passe d'application
+                $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+                $mail->CharSet = 'UTF-8';
+                
+                // Destinataires
+                $mail->setFrom('mezazighcharaf@gmail.com', 'WaveNet');
+                $mail->addAddress($email, $user->getPrenom() . ' ' . $user->getNom());
+                
+                // Contenu
+                $mail->isHTML(true);
+                $mail->Subject = 'Vérification de votre adresse email - WaveNet';
+                $mail->Body = "
+                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                        <div style='background-color: #4CAF50; padding: 20px; text-align: center; color: white;'>
+                            <h1>Vérification de votre email</h1>
+                        </div>
+                        <div style='padding: 20px; background-color: #f9f9f9;'>
+                            <p>Bonjour " . htmlspecialchars($user->getPrenom()) . ",</p>
+                            <p>Merci d'avoir rejoint WaveNet. Pour compléter votre inscription et vérifier votre adresse email, veuillez cliquer sur le bouton ci-dessous :</p>
+                            <div style='text-align: center; margin: 30px 0;'>
+                                <a href='" . $verificationUrl . "' style='background-color: #4CAF50; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;'>Vérifier mon email</a>
+                            </div>
+                            <p>Ou copiez et collez ce lien dans votre navigateur :</p>
+                            <p style='word-break: break-all;'>" . $verificationUrl . "</p>
+                            <p>Ce lien expirera dans 24 heures.</p>
+                            <p>Si vous n'avez pas demandé cette vérification, vous pouvez ignorer cet email.</p>
+                        </div>
+                        <div style='padding: 20px; text-align: center; font-size: 12px; color: #666;'>
+                            <p>Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
+                            <p>&copy; " . date('Y') . " WaveNet. Tous droits réservés.</p>
+                        </div>
+                    </div>
+                ";
+                $mail->AltBody = "Bonjour " . $user->getPrenom() . ",\n\n"
+                    . "Merci d'avoir rejoint WaveNet. Pour compléter votre inscription et vérifier votre adresse email, veuillez cliquer sur le lien ci-dessous :\n\n"
+                    . $verificationUrl . "\n\n"
+                    . "Ce lien expirera dans 24 heures.\n\n"
+                    . "Si vous n'avez pas demandé cette vérification, vous pouvez ignorer cet email.\n\n"
+                    . "Cet email a été envoyé automatiquement. Merci de ne pas y répondre.";
+                
+                $mail->send();
+                
+                $_SESSION['success_message'] = "Un email de vérification a été envoyé à votre adresse. Veuillez vérifier votre boîte de réception et vos spams.";
+            } catch (Exception $e) {
+                error_log("Erreur lors de l'envoi de l'email: " . $mail->ErrorInfo);
+                $_SESSION['error_message'] = "Erreur lors de l'envoi de l'email de vérification. Veuillez réessayer plus tard.";
+            }
+            
+        } catch (Exception $e) {
+            error_log("Erreur lors de la génération du token: " . $e->getMessage());
+            $_SESSION['error_message'] = "Une erreur s'est produite. Veuillez réessayer plus tard.";
+        }
+        
+        header('Location: /WaveNet/views/frontoffice/account_activity.php');
+        exit;
+    }
+
+    /**
+     * Vérifie l'email d'un utilisateur avec le token fourni
+     */
+    public function verifyEmail() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $token = $_GET['token'] ?? '';
+        
+        if (empty($token)) {
+            $_SESSION['error_message'] = "Aucun token de vérification fourni.";
+            header('Location: /WaveNet/views/frontoffice/userDashboard.php');
+            exit;
+        }
+        
+        require_once __DIR__ . '/../views/includes/config.php';
+        $db = connectDB();
+        
+        try {
+            // Vérifier si la table email_verification existe
+            $tableCheck = $db->query("SHOW TABLES LIKE 'email_verification'");
+            if ($tableCheck->rowCount() === 0) {
+                throw new Exception("Système de vérification d'email non configuré.");
+            }
+            
+            // Vérifier le token
+            $stmt = $db->prepare("SELECT id_utilisateur, expires_at FROM email_verification WHERE token = ?");
+            $stmt->execute([$token]);
+            $verification = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$verification) {
+                throw new Exception("Token de vérification invalide ou déjà utilisé.");
+            }
+            
+            // Vérifier si le token a expiré
+            $expiresAt = new DateTime($verification['expires_at']);
+            $now = new DateTime();
+            
+            if ($now > $expiresAt) {
+                // Supprimer le token expiré
+                $db->prepare("DELETE FROM email_verification WHERE token = ?")->execute([$token]);
+                throw new Exception("Le lien de vérification a expiré. Veuillez demander un nouveau lien.");
+            }
+            
+            // Marquer l'email comme vérifié
+            $userId = $verification['id_utilisateur'];
+            $stmt = $db->prepare("UPDATE UTILISATEUR SET email_verified = 1 WHERE id_utilisateur = ?");
+            $stmt->execute([$userId]);
+            
+            // Supprimer le token utilisé
+            $db->prepare("DELETE FROM email_verification WHERE token = ?")->execute([$token]);
+            
+            $_SESSION['success_message'] = "Votre adresse email a été vérifiée avec succès.";
+            
+            // Si l'utilisateur est connecté, le rediriger vers le tableau de bord
+            if (isset($_SESSION['user_id'])) {
+                header('Location: /WaveNet/views/frontoffice/userDashboard.php');
+            } else {
+                // Sinon, le rediriger vers la page de connexion
+                header('Location: /WaveNet/views/frontoffice/login.php');
+            }
+            exit;
+            
+        } catch (Exception $e) {
+            $_SESSION['error_message'] = $e->getMessage();
+            header('Location: /WaveNet/views/frontoffice/userDashboard.php');
             exit;
         }
     }

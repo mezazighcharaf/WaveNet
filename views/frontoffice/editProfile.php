@@ -31,7 +31,7 @@ try {
 }
 try {
     $quartiers = [];
-    $stmt = $db->query("SELECT id_quartier, nom_quartier as nom FROM QUARTIER ORDER BY nom_quartier");
+    $stmt = $db->query("SELECT idq, nomq as nom FROM QUARTIER ORDER BY nomq");
     $quartiers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     error_log("Erreur lors de la récupération des quartiers: " . $e->getMessage());
@@ -116,11 +116,11 @@ require_once '../includes/userHeader.php';
                     </div>
                     <div style="margin-top: 1.5rem;">
                         <label for="id_quartier" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-color);">Quartier</label>
-                        <select id="id_quartier" name="id_quartier" 
+                        <select id="id_quartier" name="idq" 
                             style="width: 100%; padding: 0.8rem; border: 1px solid var(--gray-300); border-radius: var(--border-radius); font-size: 1rem; transition: all var(--transition-speed); appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'16\' height=\'16\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%232e4f3e\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpolyline points=\'6 9 12 15 18 9\'%3E%3C/polyline%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; padding-right: 2.5rem;">
                             <option value="">Sélectionnez un quartier</option>
                             <?php foreach ($quartiers as $quartier): ?>
-                                <option value="<?= $quartier['id_quartier'] ?>" <?= $userDbData->getIdQuartier() == $quartier['id_quartier'] ? 'selected' : '' ?>>
+                                <option value="<?= $quartier['idq'] ?>" <?= $userDbData->getIdQuartier() == $quartier['idq'] ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($quartier['nom']) ?>
                                 </option>
                             <?php endforeach; ?>

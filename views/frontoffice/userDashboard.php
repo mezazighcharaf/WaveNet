@@ -13,6 +13,11 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: /WaveNet/views/frontoffice/login.php');
     exit;
 }
+
+// Vérifier si l'authentification à deux facteurs a été complétée
+require_once '../../controller/UserController.php';
+UserController::check2FAVerified();
+
 $pageTitle = 'Tableau de bord';
 $activePage = 'dashboard';
 require_once '../../views/includes/config.php';
@@ -25,6 +30,7 @@ require_once '../../models/Utilisateur.php';
 require_once '../../models/Defi.php';
 require_once '../../models/Transport.php';
 require_once '../../models/Quartier.php';
+require_once '../../models/security_functions.php';
 $userId = $_SESSION['user_id'];
 $userName = $_SESSION['user_nom'] ?? 'Utilisateur';
 $userEmail = $_SESSION['user_email'] ?? 'N/A';
@@ -43,7 +49,7 @@ try {
     if ($idQuartier) {
         $quartierData = Quartier::findById($db, $idQuartier);
         if ($quartierData) {
-            $quartierName = $quartierData['nom_quartier'];
+            $quartierName = $quartierData->getNomq();
         }
         $defisQuartier = Defi::getDefisByQuartier($db, $idQuartier);
         $defisCompletes = 0;
@@ -445,6 +451,57 @@ require_once '../includes/userHeader.php';
                 </a>
             </div>
         </div>
+        <!-- Suggestions de sécurité -->
+        <?php
+        $securitySuggestions = getSecuritySuggestions($userId);
+        if (!empty($securitySuggestions)):
+        ?>
+        <div style="margin-bottom: 3rem;">
+          <h2 style="margin-bottom: 1.5rem; color: var(--dark-green); font-size: 1.8rem;">Suggestions de sécurité</h2>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <?php foreach ($securitySuggestions as $suggestion): ?>
+              <div style="background-color: <?php 
+                  if ($suggestion['type'] === 'danger') echo '#FFF5F5'; 
+                  elseif ($suggestion['type'] === 'warning') echo '#FFFBEB'; 
+                  elseif ($suggestion['type'] === 'info') echo '#EBF8FF'; 
+                  else echo '#F0FFF4'; 
+                ?>; 
+                border-left: 4px solid <?php 
+                  if ($suggestion['type'] === 'danger') echo '#F56565'; 
+                  elseif ($suggestion['type'] === 'warning') echo '#ED8936'; 
+                  elseif ($suggestion['type'] === 'info') echo '#4299E1'; 
+                  else echo '#48BB78'; 
+                ?>; 
+                padding: 1.5rem; border-radius: var(--border-radius);">
+                <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                  <div style="font-size: 1.5rem; color: <?php 
+                    if ($suggestion['type'] === 'danger') echo '#F56565'; 
+                    elseif ($suggestion['type'] === 'warning') echo '#ED8936'; 
+                    elseif ($suggestion['type'] === 'info') echo '#4299E1'; 
+                    else echo '#48BB78'; 
+                  ?>;">
+                    <i class="fas <?php echo $suggestion['icon']; ?>"></i>
+                  </div>
+                  <div style="flex: 1;">
+                    <h3 style="color: var(--dark-green); font-size: 1.2rem; margin-bottom: 0.5rem;"><?php echo $suggestion['title']; ?></h3>
+                    <p style="color: var(--text-color); margin-bottom: 1rem;"><?php echo $suggestion['message']; ?></p>
+                    <?php if (isset($suggestion['action']) && isset($suggestion['action_text'])): ?>
+                      <a href="<?php echo $suggestion['action']; ?>" class="btn btn-sm" style="display: inline-block; padding: 0.4rem 1rem; font-size: 0.85rem; background-color: <?php 
+                        if ($suggestion['type'] === 'danger') echo '#F56565'; 
+                        elseif ($suggestion['type'] === 'warning') echo '#ED8936'; 
+                        elseif ($suggestion['type'] === 'info') echo '#4299E1'; 
+                        else echo '#48BB78'; 
+                      ?>; color: white; border-radius: var(--border-radius-sm); text-decoration: none;">
+                        <?php echo $suggestion['action_text']; ?>
+                      </a>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        </div>
+        <?php endif; ?>
       </div>
     </div>
   </div>
@@ -485,7 +542,6 @@ require_once '../includes/userHeader.php';
   ?>
 </body>
 </html>
-<!-- Styles spécifiques pour cette page -->
 <style>
 .badge-item {
     display: flex;
@@ -516,6 +572,82 @@ require_once '../includes/userHeader.php';
     height: 100%;
     border-radius: 8px;
     background-color: #f8f9fa;
+}
+/* Styles pour les suggestions de sécurité */
+.security-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.security-card {
+  display: flex;
+  align-items: flex-start;
+  padding: 1.25rem;
+  border-radius: var(--border-radius);
+  background-color: var(--white);
+  border-left: 4px solid;
+  box-shadow: var(--shadow-sm);
+}
+
+.security-warning {
+  border-left-color: #f0ad4e;
+}
+
+.security-danger {
+  border-left-color: #d9534f;
+}
+
+.security-info {
+  border-left-color: #5bc0de;
+}
+
+.security-icon {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.security-warning .security-icon {
+  color: #f0ad4e;
+  background-color: rgba(240, 173, 78, 0.1);
+}
+
+.security-danger .security-icon {
+  color: #d9534f;
+  background-color: rgba(217, 83, 79, 0.1);
+}
+
+.security-info .security-icon {
+  color: #5bc0de;
+  background-color: rgba(91, 192, 222, 0.1);
+}
+
+.security-content {
+  flex: 1;
+}
+
+.security-content h3 {
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: var(--dark-green);
+}
+
+.security-content p {
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.security-content .btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
 }
 </style>
 <script>

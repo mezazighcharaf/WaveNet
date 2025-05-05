@@ -13,8 +13,8 @@ try {
     $quartiers = [];
     foreach ($quartiersData as $data) {
         $quartier = new \stdClass();
-        $quartier->id = $data['id_quartier'];
-        $quartier->nom = $data['nom_quartier'];
+        $quartier->id = $data->getIdq();
+        $quartier->nom = $data->getNomq();
         $quartiers[] = $quartier;
     }
 } catch (Exception $e) {
@@ -41,6 +41,34 @@ try {
             color: #dc3545;
             font-size: 0.85rem;
             margin-top: 5px;
+        }
+        .password-strength-meter {
+            margin-top: 5px;
+            width: 100%;
+        }
+        .password-strength-bar {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #ccc; /* gris par défaut */
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        .password-strength-text {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            color: #666;
+        }
+        .strength-weak .password-strength-bar {
+            background-color: #ff4d4d;
+            width: 33%;
+        }
+        .strength-medium .password-strength-bar {
+            background-color: #ffa64d; 
+            width: 66%;
+        }
+        .strength-strong .password-strength-bar {
+            background-color: #4CAF50; 
+            width: 100%;
         }
     </style>
 </head>
@@ -81,6 +109,10 @@ try {
             <div class="form-group">
                 <label for="mot_de_passe">Mot de passe</label>
                 <input type="password" id="mot_de_passe" name="mot_de_passe">
+                <div class="password-strength-meter">
+                    <div class="password-strength-bar"></div>
+                    <div class="password-strength-text">Force du mot de passe</div>
+                </div>
                 <div class="error-message" id="mot_de_passe-error"></div>
             </div>
             <div class="form-group">
@@ -202,12 +234,71 @@ try {
             }
         });
         
-        passwordInput.addEventListener('input', function() {
-            if (this.value.length >= 8) {
-                passwordError.textContent = '';
+        // Fonction pour vérifier la force du mot de passe et mettre à jour la barre
+        function checkPasswordStrength(password) {
+            const strengthMeter = document.querySelector('.password-strength-meter');
+            const strengthText = document.querySelector('.password-strength-text');
+            
+            // Réinitialiser les classes
+            strengthMeter.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
+            
+            // Si le champ est vide
+            if (password.length === 0) {
+                strengthText.textContent = 'Force du mot de passe';
+                return;
             }
             
-            // Vérifier également la confirmation si elle a déjà été saisie
+            // Critères de force
+            const hasMinLength = password.length >= 8;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
+            
+            // Calculer le score
+            let score = 0;
+            if (hasMinLength) score++;
+            if (hasUpperCase) score++;
+            if (hasNumber) score++;
+            if (hasSpecialChar) score++;
+            
+            // Mettre à jour l'interface en fonction du score
+            if (score === 0) {
+                strengthText.textContent = 'Force du mot de passe';
+            } else if (score <= 2) {
+                strengthMeter.classList.add('strength-weak');
+                strengthText.textContent = 'Faible';
+            } else if (score === 3) {
+                strengthMeter.classList.add('strength-medium');
+                strengthText.textContent = 'Moyen';
+            } else {
+                strengthMeter.classList.add('strength-strong');
+                strengthText.textContent = 'Fort';
+            }
+        }
+        
+        // Ajouter la vérification de force pour le mot de passe
+        passwordInput.addEventListener('input', function() {
+            checkPasswordStrength(this.value);
+            
+            // Vérification en temps réel
+            const hasMinLength = this.value.length >= 8;
+            const hasUpperCase = /[A-Z]/.test(this.value);
+            const hasNumber = /[0-9]/.test(this.value);
+            const hasSpecialChar = /[^A-Za-z0-9]/.test(this.value);
+            
+            if (hasMinLength && hasUpperCase && hasNumber && hasSpecialChar) {
+                passwordError.textContent = '';
+            } else {
+                const missingCriteria = [];
+                if (!hasMinLength) missingCriteria.push('8 caractères minimum');
+                if (!hasUpperCase) missingCriteria.push('1 majuscule');
+                if (!hasNumber) missingCriteria.push('1 chiffre');
+                if (!hasSpecialChar) missingCriteria.push('1 caractère spécial');
+                
+                passwordError.textContent = 'Le mot de passe doit contenir: ' + missingCriteria.join(', ');
+            }
+            
+            // Vérifier également la confirmation
             if (confirmInput.value && this.value !== confirmInput.value) {
                 confirmError.textContent = 'Les mots de passe ne correspondent pas';
             } else if (confirmInput.value) {

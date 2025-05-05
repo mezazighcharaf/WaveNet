@@ -1,6 +1,8 @@
 {
     "require": {
         "sonata-project/google-authenticator": "^2.3",
-        "phpmailer/phpmailer": "^6.10"
+        "phpmailer/phpmailer": "^6.10",
+        "maxmind-db/reader": "~1.0",
+        "geoip2/geoip2": "~2.0"
     }
 }

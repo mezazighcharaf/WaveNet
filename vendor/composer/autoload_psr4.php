@@ -8,5 +8,10 @@ $baseDir = dirname($vendorDir);
 return array(
     'Sonata\\GoogleAuthenticator\\' => array($vendorDir . '/sonata-project/google-authenticator/src'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
+    'MaxMind\\WebService\\' => array($vendorDir . '/maxmind/web-service-common/src/WebService'),
+    'MaxMind\\Exception\\' => array($vendorDir . '/maxmind/web-service-common/src/Exception'),
+    'MaxMind\\Db\\' => array($vendorDir . '/maxmind-db/reader/src/MaxMind/Db'),
     'Google\\Authenticator\\' => array($vendorDir . '/sonata-project/google-authenticator/src'),
+    'GeoIp2\\' => array($vendorDir . '/geoip2/geoip2/src'),
+    'Composer\\CaBundle\\' => array($vendorDir . '/composer/ca-bundle/src'),
 );
