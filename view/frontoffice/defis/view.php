@@ -1,5 +1,11 @@
 <?php
+session_start();
+require_once __DIR__ . '/../../../model/Database.php';
 require_once __DIR__ . '/../../../controller/EtapeController.php';
+
+// Établir la connexion à la base de données
+$database = new Database();
+$db = $database->getConnection();
 ?>
 
 <div class="etapes-section">
@@ -173,6 +179,52 @@ require_once __DIR__ . '/../../../controller/EtapeController.php';
 <!-- Script pour l'animation du stickman -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // ID du défi passé directement du PHP
+        const defiId = <?php echo $defi['Id_Defi']; ?>;
+        
+        // Vérifier si l'utilisateur est connecté
+        const estConnecte = <?php echo (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== 'demo_user') ? 'true' : 'false'; ?>;
+        console.log("Utilisateur connecté:", estConnecte);
+        
+        // Vérifier si l'utilisateur participe au défi
+        const estInscritAuDefi = <?php 
+            if (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== 'demo_user') {
+                $userId = $_SESSION['user_id'];
+                $query = "SELECT Defi_En_Cours FROM utilisateur WHERE Id_Utilisateur = ? AND Defi_En_Cours = ?";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(1, $userId);
+                $stmt->bindParam(2, $defi['Id_Defi']);
+                $stmt->execute();
+                echo ($stmt->rowCount() > 0) ? 'true' : 'false';
+            } else {
+                echo 'false';
+            }
+        ?>;
+        console.log("Inscrit au défi:", estInscritAuDefi);
+        
+        // Étape actuelle récupérée du serveur (si l'utilisateur participe déjà au défi)
+        let etapeActuelle = <?php 
+            // Vérifier si l'utilisateur participe au défi et récupérer son étape
+            if (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== 'demo_user') {
+                $userId = $_SESSION['user_id'];
+                $query = "SELECT Etape_En_Cours FROM utilisateur WHERE Id_Utilisateur = ? AND Defi_En_Cours = ?";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(1, $userId);
+                $stmt->bindParam(2, $defi['Id_Defi']);
+                $stmt->execute();
+                
+                if ($stmt->rowCount() > 0) {
+                    $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+                    echo isset($userInfo['Etape_En_Cours']) ? (int)$userInfo['Etape_En_Cours'] : 0;
+                } else {
+                    echo 0; // L'utilisateur ne participe pas encore au défi
+                }
+            } else {
+                echo 0; // Utilisateur non connecté ou utilisateur démo
+            }
+        ?>;
+        console.log("Étape actuelle chargée:", etapeActuelle);
+        
         const stickman = document.getElementById('stickman');
         const legLeft = document.getElementById('leg-left');
         const legRight = document.getElementById('leg-right');
@@ -180,6 +232,45 @@ require_once __DIR__ . '/../../../controller/EtapeController.php';
         const armRight = document.getElementById('arm-right');
         const btnAvancer = document.getElementById('btnAvancer');
         const btnRetour = document.getElementById('btnRetour');
+        
+        // Gérer l'interface en fonction de l'état de l'utilisateur
+        if (!estConnecte) {
+            // Cas 1: L'utilisateur n'est pas connecté
+            btnAvancer.disabled = true;
+            btnRetour.disabled = true;
+            
+            // Ajouter un message informatif
+            const messageNonConnecte = document.createElement('div');
+            messageNonConnecte.classList.add('alert', 'alert-warning', 'text-center', 'mt-3');
+            messageNonConnecte.style.width = '100%';
+            messageNonConnecte.style.maxWidth = '900px';
+            messageNonConnecte.style.margin = '0 auto 20px auto';
+            messageNonConnecte.innerHTML = '<strong>Connectez-vous</strong> pour participer à ce défi et sauvegarder votre progression.';
+            const container = document.querySelector('.stickman-controls');
+            container.parentNode.insertBefore(messageNonConnecte, container.nextSibling);
+            
+            // Ajouter des tooltips sur les boutons
+            btnAvancer.title = "Connectez-vous pour avancer";
+            btnRetour.title = "Connectez-vous pour revenir";
+        } else if (!estInscritAuDefi) {
+            // Cas 2: L'utilisateur est connecté mais n'est pas inscrit au défi
+            btnAvancer.disabled = true;
+            btnRetour.disabled = true;
+            
+            // Ajouter un message informatif
+            const messageNonInscrit = document.createElement('div');
+            messageNonInscrit.classList.add('alert', 'alert-info', 'text-center', 'mt-3');
+            messageNonInscrit.style.width = '100%';
+            messageNonInscrit.style.maxWidth = '900px';
+            messageNonInscrit.style.margin = '0 auto 20px auto';
+            messageNonInscrit.innerHTML = 'Vous devez <strong>participer à ce défi</strong> pour pouvoir progresser. <a href="../participer_defi.php?id=<?php echo $defi["Id_Defi"]; ?>" class="btn btn-sm btn-primary ml-3">Participer maintenant</a>';
+            const container = document.querySelector('.stickman-controls');
+            container.parentNode.insertBefore(messageNonInscrit, container.nextSibling);
+            
+            // Ajouter des tooltips sur les boutons
+            btnAvancer.title = "Inscrivez-vous au défi pour avancer";
+            btnRetour.title = "Inscrivez-vous au défi pour revenir";
+        }
         
         // Chemins à colorer
         const pathSegments = [
@@ -197,11 +288,97 @@ require_once __DIR__ . '/../../../controller/EtapeController.php';
             840    // Position finale après le drapeau
         ];
         
-        let etapeActuelle = 0;
         let enMouvement = false;
         let successCelebrated = false;
         let intervalMarche = null;
         let intervalCelebration = null;
+        
+        // Fonction pour sauvegarder la progression dans la base de données
+        function sauvegarderProgression(etape) {
+            // Vérifier si l'utilisateur est connecté et inscrit au défi
+            if (!estConnecte || !estInscritAuDefi) {
+                console.log("Utilisateur non connecté ou non inscrit, la progression ne sera pas sauvegardée");
+                return;
+            }
+            
+            console.log("🔄 Sauvegarde de l'étape:", etape, "pour le défi ID:", defiId);
+            
+            // Utiliser un chemin relatif fiable
+            const saveUrl = '../../sauvegarder_etape.php';
+            console.log("📡 URL de sauvegarde:", saveUrl);
+            
+            // Construire les données POST
+            const postData = 'etape=' + etape + '&defi_id=' + defiId;
+            console.log("📦 Données POST:", postData);
+            
+            // Utiliser fetch pour envoyer l'étape au serveur
+            fetch(saveUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: postData
+            })
+            .then(response => {
+                console.log("⬅️ Statut de la réponse:", response.status);
+                if (!response.ok) {
+                    throw new Error('Erreur réseau: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("✅ Progression sauvegardée - Réponse complète:", data);
+                
+                // Afficher notification de points gagnés si applicable
+                if (data.success && data.points > 0) {
+                    console.log("🌟 Points gagnés:", data.points);
+                    afficherNotificationPoints(data.points);
+                }
+            })
+            .catch(error => {
+                console.error("❌ Erreur lors de la sauvegarde:", error);
+            });
+        }
+        
+        // Fonction pour afficher une notification de points gagnés
+        function afficherNotificationPoints(points) {
+            const notification = document.createElement('div');
+            notification.className = 'points-notification';
+            notification.innerHTML = `<i class="fas fa-leaf"></i> +${points} points!`;
+            notification.style.position = 'fixed';
+            notification.style.top = '20%';
+            notification.style.left = '50%';
+            notification.style.transform = 'translate(-50%, -50%)';
+            notification.style.backgroundColor = 'rgba(76, 175, 80, 0.9)';
+            notification.style.color = 'white';
+            notification.style.padding = '15px 25px';
+            notification.style.borderRadius = '10px';
+            notification.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+            notification.style.zIndex = '10000';
+            notification.style.fontSize = '20px';
+            notification.style.fontWeight = 'bold';
+            notification.style.opacity = '0';
+            notification.style.transition = 'opacity 0.5s, transform 0.5s';
+            
+            document.body.appendChild(notification);
+            
+            // Animation d'apparition
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translate(-50%, -50%) scale(1.1)';
+            }, 10);
+            
+            // Animation de disparition
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translate(-50%, -50%) scale(0.9)';
+                
+                // Supprimer l'élément après la fin de l'animation
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 3000);
+        }
         
         // Fonction pour colorer le segment de chemin parcouru
         function colorerChemin(index) {
@@ -366,6 +543,9 @@ require_once __DIR__ . '/../../../controller/EtapeController.php';
                     btnRetour.disabled = (etapeActuelle === 0);
                     btnAvancer.disabled = (etapeActuelle === etapes.length - 1);
                     
+                    // Sauvegarder la progression dans la base de données
+                    sauvegarderProgression(etapeActuelle);
+                    
                     // Si c'est l'étape finale, déclencher la célébration
                     if (etapeActuelle === etapes.length - 1 && !successCelebrated) {
                         successCelebrated = true;
@@ -490,6 +670,40 @@ require_once __DIR__ . '/../../../controller/EtapeController.php';
                 confettiContainer.innerHTML = '';
             }, 15000); // 15 secondes pour être sûr que tous les confettis sont terminés
         }
+        
+        // Fonction pour initialiser le stickman à sa position actuelle
+        function initialiserStickman() {
+            console.log("Initialisation du stickman avec étape:", etapeActuelle);
+            
+            // Positionner le stickman à la position correspondante à son étape
+            if (etapeActuelle >= 0 && etapeActuelle < etapes.length) {
+                stickman.setAttribute('transform', `translate(${etapes[etapeActuelle]}, 200)`);
+                
+                // Colorer les segments de chemin déjà parcourus
+                for (let i = 0; i < etapeActuelle && i < pathSegments.length; i++) {
+                    colorerChemin(i);
+                }
+                
+                // Mettre à jour les boutons (seulement si l'utilisateur est connecté et inscrit)
+                if (estConnecte && estInscritAuDefi) {
+                    btnRetour.disabled = (etapeActuelle === 0);
+                    btnAvancer.disabled = (etapeActuelle === etapes.length - 1);
+                    
+                    // Si c'est l'étape finale, lancer la célébration
+                    if (etapeActuelle === etapes.length - 1) {
+                        successCelebrated = true;
+                        animerCelebration();
+                    }
+                } else {
+                    // L'utilisateur n'est pas connecté ou pas inscrit, désactiver les boutons
+                    btnRetour.disabled = true;
+                    btnAvancer.disabled = true;
+                }
+            }
+        }
+        
+        // Initialiser le stickman au chargement
+        initialiserStickman();
     });
 </script>
 

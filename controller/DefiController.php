@@ -1,14 +1,21 @@
 <?php
 require_once __DIR__ . '/../model/Database.php';
 require_once __DIR__ . '/../model/Defi.php';
+require_once __DIR__ . '/../vendor/autoload.php'; // Pour charger PHPMailer
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class DefiController {
     private $db;
     private $defi;
-    private $mailgunApiKey = '4586632d807b5817dd553a1a4290b25c-a908eefc-2dd5cb02'; // Clé API Mailgun
-    private $mailgunDomain = 'sandboxb65dcf16ce40469291b43a43241697d7.mailgun.org'; // Domaine vérifié sur Mailgun
-    private $mailgunFrom = 'Urbaverse <postmaster@sandboxb65dcf16ce40469291b43a43241697d7.mailgun.org>'; // Nom d'expéditeur modifié
-    private $isMailgunEU = false; // Utiliser l'endpoint US
+    
+    // Configuration SMTP - À MODIFIER avec vos informations
+    private $smtpHost = 'smtp.gmail.com';      // Serveur SMTP de Gmail
+    private $smtpUsername = 'bouaziz.aicha2006@gmail.com'; // Remplacez par votre adresse Gmail
+    private $smtpPassword = 'ejlasltgjujzqplu';      // Remplacez par votre mot de passe d'application
+    private $smtpPort = 587;                   // Port TLS pour Gmail
+    private $emailFrom = 'Urbaverse <bouaziz.aicha2006@gmail.com>'; // Remplacez par votre email
     
     public function __construct() {
         $database = new Database();
@@ -220,7 +227,7 @@ class DefiController {
     }
     
     /**
-     * Envoie un email via Mailgun API
+     * Envoie un email via PHPMailer
      * 
      * @param string $to Adresse du destinataire
      * @param string $subject Sujet du mail
@@ -231,73 +238,50 @@ class DefiController {
     private function sendEmail($to, $subject, $textBody, $htmlBody = null) {
         error_log("Tentative d'envoi d'email à: " . $to . " avec sujet: " . $subject);
         
-        // URL de l'API Mailgun (utilisation de l'endpoint US)
-        $url = "https://api.mailgun.net/v3/{$this->mailgunDomain}/messages";
+        // Créer une nouvelle instance de PHPMailer
+        $mail = new PHPMailer(true);
         
-        error_log("URL de l'API Mailgun: " . $url);
-        
-        // Préparation des données avec des en-têtes supplémentaires pour éviter les spams
-        $data = array(
-            'from'    => $this->mailgunFrom,
-            'to'      => $to,
-            'subject' => $subject,
-            'text'    => $textBody,
-            'h:Reply-To' => 'noreply@urbaverse.com',
-            'h:X-Mailer' => 'Urbaverse Notification System',
-            'h:X-Priority' => '1'  // Haute priorité
-        );
-        
-        // Ajout du corps HTML si fourni
-        if ($htmlBody) {
-            $data['html'] = $htmlBody;
-        }
-        
-        // Initialisation de cURL
-        $ch = curl_init();
-        
-        // Configuration de cURL exactement comme dans le test qui fonctionnait
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_USERPWD, "api:{$this->mailgunApiKey}");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Pour le développement uniquement
-        curl_setopt($ch, CURLOPT_POST, true); 
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        
-        // Exécution de la requête
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
-        error_log("Code de réponse HTTP: " . $httpCode);
-        
-        // Gestion des erreurs
-        if (curl_errno($ch)) {
-            $error = curl_error($ch);
-            curl_close($ch);
-            error_log("Erreur cURL lors de l'envoi d'email: " . $error);
+        try {
+            // Configuration du serveur
+            $mail->isSMTP();                                      // Utiliser SMTP
+            $mail->Host       = $this->smtpHost;                  // Serveur SMTP
+            $mail->SMTPAuth   = true;                             // Activer l'authentification SMTP
+            $mail->Username   = $this->smtpUsername;              // Nom d'utilisateur SMTP
+            $mail->Password   = $this->smtpPassword;              // Mot de passe SMTP
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;   // Activer le chiffrement TLS
+            $mail->Port       = $this->smtpPort;                  // Port TCP
+
+            // Expéditeur et destinataires
+            $mail->setFrom($this->smtpUsername, 'Urbaverse');
+            $mail->addAddress($to);                               // Ajouter un destinataire
+            $mail->addReplyTo('noreply@urbaverse.com', 'Noreply');
+
+            // Contenu
+            $mail->isHTML($htmlBody !== null);                    // Format HTML si htmlBody est fourni
+            $mail->Subject = $subject;
+            
+            if ($htmlBody) {
+                $mail->Body    = $htmlBody;
+                $mail->AltBody = $textBody;
+            } else {
+                $mail->Body = $textBody;
+            }
+
+            // Envoyer l'email
+            $mail->send();
+            
+            error_log("Email envoyé avec succès à: " . $to);
+            return [
+                'success' => true,
+                'message' => 'Email envoyé avec succès'
+            ];
+        } catch (Exception $e) {
+            error_log("Erreur lors de l'envoi d'email: " . $mail->ErrorInfo);
             return [
                 'success' => false,
-                'message' => "Erreur cURL: " . $error,
-                'http_code' => 0
+                'message' => "Erreur lors de l'envoi: " . $mail->ErrorInfo
             ];
         }
-        
-        curl_close($ch);
-        
-        // Décodage de la réponse JSON
-        $responseData = json_decode($response, true);
-        error_log("Réponse Mailgun: " . $response);
-        
-        $result = [
-            'success' => $httpCode >= 200 && $httpCode < 300,
-            'message' => isset($responseData['message']) ? $responseData['message'] : 'Aucun message',
-            'http_code' => $httpCode
-        ];
-        
-        error_log("Résultat d'envoi d'email: " . json_encode($result));
-        
-        return $result;
     }
     
     /**
@@ -340,14 +324,17 @@ class DefiController {
         $htmlBody .= "<p>L'équipe Urbaverse</p>";
         $htmlBody .= "</body></html>";
         
-        // Envoyer directement une notification à l'adresse email vérifiée
-        $user = array(
-            'id' => 1,
-            'prenom' => 'Aicha',
-            'nom' => 'Bouaziz',
-            'email' => 'bouaziz.aicha2006@gmail.com'
-        );
-        $this->sendEmail($user['email'], $subject, $textBody, $htmlBody);
+        // Envoyer directement une notification à l'adresse email vérifiée pour test
+        // Dans un environnement de production, vous enverriez à tous les emails
+        $testEmail = 'bouaziz.aicha2006@gmail.com';
+        $this->sendEmail($testEmail, $subject, $textBody, $htmlBody);
+        
+        // Pour envoyer à tous les utilisateurs, décommenter le code ci-dessous
+        /*
+        foreach ($emails as $email) {
+            $this->sendEmail($email, $subject, $textBody, $htmlBody);
+        }
+        */
     }
     
     /**
@@ -382,10 +369,16 @@ class DefiController {
         $htmlBody .= "<p>L'équipe Urbaverse</p>";
         $htmlBody .= "</body></html>";
         
-        // Envoyer un email à chaque utilisateur
+        // Pour l'instant, envoi à une adresse test uniquement
+        $testEmail = 'bouaziz.aicha2006@gmail.com';
+        $this->sendEmail($testEmail, $subject, $textBody, $htmlBody);
+        
+        // Pour envoyer à tous les utilisateurs, décommenter le code ci-dessous
+        /*
         foreach ($emails as $email) {
             $this->sendEmail($email, $subject, $textBody, $htmlBody);
         }
+        */
     }
 }
 ?>
