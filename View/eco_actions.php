@@ -1,11 +1,15 @@
 <?php
-require_once(__DIR__ . '/../Controller/EcoActionController.php'); // Include controller
+session_start(); 
 
-// Create an instance of EcoActionController
+require_once(__DIR__ . '/../Controller/EcoActionController.php'); // Inclure le contrôleur
 $controller = new EcoActionController();
 
-// Get all eco actions from the controller
-$actions = $controller->getAllActions();
+
+// Ensuite, récupérer l'état (GET)
+$etat = isset($_GET['etat']) ? $_GET['etat'] : 'encours';
+
+// Puis récupérer les actions après modifications
+$actions = $controller->getActionsByEtat($etat);
 ?>
 
 <!DOCTYPE html>
@@ -42,34 +46,56 @@ $actions = $controller->getAllActions();
 
   <main class="main-content">
     <section class="actions-disponibles">
+      <form action="eco_actions.php" method="GET">
+        <label for="etat">Filtrer par état :</label>
+        <select name="etat" id="etat">
+          <option value="encours" <?= $etat == 'encours' ? 'selected' : '' ?>>en cours</option>
+          <option value="termine" <?= $etat == 'termine' ? 'selected' : '' ?>>terminé</option>
+          <option value="annulé" <?= $etat == 'annulé' ? 'selected' : '' ?>>annulé</option>
+        </select>
+
+        <button type="submit">Filtrer</button>
+      </form>
+
       <h2>🌱 Actions disponibles</h2>
 
-      <?php foreach ($actions as $action): ?>
-      <div class="action-card">
-        <div class="action-header">
-          <h3><?= htmlspecialchars($action['nom_action']) ?> <!-- <span class="action-id">#<?= $action['id_action'] ?></span></h3-->
+    <?php foreach ($actions as $action): ?>
+        <div class="action-card">
+            <div class="action-header">
+                <h3><?= htmlspecialchars($action['nom_action']) ?></h3>
+            </div>
+
+            <p class="action-description">
+                <strong>Description :</strong> <?= htmlspecialchars($action['description_action']) ?>
+            </p>
+
+            <ul class="action-details">
+                <li><strong>Points verts :</strong> <?= htmlspecialchars($action['point_vert']) ?></li>
+                <li><strong>Catégorie :</strong> <?= htmlspecialchars($action['categorie']) ?></li>
+                <li><strong>État :</strong> <?= htmlspecialchars($action['etat']) ?></li>
+                <li><strong>Date :</strong> <?= htmlspecialchars($action['date']) ?></li>
+            </ul>
+
+            <!-- Formulaire pour participer -->
+            <form method="POST" action="eco_actions.php" style="display:inline;">
+                <input type="hidden" name="action_type" value="participer">
+                <input type="hidden" name="id_action" value="<?= htmlspecialchars($action['id_action']) ?>">
+                <button type="submit" class="btn btn-primary">Je participe</button>
+            </form>
+
+            <!-- Formulaire pour annuler -->
+            <form method="POST" action="eco_actions.php" style="display:inline;">
+                <input type="hidden" name="action_type" value="annuler">
+                <input type="hidden" name="id_action" value="<?= htmlspecialchars($action['id_action']) ?>">
+                <button type="submit" class="btn btn-secondary">J'annule ma participation</button>
+            </form>
+            
         </div>
-
-        <p class="action-description">
-          <strong>Description :</strong> <?= htmlspecialchars($action['description_action']) ?>
-        </p>
-
-        <ul class="action-details">
-          <li><strong>Points verts :</strong> <?= $action['point_vert'] ?></li>
-          <li><strong>Catégorie :</strong> <?= htmlspecialchars($action['categorie']) ?></li>
-          <li><strong>État :</strong> <?= htmlspecialchars($action['etat']) ?></li>
-          <li><strong>Date :</strong> <?= $action['date'] ?></li>
-        </ul>
         
-        <button class="btn btn-primary">Je participe</button>
-        <button class="btn btn-secondary">J'annule ma participation</button>
-        
+    <?php endforeach; ?>
+   
 
-        <div class="confirmation-message" id="confirmation-<?= $action['id_action'] ?>" style="display: none;">
-          🌱 Merci pour votre participation !
-        </div>
-      </div>
-      <?php endforeach; ?>
+
 
     </section>
   </main>

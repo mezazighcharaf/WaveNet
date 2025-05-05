@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=Windows-1256">
+<TITLE>Write</TITLE>
+<LINK TYPE="text/css" REL="stylesheet" HREF="fpdf.css">
+</HEAD>
+<BODY>
+<H2 DIR='LTR'>Write</H2>
+<P DIR='LTR'><TT>Write(<B>float</B> h, <B>string</B> txt [, <B>mixed</B> link])</TT></P>
+<H4 CLASS='st'>الإصدار</H4>
+1.5
+<H4 CLASS='st'>الشرح</H4>
+تقوم هذه الدالة بطباعة نص معين في الموضع الحالي من المستند بإرتفاع معين يتم تحديده
+ضمن بارامترات الدالة
+<BR>
+ويمكن لهذه الدالة ان تطبع إرتباط تشعبي او رابط ضمن المستند
+<H4 CLASS='st'>باراميتر</H4>
+<TT><U>h</U></TT>
+<BLOCKQUOTE>
+يمثل هذا البارامتر ارتفاع السطر الذي سيتم طباعة النص ضمنه
+</BLOCKQUOTE>
+<TT><U>txt</U></TT>
+<BLOCKQUOTE>
+يمثل هذا البارامتر النص الذي سيتم طباعته ضمن المستند
+</BLOCKQUOTE>
+<TT><U>link</U></TT>
+<BLOCKQUOTE>
+هذا البارامتر افتراضي فإذا لم يتم تحديده سيطبع نص و إذا تم تحديده سيطبع نص على شكل ارتباط تشعبي عنوانه هو العنوان الذي تم تحديده او بإمكانك وضع القيمة التي ترجعها الدالة AddLink مكان هذا البارامتر
+</BLOCKQUOTE>
+<H4 CLASS='st'>مثال</H4>
+<PRE><CODE>//Begin with regular font
+$pdf-&gt;SetFont('Arial','',14);
+$pdf-&gt;Write(5,'Visit ');
+//Then put a blue underlined link
+$pdf-&gt;SetTextColor(0,0,255);
+$pdf-&gt;SetFont('','U');
+$pdf-&gt;Write(5,'www.fpdf.org','http://www.fpdf.org');</CODE></PRE>
+<H4 CLASS='st'>انظر لمواضيع ذات صلة</H4>
+<A HREF="setfont.htm">SetFont</A>,
+<A HREF="settextcolor.htm">SetTextColor</A>,
+<A HREF="addlink.htm">AddLink</A>,
+<A HREF="multicell.htm">MultiCell</A>,
+<A HREF="setautopagebreak.htm">SetAutoPageBreak</A>
+<HR STYLE="margin-top:1.5em">
+<DIV STYLE="text-align:center"><A HREF="index.htm">الرئيسية</A></DIV>
+</BODY>
+</HTML>

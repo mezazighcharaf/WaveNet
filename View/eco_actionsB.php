@@ -5,6 +5,25 @@ require_once '../Controller/AdminParticipantController.php';
 require_once '../Model/ParticipantBackModel.php';
 require_once '../Model/EcoActionBackModel.php';
 require_once '../Config/database.php';
+require_once '../libs/fpdf/fpdf.php';
+require_once '../Controller/sendReminder.php';
+require_once(__DIR__ . '/../Controller/AdminParticipantController.php');
+$adminController = new AdminParticipantController();
+$statsNiveaux = $adminController->getStatistiquesParNiveau();
+// Récupérer le nom du participant à partir du formulaire (ou autre source)
+$nom_participant = isset($_POST['nom']) ? $_POST['nom'] : 'Nom par défaut';  // Si aucun nom n'est donné, on met un nom par défaut
+
+
+// Inclure le fichier avec la fonction sendReminder
+
+
+// Exemple d'appel de la fonction
+$participantEmail = 'participant@example.com';  // Email du participant
+$participantName = 'John Doe';  // Nom du participant
+$eventDate = '2025-05-10 10:00';  // Date de l'événement
+
+// Appel de la fonction pour envoyer le rappel
+sendReminder($participantEmail, $participantName, $eventDate);
 
 // Instancier les modèles
 $ecoActionModel = new EcoActionBackModel();
@@ -43,7 +62,7 @@ $formData = $_SESSION['formData'] ?? [];
 $errors = $_SESSION['errors'] ?? [];
 unset($_SESSION['formData'], $_SESSION['errors']);
 ?>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -83,6 +102,13 @@ unset($_SESSION['formData'], $_SESSION['errors']);
     </nav>
 
     <main>
+    <form action="certificat.php" method="POST">
+    <label for="nom_participant">Nom du participant :</label>
+    <input type="text" id="nom_participant" name="nom" required>
+    <button type="submit">Générer le certificat</button>
+</form>
+
+
         <h1>Gestion des Actions Écologiques</h1>
 
         <!-- Messages -->
@@ -129,20 +155,17 @@ unset($_SESSION['formData'], $_SESSION['errors']);
                 <?php if (isset($errors['statut'])): ?><span class="error"><?= htmlspecialchars($errors['statut']) ?></span><?php endif; ?>
             </div>
 
-            <div class="form-group">
-                <label for="points_verts">Points verts</label>
-                <input type="number" name="points_verts" id="points_verts" value="<?= htmlspecialchars($formData['points_verts'] ?? $actionToModify['point_vert'] ?? '') ?>" required>
-                <?php if (isset($errors['points_verts'])): ?><span class="error"><?= htmlspecialchars($errors['points_verts']) ?></span><?php endif; ?>
-            </div>
+            
 
             <div class="form-group">
                 <label for="categorie">Catégorie</label>
                 <select name="categorie" id="categorie" required>
                     <option value="">Sélectionner</option>
                     <option value="environnement" <?= (isset($formData['categorie']) && $formData['categorie'] == 'environnement') || (isset($actionToModify) && $actionToModify['categorie'] == 'environnement') ? 'selected' : '' ?>>Environnement</option>
-                    <option value="biodiversite" <?= (isset($formData['categorie']) && $formData['categorie'] == 'biodiversite') || (isset($actionToModify) && $actionToModify['categorie'] == 'biodiversite') ? 'selected' : '' ?>>Biodiversité</option>
-                    <option value="recyclage" <?= (isset($formData['categorie']) && $formData['categorie'] == 'recyclage') || (isset($actionToModify) && $actionToModify['categorie'] == 'recyclage') ? 'selected' : '' ?>>Recyclage</option>
-                    <option value="energie" <?= (isset($formData['categorie']) && $formData['categorie'] == 'energie') || (isset($actionToModify) && $actionToModify['categorie'] == 'energie') ? 'selected' : '' ?>>Énergie</option>
+<option value="biodiversité" <?= (isset($formData['categorie']) && $formData['categorie'] == 'biodiversité') || (isset($actionToModify) && $actionToModify['categorie'] == 'biodiversité') ? 'selected' : '' ?>>Biodiversité</option>
+<option value="recyclage" <?= (isset($formData['categorie']) && $formData['categorie'] == 'recyclage') || (isset($actionToModify) && $actionToModify['categorie'] == 'recyclage') ? 'selected' : '' ?>>Recyclage</option>
+<option value="energie" <?= (isset($formData['categorie']) && $formData['categorie'] == 'energie') || (isset($actionToModify) && $actionToModify['categorie'] == 'energie') ? 'selected' : '' ?>>Énergie</option>
+
                 </select>
                 <?php if (isset($errors['categorie'])): ?><span class="error"><?= htmlspecialchars($errors['categorie']) ?></span><?php endif; ?>
             </div>
@@ -205,7 +228,7 @@ unset($_SESSION['formData'], $_SESSION['errors']);
         <select name="nom_action" id="nom_action" required>
             <option value="">Sélectionner une action</option>
             <?php foreach ($ecoActions as $action): ?>
-                <option value="<?= $action['id_action'] ?>" <?= (isset($participantToModify) && $participantToModify['id_action'] == $action['id_action']) ? 'selected' : '' ?>>
+                <option value="<?= $action['nom_action'] ?>" <?= (isset($participantToModify) && $participantToModify['id_action'] == $action['id_action']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($action['nom_action']) ?>
                 </option>
             <?php endforeach; ?>
@@ -224,6 +247,18 @@ unset($_SESSION['formData'], $_SESSION['errors']);
         <input type="date" name="date_inscrit" id="date_inscrit" value="<?= htmlspecialchars($formData['date_inscrit'] ?? $participantToModify['date_inscrit'] ?? '') ?>" required>
         <?php if (isset($errors['date_inscrit'])): ?><span class="error"><?= htmlspecialchars($errors['date_inscrit']) ?></span><?php endif; ?>
     </div>
+    <div class="form-group">
+
+    <label for="niveau">Niveau</label>
+    <select name="niveau" id="niveau" required>
+        <option value="">Sélectionner un niveau</option>
+        <option value="Débutant" <?= (isset($formData['niveau']) && $formData['niveau'] == 'Débutant') || (isset($participantToModify) && $participantToModify['niveau'] == 'Débutant') ? 'selected' : '' ?>>Débutant</option>
+        <option value="Intermédiaire" <?= (isset($formData['niveau']) && $formData['niveau'] == 'Intermédiaire') || (isset($participantToModify) && $participantToModify['niveau'] == 'Intermédiaire') ? 'selected' : '' ?>>Intermédiaire</option>
+        <option value="Expert" <?= (isset($formData['niveau']) && $formData['niveau'] == 'Expert') || (isset($participantToModify) && $participantToModify['niveau'] == 'Avancé') ? 'selected' : '' ?>>Avancé</option>
+    </select>
+    <?php if (isset($errors['niveau'])): ?><span class="error"><?= htmlspecialchars($errors['niveau']) ?></span><?php endif; ?>
+</div>
+
 
     <button type="submit"><?= isset($participantToModify) ? 'Modifier' : 'Ajouter' ?></button>
 </form>
@@ -239,7 +274,8 @@ unset($_SESSION['formData'], $_SESSION['errors']);
             <th>Email</th>
             <th>Date d'inscription</th>
             <th>Actions</th>
-            <th>Nom des actions</th> <!-- Nouvelle colonne -->
+            <th>Nom des actions</th>
+            <th>Niveau</th><!-- Nouvelle colonne -->
         </tr>
     </thead>
     <tbody>
@@ -273,12 +309,70 @@ unset($_SESSION['formData'], $_SESSION['errors']);
                     }
                     ?>
                 </td>
+                <td><?= htmlspecialchars($participant['niveau']) ?></td>
             </tr>
         <?php endforeach; ?>
+        
     </tbody>
+    
+    
 </table>
 
 
+
     </main>
+
+</section>
+<section class="statistiques-section">
+  <h2>Statistiques des Participants par Niveau</h2>
+
+  <canvas id="niveauChart" width="400" height="400"></canvas>
+
+  <?php
+    // Préparer les données pour le graphique
+    $labels = [];
+    $data = [];
+    foreach ($statsNiveaux as $stat) {
+        $labels[] = htmlspecialchars($stat['niveau']);
+        $data[] = $stat['total'];
+    }
+  ?>
+
+  <script>
+    const ctx = document.getElementById('niveauChart').getContext('2d');
+    const niveauChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: <?= json_encode($labels) ?>,
+        datasets: [{
+          label: 'Pourcentage des niveaux',
+          data: <?= json_encode($data) ?>,
+          backgroundColor: [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                let label = context.label || '';
+                let value = context.parsed;
+                let total = <?= array_sum($data) ?>;
+                let percentage = (value / total * 100).toFixed(2) + '%';
+                return label + ': ' + percentage;
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>

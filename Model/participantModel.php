@@ -28,7 +28,7 @@ class ParticipantModel {
     }
 
     // Add a new participant
-    public function addParticipant($nom_participant, $email_participant) {
+    public function addParticipant($nom_participant, $email_participant ,$id_action) {
         $query = "INSERT INTO participant (nom_participant, email_participant) VALUES (:nom_participant, :email_participant)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':nom_participant', $nom_participant);
@@ -36,20 +36,5 @@ class ParticipantModel {
         return $stmt->execute();  // Execute the query and return if it was successful
     }
 
-    // Register a participant
-    public function participate($id_participant) {
-        $query = "UPDATE participant SET is_participating = 1 WHERE id_participant = :id_participant";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id_participant', $id_participant);
-        return $stmt->execute();  // Execute the update to register the participant
-    }
-
-    // Cancel a participant's registration
-    public function cancelParticipation($id_participant) {
-        $query = "UPDATE participant SET is_participating = 0 WHERE id_participant = :id_participant";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id_participant', $id_participant);
-        return $stmt->execute();  // Execute the update to cancel the participant's registration
-    }
 }
 ?>

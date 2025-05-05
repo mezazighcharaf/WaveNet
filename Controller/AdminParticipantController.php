@@ -25,6 +25,7 @@ class AdminParticipantController {
                     $nom_participant = trim($_POST['nom_participant'] ?? '');
                     $email_participant = trim($_POST['email_participant'] ?? '');
                     $nom_action = trim($_POST['nom_action'] ?? '');
+                    $niveau = trim($_POST['niveau'] ?? ''); // <-- AJOUTÉ : récupération du niveau
 
                     // CONTROLE DE SAISIE
                     if (empty($nom_participant)) {
@@ -43,16 +44,20 @@ class AdminParticipantController {
                         $errors['nom_action'] = 'Le nom de l\'action est requis.';
                     }
 
+                    if (empty($niveau)) {
+                        $errors['niveau'] = 'Le niveau est requis.';
+                    }
+
                     if ($action === 'update' && empty($id_participant)) {
                         $errors['id_participant'] = 'Identifiant du participant manquant pour la mise à jour.';
                     }
 
                     if (empty($errors)) {
                         if ($action === 'add') {
-                            $this->addParticipant($nom_participant, $email_participant, $nom_action);
+                            $this->addParticipant($nom_participant, $email_participant, $nom_action, $niveau);
                             $_SESSION['success'] = 'Participant ajouté avec succès.';
                         } else {
-                            $this->updateParticipant($id_participant, $nom_participant, $email_participant, $nom_action);
+                            $this->updateParticipant($id_participant, $nom_participant, $email_participant, $nom_action, $niveau);
                             $_SESSION['success'] = 'Participant mis à jour avec succès.';
                         }
                         header('Location: ../View/eco_actionsB.php');
@@ -91,17 +96,29 @@ class AdminParticipantController {
         return $this->model->getAllParticipants();
     }
 
-    public function addParticipant($nom_participant, $email_participant, $nom_action) {
-        return $this->model->addParticipant($nom_participant, $email_participant, $nom_action);
+    public function addParticipant($nom_participant, $email_participant, $nom_action, $niveau) { // <-- AJOUTÉ $niveau
+        return $this->model->addParticipant($nom_participant, $email_participant, $nom_action, $niveau);
     }
 
-    public function updateParticipant($id_participant, $nom_participant, $email_participant, $nom_action) {
-        return $this->model->updateParticipant($id_participant, $nom_participant, $email_participant, $nom_action);
+    public function updateParticipant($id_participant, $nom_participant, $email_participant, $nom_action, $niveau) { // <-- AJOUTÉ $niveau
+        return $this->model->updateParticipant($id_participant, $nom_participant, $email_participant, $nom_action, $niveau);
     }
 
     public function cancelParticipation($id_participant) {
         return $this->model->cancelParticipation($id_participant);
     }
+    public function getStatistiquesParNiveau() {
+        require_once(__DIR__ . '/../Config/database.php');
+        $db = Config::getConnexion();
+    
+        $query = "SELECT niveau, COUNT(*) as total FROM participant GROUP BY niveau";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        return $result;
+    }
+    
 }
 
 // Instancier et traiter la requête

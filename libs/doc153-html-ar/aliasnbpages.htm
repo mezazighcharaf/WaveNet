@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=Windows-1256">
+<TITLE>AliasNbPages</TITLE>
+<LINK TYPE="text/css" REL="stylesheet" HREF="fpdf.css">
+</HEAD>
+<BODY>
+<H2 DIR='LTR'>AliasNbPages</H2>
+<P DIR='LTR'><TT>AliasNbPages([<B>string</B> alias])</TT></P>
+<H4 CLASS='st'>الإصدار</H4>
+1.4
+<H4 CLASS='st'>الشرح</H4>
+تقوم بتعريف اسم مستعار لمجموع عدد صفحات ويتم الإستبدال فيها كوثيقة مغلقة
+<H4 CLASS='st'>باراميتر</H4>
+<TT><U>alias</U></TT>
+<BLOCKQUOTE>
+القيمة الافتراضية للإسم المستعار هي : <TT>{nb}</TT>.
+</BLOCKQUOTE>
+<H4 CLASS='st'>مثال</H4>
+<PRE><CODE>class PDF extends FPDF
+{
+function Footer()
+{
+    //Go to 1.5 cm from bottom
+    $this-&gt;SetY(-15);
+    //Select Arial italic 8
+    $this-&gt;SetFont('Arial','I',8);
+    //Print current and total page numbers
+    $this-&gt;Cell(0,10,'Page '.$this-&gt;PageNo().'/{nb}',0,0,'C');
+}
+}
+
+$pdf=new PDF();
+$pdf-&gt;AliasNbPages();</CODE></PRE>
+<H4 CLASS='st'>انظر لمواضيع ذات صلة</H4>
+<A HREF="pageno.htm">PageNo</A>,
+<A HREF="footer.htm">Footer</A>
+<HR STYLE="margin-top:1.5em">
+<DIV STYLE="text-align:center"><A HREF="index.htm">الرئيسية</A></DIV>
+</BODY>
+</HTML>

@@ -36,33 +36,37 @@ class ParticipantBackModel {
     }
 */
     // Add a new participant
-    public function addParticipant($nom_participant, $email_participant, $nom_action) {
-        $query = "SELECT id_action FROM eco_action WHERE nom_action = :nom_action";
+    public function addParticipant($nom_participant, $email_participant, $nom_action ,$niveau) {
+        echo $nom_action;
+        $query = "SELECT * FROM eco_action WHERE nom_action = :nom_action";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':nom_action', $nom_action);  // Bind ID parameter
         $stmt->execute();
         $id_action= $stmt->fetch(PDO::FETCH_ASSOC)['id_action'];
-        $query = "INSERT INTO participant (nom_participant, email_participant, id_action) VALUES (:nom_participant, :email_participant, :id_action)";
+        echo $id_action;
+        $query = "INSERT INTO participant (nom_participant, email_participant, id_action ,niveau) VALUES (:nom_participant, :email_participant, :id_action , :niveau)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':nom_participant', $nom_participant);
         $stmt->bindParam(':email_participant', $email_participant);
         $stmt->bindParam(':id_action', $id_action, PDO::PARAM_INT);
+        $stmt->bindParam(':niveau', $niveau);
         return $stmt->execute();  // Execute the query and return if it was successful
     }
 
     // Update a participant
-    public function updateParticipant($id_participant, $nom_participant, $email_participant, $nom_action) {
+    public function updateParticipant($id_participant, $nom_participant, $email_participant, $nom_action , $niveau) {
         $query = "SELECT id_action FROM eco_action WHERE nom_action = :nom_action";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':nom_action', $nom_action);  // Bind ID parameter
         $stmt->execute();
         $id_action= $stmt->fetch(PDO::FETCH_ASSOC)['id_action'];
-        $query = "UPDATE participant SET nom_participant = :nom_participant, email_participant = :email_participant, id_action= :id_action WHERE id_participant = :id_participant";
+        $query = "UPDATE participant SET nom_participant = :nom_participant, email_participant = :email_participant, id_action= :id_action , niveau= :niveau WHERE id_participant = :id_participant";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id_participant', $id_participant, PDO::PARAM_INT);
         $stmt->bindParam(':id_action', $id_action, PDO::PARAM_INT);
         $stmt->bindParam(':nom_participant', $nom_participant);
         $stmt->bindParam(':email_participant', $email_participant);
+        $stmt->bindParam(':niveau', $niveau);
         return $stmt->execute();  // Execute the query and return if it was successful
     }
 /*

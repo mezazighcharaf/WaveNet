@@ -8,9 +8,15 @@ class EcoActionController {
         $this->model = new EcoActionModel();  // Create an instance of the model
     }
 
-    // Get all eco actions by calling the model method
-    public function getAllActions() {
-        return $this->model->getAllEcoActions();  // Return data from the model
-    }
+    
+
+public function getActionsByEtat($etat) {
+    $ecoActionModel = new EcoActionModel();
+    
+    // Appel de la méthode pour récupérer les actions filtrées par état
+    return $ecoActionModel->getActionsByEtat($etat);
+
+}
+
 }
 ?>

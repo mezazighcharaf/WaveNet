@@ -8,12 +8,32 @@ class EcoActionBackModel {
         $this->conn = config::getConnexion();
     }
 
-    // CREATE
-    public function addEcoAction($nom, $description, $date, $statut, $points_verts, $categorie) {
-        $stmt = $this->conn->prepare("INSERT INTO eco_action (nom_action, description_action, date, etat, point_vert, categorie)
-                                      VALUES (?, ?, ?, ?, ?, ?)");
-        return $stmt->execute([$nom, $description, $date, $statut, $points_verts, $categorie]);
+    public function attribuerPointsParCategorie($categorie) {
+        $categorie = strtolower(trim($categorie)); // Nettoyage : trim + minuscules
+    
+        switch ($categorie) {
+            case 'recyclage':
+                return 10;
+            case 'energie':
+                return 20;
+            case 'environement':
+                return 15;
+            case 'biodiversité':
+                return 12;
+            default:
+                return 5; // Valeur par défaut
+        }
     }
+    
+   // CREATE
+   public function addEcoAction($nom, $description, $date, $statut, $points_verts, $categorie) {
+    $point_vert = $this->attribuerPointsParCategorie($categorie); // Attribution automatique
+    $stmt = $this->conn->prepare("INSERT INTO eco_action (nom_action, description_action, date, etat, point_vert, categorie)
+                                  VALUES (?, ?, ?, ?, ?, ?)");
+    return $stmt->execute([$nom, $description, $date, $statut, $point_vert, $categorie]);
+}
+
+
 
     // READ ALL
     public function getAllEcoActions() {

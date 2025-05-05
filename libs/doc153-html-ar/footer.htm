@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=Windows-1256">
+<TITLE>Footer</TITLE>
+<LINK TYPE="text/css" REL="stylesheet" HREF="fpdf.css">
+</HEAD>
+<BODY>
+<H2 DIR='LTR'>Footer</H2>
+<P DIR='LTR'><TT>Footer()</TT></P>
+<H4 CLASS='st'>الإصدار</H4>
+1.0
+<H4 CLASS='st'>الشرح</H4>
+تقوم هذه الدالة برسم او تحديد حاشية الصفحة التي تحددها انت مثل كتابة حقوق المستند او شعار موقعك
+او اي علامة تريد ظهورها ضمن اخر كل صفحة ويتم استدعاء ورسم حاشية الصفحة بشكل تلقائي عند استدعاء
+الدالة AddPage والدالة Close .
+وللملاحظة فإن دالة Footer تأتي فارغة ضمن الكلاس FPDF ولا تقوم بعمل معين لذلك يمكنك ان تقوم بعمل
+كلاس موروث من كلاس FPDF وتقوم بتحميل دالة Footer بشكل زائد لتحدد العملية التي تقوم بها الدالة Footer
+عند استدعائها او بمعنى اخر لتحدد الرسم او النص الذي سيظهر في اخر الصفحة عند استدعاء الدالة Footer .
+<H4 CLASS='st'>مثال</H4>
+<PRE><CODE>class PDF extends FPDF
+{
+function Footer()
+{
+    //Go to 1.5 cm from bottom
+    $this-&gt;SetY(-15);
+    //Select Arial italic 8
+    $this-&gt;SetFont('Arial','I',8);
+    //Print centered page number
+    $this-&gt;Cell(0,10,'Page '.$this-&gt;PageNo(),0,0,'C');
+}
+}</CODE></PRE>
+<H4 CLASS='st'>انظر لمواضيع ذات صلة</H4>
+<A HREF="header.htm">Header</A>
+<HR STYLE="margin-top:1.5em">
+<DIV STYLE="text-align:center"><A HREF="index.htm">الرئيسية</A></DIV>
+</BODY>
+</HTML>
