@@ -648,4 +648,62 @@ footer {
 .btn-participer:hover {
   background-color: #2e7d32;
 }
+/* Style général pour le chatbot */
+#chatbot {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  height: 400px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  font-family: Arial, sans-serif;
+}
 
+/* Conteneur des messages du chat */
+#chatbox {
+  height: 80%;
+  overflow-y: auto;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Style pour la zone de saisie du message */
+textarea {
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  resize: none;
+}
+
+/* Bouton d'envoi du message */
+button {
+  align-self: flex-end;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* Style des messages dans la conversation */
+.chat-message {
+  margin-bottom: 10px;
+}
+
+.chat-message strong {
+  color: #4CAF50;
+}

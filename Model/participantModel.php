@@ -28,12 +28,29 @@ class ParticipantModel {
     }
 
     // Add a new participant
-    public function addParticipant($nom_participant, $email_participant ,$id_action) {
-        $query = "INSERT INTO participant (nom_participant, email_participant) VALUES (:nom_participant, :email_participant)";
+    public function addParticipant($nom_participant, $email_participant,$id_action) {
+        $query = "INSERT INTO participant (nom_participant, email_participant, id_action) VALUES (:nom_participant, :email_participant, :id_action)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':nom_participant', $nom_participant);
         $stmt->bindParam(':email_participant', $email_participant);
+        $stmt->bindParam(':id_action', $id_action);
         return $stmt->execute();  // Execute the query and return if it was successful
+    }
+
+    public function getParticipantbynameandemail($name,$email){
+        $query = "SELECT id_participant FROM participant WHERE email_participant = :email AND nom_participant = :nom";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':nom', $name);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function cancelParticipation($id_participant){
+        $query = "DELETE FROM participant WHERE id_participant = :id_participant";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':id_participant', $id_participant, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 
 }

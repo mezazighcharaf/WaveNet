@@ -1,6 +1,7 @@
 <?php
 session_start(); 
-
+$_SESSION['username'] = "neyrouz";
+$_SESSION['email'] = "neyrouz@gmail.com";
 require_once(__DIR__ . '/../Controller/EcoActionController.php'); // Inclure le contrôleur
 $controller = new EcoActionController();
 
@@ -77,14 +78,14 @@ $actions = $controller->getActionsByEtat($etat);
             </ul>
 
             <!-- Formulaire pour participer -->
-            <form method="POST" action="eco_actions.php" style="display:inline;">
+            <form method="POST" action="../Controller/participantController.php" style="display:inline;">
                 <input type="hidden" name="action_type" value="participer">
                 <input type="hidden" name="id_action" value="<?= htmlspecialchars($action['id_action']) ?>">
                 <button type="submit" class="btn btn-primary">Je participe</button>
             </form>
 
             <!-- Formulaire pour annuler -->
-            <form method="POST" action="eco_actions.php" style="display:inline;">
+            <form method="POST" action="../Controller/participantController.php" style="display:inline;">
                 <input type="hidden" name="action_type" value="annuler">
                 <input type="hidden" name="id_action" value="<?= htmlspecialchars($action['id_action']) ?>">
                 <button type="submit" class="btn btn-secondary">J'annule ma participation</button>
@@ -93,10 +94,6 @@ $actions = $controller->getActionsByEtat($etat);
         </div>
         
     <?php endforeach; ?>
-   
-
-
-
     </section>
   </main>
 
@@ -136,6 +133,7 @@ $actions = $controller->getActionsByEtat($etat);
       const confirmationElement = document.getElementById(`confirmation-${actionId}`);
       confirmationElement.style.display = 'block';
     }
+    <script>
   </script>
 </body>
 </html> 

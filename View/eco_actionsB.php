@@ -11,19 +11,19 @@ require_once(__DIR__ . '/../Controller/AdminParticipantController.php');
 $adminController = new AdminParticipantController();
 $statsNiveaux = $adminController->getStatistiquesParNiveau();
 // Récupérer le nom du participant à partir du formulaire (ou autre source)
-$nom_participant = isset($_POST['nom']) ? $_POST['nom'] : 'Nom par défaut';  // Si aucun nom n'est donné, on met un nom par défaut
+$nom_participant = isset($_POST['nom_participant']) ? $_POST['nom_participant'] : 'Nom par défaut';  // Si aucun nom n'est donné, on met un nom par défaut
 
 
 // Inclure le fichier avec la fonction sendReminder
 
 
 // Exemple d'appel de la fonction
-$participantEmail = 'participant@example.com';  // Email du participant
-$participantName = 'John Doe';  // Nom du participant
+$participantEmail = 'boutaieb03yosr@gmail.com';  // Email du participant
+$participantName = 'yosr';  // Nom du participant
 $eventDate = '2025-05-10 10:00';  // Date de l'événement
 
 // Appel de la fonction pour envoyer le rappel
-sendReminder($participantEmail, $participantName, $eventDate);
+//sendReminder($participantEmail, $participantName, $eventDate);
 
 // Instancier les modèles
 $ecoActionModel = new EcoActionBackModel();
@@ -311,6 +311,14 @@ unset($_SESSION['formData'], $_SESSION['errors']);
                 </td>
                 <td><?= htmlspecialchars($participant['niveau']) ?></td>
             </tr>
+            <td>
+    <a href="eco_actionsB.php?id_participant=<?= $participant['id_participant'] ?>"></a>
+    <form method="POST" action="send_reminder_action.php" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment envoyer un rappel à <?= htmlspecialchars($participant['nom_participant']) ?> ?');">
+        <input type="hidden" name="id_participant" value="<?= $participant['id_participant'] ?>">
+        <button type="submit">📩 Envoyer Rappel</button>
+    </form>
+</td>
+
         <?php endforeach; ?>
         
     </tbody>

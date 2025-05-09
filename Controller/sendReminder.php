@@ -21,7 +21,7 @@ function sendReminder($toEmail, $participantName, $eventDate) {
         $mail->Port = 2525;
 
         // Paramètres de l'e-mail
-        $mail->setFrom('boutaieb03yosr@gmail.com', 'Your App');
+        $mail->setFrom('boutaieb03yosr@gmail.com', 'URBAVERSE');
         $mail->addAddress($toEmail, $participantName);
 
         // Contenu de l'e-mail
