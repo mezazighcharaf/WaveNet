@@ -1,8 +1,8 @@
 <?php
-require_once 'includes/config.php';
+require_once 'views/includes/config.php';
 $activePage = 'home';
 $pageTitle = 'Urbaverse - La ville du futur';
-require_once 'includes/header.php';
+require_once 'views/includes/header.php';
 ?>
 <!-- Élément de fond avec effet de vague -->
 <div class="page-background"></div>
@@ -20,7 +20,7 @@ require_once 'includes/header.php';
     </div>
     <!-- Image (côté droit) -->
     <div class="hero-image-container">
-      <img src="assets/img/urbanise.jpeg" alt="Ville verte" class="hero-image">
+      <img src="views/assets/img/urbanise.jpeg" alt="Ville verte" class="hero-image">
     </div>
   </div>
 </section>
@@ -122,5 +122,5 @@ $additionalScripts = <<<EOT
   });
 </script>
 EOT;
-require_once 'includes/footer.php';
+require_once 'views/includes/footer.php';
 ?>

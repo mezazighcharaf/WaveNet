@@ -1,4 +1,5 @@
 <?php
+
 class Transport {
     private $id_transport;
     private $id_utilisateur;
@@ -7,15 +8,17 @@ class Transport {
     private $frequence;
     private $eco_index;
     private $date_derniere_utilisation;
+
     public function __construct($id_utilisateur, $type_transport, $distance_parcourue, $frequence, $eco_index, $date_derniere_utilisation = null, $id_transport = null) {
         $this->id_transport = $id_transport;
         $this->id_utilisateur = $id_utilisateur;
         $this->type_transport = $type_transport;
         $this->distance_parcourue = $distance_parcourue;
         $this->frequence = $frequence;
-        $this->eco_index = $eco_index; 
+        $this->eco_index = $eco_index; // L'eco_index est stocké directement dans la table
         $this->date_derniere_utilisation = $date_derniere_utilisation;
     }
+
     public function getIdTransport() { return $this->id_transport; }
     public function getIdUtilisateur() { return $this->id_utilisateur; }
     public function getTypeTransport() { return $this->type_transport; }
@@ -23,13 +26,32 @@ class Transport {
     public function getFrequence() { return $this->frequence; }
     public function getEcoIndex() { return $this->eco_index; }
     public function getDateDerniereUtilisation() { return $this->date_derniere_utilisation; }
+
+    /**
+     * Récupère tous les enregistrements de transport pour un utilisateur donné.
+     *
+     * @param PDO $db L'objet de connexion PDO.
+     * @param int $userId L'ID de l'utilisateur.
+     * @return array Un tableau d'objets Transport.
+     */
     public static function findByUserId(PDO $db, int $userId): array {
         $stmt = $db->prepare("SELECT * FROM TRANSPORT WHERE id_utilisateur = :id_utilisateur ORDER BY date_derniere_utilisation DESC");
         $stmt->execute(['id_utilisateur' => $userId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); 
-    }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); }
+
+    /**
+     *
+     * @param PDO $db L'objet de connexion PDO.
+     * @param array $data Un tableau associatif contenant les données du transport.
+     *                     Doit contenir: id_utilisateur, type_transport, distance_parcourue, frequence, eco_index, date_derniere_utilisation (optionnel)
+     * @return bool True si la création réussit, false sinon.
+     */
     public static function create(PDO $db, array $data): bool {
+        // Il faut déterminer l'eco_index basé sur le type_transport ici,
+        // ou s'assurer qu'il est fourni dans $data.
+        // Pour l'instant, on suppose qu'il est fourni.
         if (!isset($data['eco_index'])) {
+             // Assignation simple basée sur le type (à améliorer)
              $eco_indexes = [
                 'Marche' => 10.00,
                 'Vélo' => 9.50,
@@ -40,11 +62,14 @@ class Transport {
                 'Voiture thermique' => 2.00,
                 'Trottinette électrique' => 8.00
              ];
-             $data['eco_index'] = $eco_indexes[ucfirst(strtolower($data['type_transport']))] ?? 5.00; 
+             $data['eco_index'] = $eco_indexes[ucfirst(strtolower($data['type_transport']))] ?? 5.00; // Default index
         }
+        
         $sql = "INSERT INTO TRANSPORT (id_utilisateur, type_transport, distance_parcourue, frequence, eco_index, date_derniere_utilisation) 
                 VALUES (:id_utilisateur, :type_transport, :distance_parcourue, :frequence, :eco_index, :date_derniere_utilisation)";
+        
         $stmt = $db->prepare($sql);
+        
         try {
             $success = $stmt->execute([
                 ':id_utilisateur' => $data['id_utilisateur'],
@@ -60,4 +85,5 @@ class Transport {
             return false;
         }
     }
+
 }
