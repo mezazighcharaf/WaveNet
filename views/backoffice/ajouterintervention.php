@@ -21,7 +21,8 @@
             $result = $interventionC->ajouterIntervention($newIntervention);
 
             if ($result !== false) {
-                header('Location: afficherintervention.php?added=true');
+                $_SESSION['success'] = "L'intervention a été ajoutée avec succès.";
+                header('Location: interventions.php?added=true');
                 exit;
             } else {
                 $error = "Une erreur est survenue lors de l'ajout de l'intervention.";
@@ -49,18 +50,19 @@
     <body>
         <aside class="sidebar">
           <div class="logo">
-            <img src="/WaveNet/views/assets/img/logo.png" alt="Logo WaveNet" class="logo-img">
+            <img src="/WaveNet/views/assets/images/logo.png" alt="Logo" class="logo-img">
             <h1>WaveNet</h1>
           </div>
           <nav class="sidebar-nav">
             <ul>
-              <li><a href="/WaveNet/views/backoffice/index.php">Dashboard</a></li>
-              <li><a href="/WaveNet/views/backoffice/listeUtilisateurs.php">Utilisateurs</a></li>
-              <li><a href="/WaveNet/views/backoffice/defis.php">Défis</a></li>
-              <li><a href="/WaveNet/views/backoffice/quartiers.php">Quartiers</a></li>
-              <li><a href="/WaveNet/views/backoffice/gsignalement.php">Signalements</a></li>
-              <li><a href="/WaveNet/views/backoffice/afficherintervention.php" class="active">Interventions</a></li>
-              <li class="home-link"><a href="/WaveNet/views/frontoffice/userDashboard.php">Accueil frontoffice</a></li>
+              <li><a href="/WaveNet/views/backoffice/index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+              <li><a href="/WaveNet/views/backoffice/listeUtilisateurs.php"><i class="fas fa-users"></i> Utilisateurs</a></li>
+              <li><a href="/WaveNet/views/backoffice/defis.php"><i class="fas fa-trophy"></i> Défis</a></li>
+              <li><a href="/WaveNet/views/backoffice/Gquartier.php"><i class="fas fa-map-marker-alt"></i> Quartiers</a></li>
+              <li><a href="/WaveNet/views/backoffice/backinfra.php"><i class="fas fa-building"></i> Infrastructures</a></li>
+              <li><a href="/WaveNet/views/backoffice/gsignalement.php"><i class="fas fa-exclamation-triangle"></i> Signalements</a></li>
+              <li><a href="/WaveNet/views/backoffice/interventions.php" class="active"><i class="fas fa-tools"></i> Interventions</a></li>
+              <li class="home-link"><a href="/WaveNet/views/frontoffice/userDashboard.php"><i class="fas fa-home"></i> Accueil frontoffice</a></li>
             </ul>
           </nav>
         </aside>
@@ -119,7 +121,7 @@
                         </form>
 
                          <div class="text-center mt-4">
-                            <a href='afficherintervention.php' class="btn btn-secondary">
+                            <a href='interventions.php' class="btn btn-secondary">
                                  <i class="fas fa-arrow-left fa-sm"></i> Annuler et Retour
                             </a>
                         </div>

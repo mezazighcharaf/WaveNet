@@ -154,7 +154,11 @@ if (!isset($activePage)) $activePage = "";
             </li>
             <li class="nav-item">
               <a class="nav-link <?php echo $activePage == 'quartiers' ? 'active' : ''; ?>" 
-                 href="/WaveNet/views/frontoffice/quartiers.php">Quartiers</a>
+                 href="/WaveNet/views/frontoffice/frontquartier.php">Quartiers</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <?php echo $activePage == 'infrastructures' ? 'active' : ''; ?>" 
+                 href="/WaveNet/views/frontoffice/frontinfra.php">Infrastructures</a>
             </li>
             <li class="nav-item">
               <a class="nav-link <?php echo $activePage == 'signalement' ? 'active' : ''; ?>" 

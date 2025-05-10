@@ -29,18 +29,19 @@ if (isset($_POST['id'])) {
 <body>
     <aside class="sidebar">
         <div class="logo">
-            <img src="../../../views/assets/img/logo.png" alt="Logo Urbaverse" class="logo-img">
-            <h1>Urbaverse</h1>
+            <img src="/WaveNet/views/assets/images/logo.png" alt="Logo" class="logo-img">
+            <h1>WaveNet</h1>
         </div>
-        
         <nav class="sidebar-nav">
             <ul>
-                <li><a href="../../../index.php">Dashboard</a></li>
-                <li><a href="index.php" class="active">Signalements</a></li>
-                <li><a href="afficherintervention.php">Interventions</a></li>
-                <li><a href="../../../utilisateurs.php">Utilisateurs</a></li>
-                <li><a href="../../../parametres.php">Paramètres</a></li>
-                <li class="home-link"><a href="../front office/index.php">Retour au site</a></li>
+                <li><a href="/WaveNet/views/backoffice/index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/WaveNet/views/backoffice/listeUtilisateurs.php"><i class="fas fa-users"></i> Utilisateurs</a></li>
+                <li><a href="/WaveNet/views/backoffice/defis.php"><i class="fas fa-trophy"></i> Défis</a></li>
+                <li><a href="/WaveNet/views/backoffice/Gquartier.php"><i class="fas fa-map-marker-alt"></i> Quartiers</a></li>
+                <li><a href="/WaveNet/views/backoffice/backinfra.php"><i class="fas fa-building"></i> Infrastructures</a></li>
+                <li><a href="/WaveNet/views/backoffice/gsignalement.php" class="active"><i class="fas fa-exclamation-triangle"></i> Signalements</a></li>
+                <li><a href="/WaveNet/views/backoffice/interventions.php"><i class="fas fa-tools"></i> Interventions</a></li>
+                <li class="home-link"><a href="/WaveNet/views/frontoffice/userDashboard.php"><i class="fas fa-home"></i> Accueil frontoffice</a></li>
             </ul>
         </nav>
     </aside>

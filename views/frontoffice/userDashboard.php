@@ -555,6 +555,40 @@ require_once '../includes/userHeader.php';
           </div>
         </div>
         <?php endif; ?>
+
+        <!-- SECTION QUARTIERS ET INFRASTRUCTURES -->
+        <div style="margin-bottom: 3rem;">
+          <h2 style="margin-bottom: 1.5rem; color: var(--dark-green); font-size: 1.8rem;">Découverte urbaine</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
+            <!-- Quartiers -->
+            <div style="flex: 1; min-width: 300px; background-color: var(--white); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); padding: 1.5rem;">
+              <h3 style="color: var(--dark-green); font-size: 1.2rem; margin-bottom: 1rem; border-bottom: 1px solid var(--gray-200); padding-bottom: 0.5rem;">
+                <i class="fas fa-map-marked-alt" style="margin-right: 0.5rem;"></i>Quartiers
+              </h3>
+              <p style="color: var(--gray-700); margin-bottom: 1.5rem;">Explorez les quartiers de la ville, consultez leurs scores écologiques et découvrez les infrastructures disponibles.</p>
+              <div style="display: flex; gap: 1rem;">
+                <a href="/WaveNet/views/frontoffice/frontquartier.php" class="btn" style="background-color: var(--accent-green); color: var(--white); padding: 0.5rem 1rem; border-radius: var(--border-radius); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; font-weight: 500; transition: all 0.3s;">
+                  <i class="fas fa-search" style="margin-right: 0.5rem;"></i>Découvrir les quartiers
+                </a>
+              </div>
+            </div>
+            
+            <!-- Infrastructures -->
+            <div style="flex: 1; min-width: 300px; background-color: var(--white); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); padding: 1.5rem;">
+              <h3 style="color: var(--dark-green); font-size: 1.2rem; margin-bottom: 1rem; border-bottom: 1px solid var(--gray-200); padding-bottom: 0.5rem;">
+                <i class="fas fa-building" style="margin-right: 0.5rem;"></i>Infrastructures
+              </h3>
+              <p style="color: var(--gray-700); margin-bottom: 1.5rem;">Consultez les infrastructures urbaines disponibles dans chaque quartier de la ville, leur statut et leurs détails.</p>
+              <div style="display: flex; gap: 1rem;">
+                <a href="/WaveNet/views/frontoffice/frontinfra.php" class="btn" style="background-color: var(--accent-green); color: var(--white); padding: 0.5rem 1rem; border-radius: var(--border-radius); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; font-weight: 500; transition: all 0.3s;">
+                  <i class="fas fa-list" style="margin-right: 0.5rem;"></i>Voir les infrastructures
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION PARTICIPATION CITOYENNE -->
       </div>
     </div>
   </div>

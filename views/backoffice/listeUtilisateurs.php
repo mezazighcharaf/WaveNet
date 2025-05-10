@@ -32,17 +32,19 @@ try {
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="logo">
+            <img src="/WaveNet/views/assets/images/logo.png" alt="Logo" class="logo-img">
             <h1>WaveNet</h1>
         </div>
         <nav class="sidebar-nav">
             <ul>
-                <li><a href="/WaveNet/views/backoffice/index.php">Dashboard</a></li>
-                <li><a href="/WaveNet/views/backoffice/listeUtilisateurs.php" class="active">Utilisateurs</a></li>
-                <li><a href="/WaveNet/views/backoffice/defis.php">Défis</a></li>
-                <li><a href="/WaveNet/views/backoffice/quartiers.php">Quartiers</a></li>
-                <li><a href="/WaveNet/views/backoffice/gsignalement.php">Signalements</a></li>
-                <li><a href="/WaveNet/views/backoffice/afficherintervention.php">Interventions</a></li>
-                <li class="home-link"><a href="/WaveNet/views/frontoffice/userDashboard.php">Accueil frontoffice</a></li>
+                <li><a href="/WaveNet/views/backoffice/index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/WaveNet/views/backoffice/listeUtilisateurs.php" class="active"><i class="fas fa-users"></i> Utilisateurs</a></li>
+                <li><a href="/WaveNet/views/backoffice/defis.php"><i class="fas fa-trophy"></i> Défis</a></li>
+                <li><a href="/WaveNet/views/backoffice/Gquartier.php"><i class="fas fa-map-marker-alt"></i> Quartiers</a></li>
+                <li><a href="/WaveNet/views/backoffice/backinfra.php"><i class="fas fa-building"></i> Infrastructures</a></li>
+                <li><a href="/WaveNet/views/backoffice/gsignalement.php"><i class="fas fa-exclamation-triangle"></i> Signalements</a></li>
+                <li><a href="/WaveNet/views/backoffice/interventions.php"><i class="fas fa-tools"></i> Interventions</a></li>
+                <li class="home-link"><a href="/WaveNet/views/frontoffice/userDashboard.php"><i class="fas fa-home"></i> Accueil frontoffice</a></li>
             </ul>
         </nav>
     </aside>

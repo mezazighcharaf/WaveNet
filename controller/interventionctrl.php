@@ -1,6 +1,6 @@
 <?php
     
-    include_once __DIR__ . '/../config.php';
+    include_once __DIR__ . '/../views/includes/config.php';
     include_once __DIR__ . '/../models/intervention.php';
 
     class InterventionC {
@@ -10,13 +10,7 @@
                     FROM intervention i
                     LEFT JOIN signalement s ON i.id_signalement = s.id_signalement
                     ORDER BY i.date_intervention DESC";
-            $db = Config::getConnection();
-            try {
-                $liste = $db->query($sql);
-                return $liste->fetchAll(PDO::FETCH_ASSOC);
-            } catch (Exception $e) {
-                die('Erreur lors de la récupération des interventions: ' . $e->getMessage());
-            }
+            
         }
 
         public function ajouterIntervention(Intervention $intervention) {

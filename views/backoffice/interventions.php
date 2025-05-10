@@ -25,7 +25,7 @@
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
         if ($interventionC->deleteIntervention($_POST['delete_id'])) {
-             header('Location: afficherintervention.php?deleted=true');
+             header('Location: interventions.php?deleted=true');
              exit;
         } else {
              $message = '<div class="alert alert-danger">Erreur lors de la suppression.</div>';
@@ -141,7 +141,7 @@
                                                 <a href="modifierintervention.php?id=<?= htmlspecialchars($intervention['id_intervention']) ?>" class="btn btn-warning btn-sm" title="Modifier">
                                                      <i class="fas fa-edit"></i>
                                                  </a>
-                                                <form action="afficherintervention.php" method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette intervention ?');">
+                                                <form action="interventions.php" method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette intervention ?');">
                                                     <input type="hidden" name="delete_id" value="<?= htmlspecialchars($intervention['id_intervention']) ?>" />
                                                     <button type="submit" class="btn btn-danger btn-sm" title="Supprimer">
                                                         <i class="fas fa-trash"></i>
@@ -169,4 +169,4 @@
       <script src="js/sb-admin-2.min.js"></script>
 
     </body>
-    </html>
+    </html> 

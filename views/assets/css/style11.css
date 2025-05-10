@@ -1439,3 +1439,268 @@
   gap: 0.5rem;
 }
   
+/* ===================== */
+/* QUARTIERS & INFRASTRUCTURES PAGES */
+/* ===================== */
+.main-content {
+  padding-top: 7rem;
+  min-height: 80vh;
+}
+
+.quartiers-section,
+.infrastructures-section {
+  padding: 2rem 0;
+}
+
+.section-container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.section-header {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.section-title {
+  color: var(--accent-green);
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.search-sort-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.search-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-form input[type="text"] {
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius);
+  min-width: 250px;
+  font-size: 0.95rem;
+  transition: all var(--transition-speed);
+}
+
+.search-form input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+}
+
+.btn-search, 
+.btn-clear, 
+.btn-sort {
+  padding: 0.7rem 1rem;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-search {
+  background-color: var(--accent-green);
+  color: var(--white);
+}
+
+.btn-search:hover {
+  background-color: #43a047;
+}
+
+.btn-clear {
+  background-color: var(--gray-200);
+  color: var(--text-color);
+}
+
+.btn-clear:hover {
+  background-color: var(--gray-300);
+}
+
+.btn-sort {
+  background-color: var(--white);
+  color: var(--text-color);
+  border: 1px solid var(--gray-300);
+}
+
+.btn-sort:hover, 
+.btn-sort.active {
+  background-color: var(--light-green);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+
+/* Card Grids */
+.quartiers-grid,
+.infrastructures-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+/* Card Styles */
+.quartier-card,
+.infrastructure-card {
+  background-color: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.quartier-card:hover,
+.infrastructure-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-image {
+  height: 180px;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.infrastructure-card:hover .card-image img {
+  transform: scale(1.05);
+}
+
+.card-content {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-content h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--accent-green);
+}
+
+.infrastructure-status {
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.status-actif, 
+.status-disponible {
+  color: #2e7d32;
+  background-color: rgba(76, 175, 80, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  font-weight: 500;
+}
+
+.status-inactif, 
+.status-indisponible {
+  color: #d32f2f;
+  background-color: rgba(244, 67, 54, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  font-weight: 500;
+}
+
+.status-maintenance {
+  color: #ed6c02;
+  background-color: rgba(255, 152, 0, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  font-weight: 500;
+}
+
+.card-actions {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.btn-details {
+  background-color: var(--accent-green);
+  color: var(--white);
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all var(--transition-speed);
+  display: inline-block;
+}
+
+.btn-details:hover {
+  background-color: #43a047;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Map container */
+[id^="map-"] {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+  margin-bottom: 1.5rem;
+}
+
+.no-results {
+  grid-column: 1 / -1;
+  padding: 2rem;
+  text-align: center;
+  background-color: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  color: var(--gray-500);
+  font-size: 1.1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .search-sort-container {
+    width: 100%;
+  }
+  
+  .search-form {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .search-form input[type="text"] {
+    width: 100%;
+  }
+  
+  .quartiers-grid,
+  .infrastructures-grid {
+    grid-template-columns: 1fr;
+  }
+}
+  

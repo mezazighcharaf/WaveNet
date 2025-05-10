@@ -16,7 +16,7 @@ if ($userNiveau !== 'admin') {
 }
 
 include_once '../../controller/signalementctrl.php';
-include_once '../../config.php';
+include_once '../../views/includes/config.php';
 
 $signalementC = new Signalementc();
 $liste = $signalementC->afficherSignalement();
@@ -25,7 +25,7 @@ $liste = $signalementC->afficherSignalement();
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
     $signalementC->deleteSignalement($_POST['delete_id']);
     
-    header('Location: gsignalement.php');
+    header('Location: /WaveNet/views/backoffice/gsignalement.php');
     exit;
 }
 ?>
@@ -36,10 +36,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Backoffice - Signalements - WaveNet</title>
   <link rel="stylesheet" href="/WaveNet/views/assets/css/backoffice11.css" />
-  <link rel="stylesheet" href="/WaveNet/views/assets/css/admin-dashboard.css" />
+  <link rel="stylesheet" href="/WaveNet/views/assets/css/style11.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" type="text/css">
-  <link href="css/sb-admin-2.min.css" rel="stylesheet">
   
   <meta name="description" content="Gestion des signalements - Backoffice WaveNet">
 </head>
@@ -47,19 +46,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
   
   <aside class="sidebar">
     <div class="logo">
-      <img src="/WaveNet/views/assets/img/logo.png" alt="Logo WaveNet" class="logo-img">
-      <h1>WaveNet</h1>
+        <img src="/WaveNet/views/assets/images/logo.png" alt="Logo" class="logo-img">
+        <h1>WaveNet</h1>
     </div>
     <nav class="sidebar-nav">
-      <ul>
-        <li><a href="/WaveNet/views/backoffice/index.php">Dashboard</a></li>
-        <li><a href="/WaveNet/views/backoffice/listeUtilisateurs.php">Utilisateurs</a></li>
-        <li><a href="/WaveNet/views/backoffice/defis.php">Défis</a></li>
-        <li><a href="/WaveNet/views/backoffice/quartiers.php">Quartiers</a></li>
-        <li><a href="/WaveNet/views/backoffice/gsignalement.php" class="active">Signalements</a></li>
-        <li><a href="/WaveNet/views/backoffice/afficherintervention.php">Interventions</a></li>
-        <li class="home-link"><a href="/WaveNet/views/frontoffice/userDashboard.php">Accueil frontoffice</a></li>
-      </ul>
+        <ul>
+            <li><a href="/WaveNet/views/backoffice/index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="/WaveNet/views/backoffice/listeUtilisateurs.php"><i class="fas fa-users"></i> Utilisateurs</a></li>
+            <li><a href="/WaveNet/views/backoffice/defis.php"><i class="fas fa-trophy"></i> Défis</a></li>
+            <li><a href="/WaveNet/views/backoffice/Gquartier.php"><i class="fas fa-map-marker-alt"></i> Quartiers</a></li>
+            <li><a href="/WaveNet/views/backoffice/backinfra.php"><i class="fas fa-building"></i> Infrastructures</a></li>
+            <li><a href="/WaveNet/views/backoffice/gsignalement.php" class="active"><i class="fas fa-exclamation-triangle"></i> Signalements</a></li>
+            <li><a href="/WaveNet/views/backoffice/interventions.php"><i class="fas fa-tools"></i> Interventions</a></li>
+            <li class="home-link"><a href="/WaveNet/views/frontoffice/userDashboard.php"><i class="fas fa-home"></i> Accueil frontoffice</a></li>
+        </ul>
     </nav>
   </aside>
 
@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
       <h1>Gestion des Signalements</h1>
       <div class="user-info">
         <span>Admin</span>
-        <a href="logout.php" class="logout-link"><i class="fas fa-sign-out-alt"></i></a>
+        <a href="/WaveNet/controller/UserController.php?action=logout" class="logout-link"><i class="fas fa-sign-out-alt"></i></a>
       </div>
     </header>
 
@@ -86,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Liste des Signalements</h6>
-                <a href="addsignalement.php" class="btn btn-success btn-sm">
+                <a href="/WaveNet/views/backoffice/addsignalement.php" class="btn btn-success btn-sm">
                     <i class="fas fa-plus"></i> Ajouter
                 </a>
             </div>
@@ -115,14 +115,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
                                 <td><span class="badge badge-<?= $signalement['statut'] == 'traité' ? 'success' : ($signalement['statut'] == 'en cours' ? 'warning' : 'danger') ?>"><?= htmlspecialchars($signalement['statut']) ?></span></td>
                                 <td>
                                     
-                                    <form action="gsignalement.php" method="POST" style="display: inline;">
+                                    <form action="/WaveNet/views/backoffice/gsignalement.php" method="POST" style="display: inline;">
                                         <input type="hidden" name="delete_id" value="<?= htmlspecialchars($signalement['id_signalement']) ?>" />
                                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce signalement ?');"><i class="fas fa-trash"></i></button>
                                     </form>
                                     
-                                    <a href="modifiersignalement.php?id=<?= htmlspecialchars($signalement['id_signalement']) ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                    <a href="/WaveNet/views/backoffice/modifiersignalement.php?id=<?= htmlspecialchars($signalement['id_signalement']) ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                                     
-                                    <a href="afficherintervention.php?signalement=<?= htmlspecialchars($signalement['id_signalement']) ?>" class="btn btn-info btn-sm"><i class="fas fa-tasks"></i></a>
+                                    <a href="/WaveNet/views/backoffice/afficherintervention.php?signalement=<?= htmlspecialchars($signalement['id_signalement']) ?>" class="btn btn-info btn-sm"><i class="fas fa-tasks"></i></a>
                                 </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -137,7 +137,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_id'])) {
   
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/sb-admin-2.min.js"></script>
+  <script src="/WaveNet/views/backoffice/js/sb-admin-2.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <?php

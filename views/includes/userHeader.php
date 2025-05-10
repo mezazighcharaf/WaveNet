@@ -201,7 +201,9 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
              <li><a href="/WaveNet/views/backoffice/listeUtilisateurs.php" class="<?php echo ($currentScript === 'listeUtilisateurs.php') ? 'active' : ''; ?>">Utilisateurs</a></li>
              <li><a href="/WaveNet/views/backoffice/defis.php" class="<?php echo ($currentScript === 'defis.php') ? 'active' : ''; ?>">Défis</a></li>
              <li><a href="/WaveNet/views/backoffice/quartiers.php" class="<?php echo ($currentScript === 'quartiers.php') ? 'active' : ''; ?>">Quartiers</a></li>
-             <li><a href="/WaveNet/views/backoffice/gsignalement.php" class="<?php echo ($activePage === 'signalement') ? 'active' : ''; ?>">Signalements</a></li>
+             <li><a href="/WaveNet/views/backoffice/Gquartier.php" class="<?php echo ($currentScript === 'Gquartier.php') ? 'active' : ''; ?>">Gestion Quartiers</a></li>
+             <li><a href="/WaveNet/views/backoffice/backinfra.php" class="<?php echo ($currentScript === 'backinfra.php') ? 'active' : ''; ?>">Gestion Infrastructures</a></li>
+             <li><a href="/WaveNet/views/backoffice/gsignalement.php" class="<?php echo ($currentScript === 'gsignalement.php') ? 'active' : ''; ?>">Gestion Signalements</a></li>
              <li><a href="/WaveNet/views/backoffice/afficherintervention.php" class="<?php echo ($activePage === 'intervention') ? 'active' : ''; ?>">Interventions</a></li>
              <li><a href="/WaveNet/views/frontoffice/account_activity.php" class="<?php echo ($activePage === 'account_activity') ? 'active' : ''; ?>">Activité du compte</a></li>
         <?php endif; ?>
@@ -224,8 +226,10 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
                     <a href="/WaveNet/views/backoffice/listeUtilisateurs.php"><i class="fas fa-users-cog"></i>Gestion Utilisateurs</a>
                     <a href="/WaveNet/views/backoffice/defis.php"><i class="fas fa-flag"></i>Gestion Défis</a>
                     <a href="/WaveNet/views/backoffice/quartiers.php"><i class="fas fa-map-marker-alt"></i>Gestion Quartiers</a>
-                    <a href="/WaveNet/gestion signalement/view/back office/index.php"><i class="fas fa-exclamation-triangle"></i>Gestion Signalements</a>
-                    <a href="/WaveNet/gestion signalement/view/back office/afficherintervention.php"><i class="fas fa-tools"></i>Gestion Interventions</a>
+                    <a href="/WaveNet/views/backoffice/Gquartier.php"><i class="fas fa-map-marker-alt"></i>Gestion Quartiers</a>
+                    <a href="/WaveNet/views/backoffice/backinfra.php"><i class="fas fa-cogs"></i>Gestion Infrastructures</a>
+                    <a href="/WaveNet/views/backoffice/gsignalement.php"><i class="fas fa-exclamation-triangle"></i>Gestion Signalements</a>
+                    <a href="/WaveNet/views/backoffice/afficherintervention.php"><i class="fas fa-tools"></i>Gestion Interventions</a>
                      <div class="dropdown-divider"></div>
                 <?php else: ?>
                     <a href="/WaveNet/views/frontoffice/userDashboard.php"><i class="fas fa-tachometer-alt"></i>Tableau de bord</a>

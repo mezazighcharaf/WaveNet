@@ -8,14 +8,17 @@ if (isset($_SESSION['register_error'])) {
 try {
     require_once __DIR__ . '/../../views/includes/config.php';
     $db = connectDB();
-    require_once __DIR__ . '/../../models/Quartier.php';
-    $quartiersData = Quartier::findAll($db);
+    include_once "../../Controller/quartierC.php"; 
+    $quartierC = new quartierC();
+    $quartiersData = $quartierC->afficherQuartier();
     $quartiers = [];
-    foreach ($quartiersData as $data) {
-        $quartier = new \stdClass();
-        $quartier->id = $data->getIdq();
-        $quartier->nom = $data->getNomq();
-        $quartiers[] = $quartier;
+    if (is_array($quartiersData)) {
+        foreach ($quartiersData as $data) {
+            $quartier = new \stdClass();
+            $quartier->id = $data['idq'];
+            $quartier->nom = $data['nomq'];
+            $quartiers[] = $quartier;
+        }
     }
 } catch (Exception $e) {
     $error = "Erreur de connexion à la base de données: " . $e->getMessage();

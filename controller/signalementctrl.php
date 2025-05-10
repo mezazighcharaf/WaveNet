@@ -1,6 +1,15 @@
 <?php
-include_once __DIR__ . '/../config.php';
+include_once __DIR__ . '/../views/includes/config.php';
 include_once __DIR__ . '/../models/signalement.php';
+
+// Vérifier si la classe Config n'existe pas déjà
+if (!class_exists('Config')) {
+    class Config {
+        public static function getConnection() {
+            return connectDB();
+        }
+    }
+}
 
 // Check if this is a direct API request
 if (isset($_GET['action']) && $_GET['action'] === 'get_all_json') {
@@ -23,7 +32,7 @@ class SignalementC {
 
     public function afficherSignalement() {
         $sql = "SELECT * FROM signalement";
-        $db = config::getConnection();
+        $db = Config::getConnection();
         try {
             $liste = $db->query($sql);
             return $liste->fetchAll();
@@ -34,7 +43,7 @@ class SignalementC {
     }
 
     public function addSignalement($signalement) {
-        $db = config::getConnection();
+        $db = Config::getConnection();
 
         
         if (empty($signalement->getIdSignalement())) {
@@ -85,7 +94,7 @@ class SignalementC {
     }
 
     public function updateSignalement($signalement) {
-        $db = config::getConnection();
+        $db = Config::getConnection();
         $errors = [];
 
         if (empty($signalement->getIdSignalement())) {
@@ -158,7 +167,7 @@ class SignalementC {
     }
 
     public function rechercher($id) {
-        $db = config::getConnection();
+        $db = Config::getConnection();
         try {
             $query = $db->prepare("SELECT * FROM signalement WHERE id_signalement = :id");
             $query->execute(['id' => $id]);
@@ -170,7 +179,7 @@ class SignalementC {
     }
 
     public function afficherSignalements() {
-        $db = config::getConnection();
+        $db = Config::getConnection();
         try {
             $query = $db->query("SELECT * FROM signalement");
             return $query->fetchAll(PDO::FETCH_ASSOC);
