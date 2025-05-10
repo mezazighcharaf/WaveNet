@@ -356,6 +356,59 @@ require_once '../includes/userHeader.php';
             </div>
           </div>
         </div>
+        <!-- SECTION SIGNALEMENTS -->
+        <div style="margin-bottom: 3rem;">
+          <h2 style="margin-bottom: 1.5rem; color: var(--dark-green); font-size: 1.8rem;">Signalements urbains</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
+            <!-- Informations sur les signalements -->
+            <div style="flex: 1; min-width: 300px; background-color: var(--white); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); padding: 1.5rem;">
+              <h3 style="color: var(--dark-green); font-size: 1.2rem; margin-bottom: 1rem; border-bottom: 1px solid var(--gray-200); padding-bottom: 0.5rem;">
+                <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>Signaler un problème
+              </h3>
+              <p style="margin-bottom: 1.5rem;">
+                Vous avez remarqué un problème dans votre quartier ? Un nid-de-poule, un lampadaire défectueux, 
+                un dépôt sauvage ? Signalez-le pour contribuer à l'amélioration de votre cadre de vie.
+              </p>
+              <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="/WaveNet/views/frontoffice/addSignalement.php" style="flex: 1; min-width: 120px; display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1rem; background-color: var(--accent-green); color: var(--white); text-decoration: none; border-radius: var(--border-radius); font-weight: 500; transition: all var(--transition-speed);">
+                  <i class="fas fa-plus" style="margin-right: 0.5rem;"></i>Nouveau signalement
+                </a>
+                <a href="/WaveNet/views/frontoffice/viewSignalements.php" style="flex: 1; min-width: 120px; display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1rem; background-color: var(--white); border: 1px solid var(--accent-green); color: var(--accent-green); text-decoration: none; border-radius: var(--border-radius); font-weight: 500; transition: all var(--transition-speed);">
+                  <i class="fas fa-list" style="margin-right: 0.5rem;"></i>Voir mes signalements
+                </a>
+              </div>
+              <div style="margin-top: 1rem;">
+                <a href="/WaveNet/views/frontoffice/interventions.php" style="display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1rem; background-color: var(--white); border: 1px solid #007bff; color: #007bff; text-decoration: none; border-radius: var(--border-radius); font-weight: 500; transition: all var(--transition-speed);">
+                  <i class="fas fa-tools" style="margin-right: 0.5rem;"></i>Voir les interventions
+                </a>
+              </div>
+            </div>
+            <!-- Pourquoi signaler ? -->
+            <div style="flex: 1; min-width: 300px; background-color: var(--white); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); padding: 1.5rem;">
+              <h3 style="color: var(--dark-green); font-size: 1.2rem; margin-bottom: 1rem; border-bottom: 1px solid var(--gray-200); padding-bottom: 0.5rem;">
+                <i class="fas fa-info-circle" style="margin-right: 0.5rem;"></i>Pourquoi signaler ?
+              </h3>
+              <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="padding: 0.75rem 0; border-left: 3px solid var(--accent-green); padding-left: 1rem; margin-bottom: 0.75rem; background-color: rgba(76, 175, 80, 0.05);">
+                  <i class="fas fa-city" style="color: var(--accent-green); margin-right: 0.5rem;"></i>
+                  Améliorez votre cadre de vie quotidien
+                </li>
+                <li style="padding: 0.75rem 0; border-left: 3px solid var(--accent-green); padding-left: 1rem; margin-bottom: 0.75rem; background-color: rgba(76, 175, 80, 0.05);">
+                  <i class="fas fa-users" style="color: var(--accent-green); margin-right: 0.5rem;"></i>
+                  Contribuez au bien-être collectif
+                </li>
+                <li style="padding: 0.75rem 0; border-left: 3px solid var(--accent-green); padding-left: 1rem; margin-bottom: 0.75rem; background-color: rgba(76, 175, 80, 0.05);">
+                  <i class="fas fa-medal" style="color: var(--accent-green); margin-right: 0.5rem;"></i>
+                  Gagnez des points verts pour votre engagement
+                </li>
+                <li style="padding: 0.75rem 0; border-left: 3px solid var(--accent-green); padding-left: 1rem; background-color: rgba(76, 175, 80, 0.05);">
+                  <i class="fas fa-hand-holding-heart" style="color: var(--accent-green); margin-right: 0.5rem;"></i>
+                  Participez à la transformation de votre quartier
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
         <!-- SECTION INFORMATIONS PERSONNELLES -->
         <div style="margin-bottom: 3rem;">
           <h2 style="margin-bottom: 1.5rem; color: var(--dark-green); font-size: 1.8rem;">Mon profil</h2>

@@ -156,6 +156,15 @@ if (!isset($activePage)) $activePage = "";
               <a class="nav-link <?php echo $activePage == 'quartiers' ? 'active' : ''; ?>" 
                  href="/WaveNet/views/frontoffice/quartiers.php">Quartiers</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link <?php echo $activePage == 'signalement' ? 'active' : ''; ?>" 
+                 href="/WaveNet/views/frontoffice/addSignalement.php">Signalement</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <?php echo $activePage == 'interventions' ? 'active' : ''; ?>" 
+                 href="/WaveNet/views/frontoffice/interventions.php">Interventions</a>
+            </li>
+           
             <?php if (isset($_SESSION['user_id'])): ?>
             <li class="nav-item">
               <a class="nav-link <?php echo $activePage == 'dashboard' ? 'active' : ''; ?>" 

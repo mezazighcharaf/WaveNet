@@ -724,7 +724,7 @@ class UserController {
         }
         session_destroy(); // Détruit la session côté serveur
 
-        header('Location: /WaveNet/views/index.php'); // Redirige
+        header('Location: /WaveNet/index.php'); // Redirige vers la page d'accueil du site
         exit;
     }
     public function bloquerUtilisateur() {

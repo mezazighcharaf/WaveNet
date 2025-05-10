@@ -120,6 +120,8 @@ try {
         <li><a href="/WaveNet/views/backoffice/listeUtilisateurs.php">Utilisateurs</a></li>
         <li><a href="/WaveNet/views/backoffice/defis.php">Défis</a></li>
         <li><a href="/WaveNet/views/backoffice/quartiers.php">Quartiers</a></li>
+        <li><a href="/WaveNet/views/backoffice/gsignalement.php">Signalements</a></li>
+        <li><a href="/WaveNet/views/backoffice/afficherintervention.php">Interventions</a></li>
         <li class="home-link"><a href="/WaveNet/views/frontoffice/userDashboard.php">Accueil frontoffice</a></li>
       </ul>
     </nav>
