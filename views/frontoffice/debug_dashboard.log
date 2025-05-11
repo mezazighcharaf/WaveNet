@@ -859,3 +859,45 @@ Stack trace:
 [10-May-2025 20:17:08 Europe/Berlin] Démarrage de userDashboard.php
 [10-May-2025 20:17:08 Europe/Berlin] [UserController.php] Fichier inclus.
 [10-May-2025 20:17:08 Europe/Berlin] IP not found in database: The address ::1 is not in the database.
+[11-May-2025 03:06:10 Europe/Berlin] Démarrage de userDashboard.php
+[11-May-2025 03:06:10 Europe/Berlin] [UserController.php] Fichier inclus.
+[11-May-2025 03:06:10 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method quartier::findById() in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php:50
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 50
+[11-May-2025 03:06:10 Europe/Berlin] Démarrage de userDashboard.php
+[11-May-2025 03:06:10 Europe/Berlin] [UserController.php] Fichier inclus.
+[11-May-2025 03:06:10 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method quartier::findById() in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php:50
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\WaveNet\views\frontoffice\userDashboard.php on line 50
+[11-May-2025 03:09:46 Europe/Berlin] Démarrage de userDashboard.php
+[11-May-2025 03:09:46 Europe/Berlin] [UserController.php] Fichier inclus.
+[11-May-2025 03:09:46 Europe/Berlin] IP not found in database: The address ::1 is not in the database.
+[11-May-2025 03:09:46 Europe/Berlin] Démarrage de userDashboard.php
+[11-May-2025 03:09:46 Europe/Berlin] [UserController.php] Fichier inclus.
+[11-May-2025 03:09:46 Europe/Berlin] IP not found in database: The address ::1 is not in the database.
+[11-May-2025 03:10:01 Europe/Berlin] Démarrage de userDashboard.php
+[11-May-2025 03:10:01 Europe/Berlin] [UserController.php] Fichier inclus.
+[11-May-2025 03:10:01 Europe/Berlin] IP not found in database: The address ::1 is not in the database.
+[11-May-2025 03:10:01 Europe/Berlin] Démarrage de userDashboard.php
+[11-May-2025 03:10:01 Europe/Berlin] [UserController.php] Fichier inclus.
+[11-May-2025 03:10:01 Europe/Berlin] IP not found in database: The address ::1 is not in the database.
+[11-May-2025 03:11:09 Europe/Berlin] Démarrage de userDashboard.php
+[11-May-2025 03:11:09 Europe/Berlin] [UserController.php] Fichier inclus.
+[11-May-2025 03:11:09 Europe/Berlin] IP not found in database: The address ::1 is not in the database.
+[11-May-2025 03:11:09 Europe/Berlin] Démarrage de userDashboard.php
+[11-May-2025 03:11:09 Europe/Berlin] [UserController.php] Fichier inclus.
+[11-May-2025 03:11:09 Europe/Berlin] IP not found in database: The address ::1 is not in the database.
+[11-May-2025 03:14:22 Europe/Berlin] Démarrage de userDashboard.php
+[11-May-2025 03:14:22 Europe/Berlin] [UserController.php] Fichier inclus.
+[11-May-2025 03:14:22 Europe/Berlin] IP not found in database: The address ::1 is not in the database.
+[11-May-2025 03:14:22 Europe/Berlin] Démarrage de userDashboard.php
+[11-May-2025 03:14:22 Europe/Berlin] [UserController.php] Fichier inclus.
+[11-May-2025 03:14:22 Europe/Berlin] IP not found in database: The address ::1 is not in the database.
+[11-May-2025 03:16:26 Europe/Berlin] Démarrage de userDashboard.php
+[11-May-2025 03:16:26 Europe/Berlin] [UserController.php] Fichier inclus.
+[11-May-2025 03:16:26 Europe/Berlin] IP not found in database: The address ::1 is not in the database.
+[11-May-2025 03:16:26 Europe/Berlin] Démarrage de userDashboard.php
+[11-May-2025 03:16:26 Europe/Berlin] [UserController.php] Fichier inclus.
+[11-May-2025 03:16:26 Europe/Berlin] IP not found in database: The address ::1 is not in the database.

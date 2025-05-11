@@ -425,7 +425,7 @@ require_once '../includes/userHeader.php';
                         ?>
                       </td>
                       <td style="padding: 1rem;">
-                        <?php if ($connexion['success']): ?>
+                        <?php if (isset($connexion['success']) && $connexion['success'] == 1): ?>
                           <span style="display: inline-block; background-color: rgba(72, 187, 120, 0.1); color: #48BB78; padding: 0.3rem 0.8rem; border-radius: var(--border-radius-sm); font-size: 0.85rem;">
                             <i class="fas fa-check-circle"></i> Réussie
                           </span>

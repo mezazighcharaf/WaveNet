@@ -24,7 +24,7 @@ if (!isset($_SESSION['captcha_token'])) {
 }
 ?>
 
-<div id="eco-captcha-container" class="minimal-captcha">
+<div id="eco-captcha-container" class="minimal-captcha" style="overflow: visible;">
     <!-- Titre et instructions (gardés simples) -->
     <h3 style="font-size: 1.1rem; margin-bottom: 10px; text-align: center;">Vérification Rapide</h3>
     <p style="font-size: 0.85rem; margin-bottom: 15px; text-align: center; color: #555;">
@@ -33,26 +33,26 @@ if (!isset($_SESSION['captcha_token'])) {
         <span style="color:#f44336">Éléments non-durables: -10 points</span>
     </p>
     
-    <div class="captcha-content-wrapper">
+    <div class="captcha-content-wrapper" style="display: flex !important; flex-direction: column !important; gap: 15px !important; margin-bottom: 15px !important; align-items: center !important;">
         <!-- Zone de dépôt -->
-        <div id="city-grid" class="captcha-grid-minimal">
+        <div id="city-grid" class="captcha-grid-minimal" style="display: flex !important; flex-wrap: wrap !important; min-height: 60px !important; background-color: #f8f8f8 !important; padding: 10px !important; border-radius: 8px !important; margin: 0 auto !important; width: 100% !important; max-width: 350px !important; z-index: 1 !important;">
             <!-- Cellules générées par JS -->
         </div>
         
         <!-- Éléments disponibles -->
-        <div id="elements-container">
-            <div class="elements-list">
-                <!-- Éléments durables -->
-                <div class="element durable drag-item" data-type="durable" data-value="20" draggable="true" id="bike-path"><i class="fas fa-bicycle"></i></div>
-                <div class="element durable drag-item" data-type="durable" data-value="20" draggable="true" id="solar-panels"><i class="fas fa-solar-panel"></i></div>
-                <div class="element durable drag-item" data-type="durable" data-value="20" draggable="true" id="tramway"><i class="fas fa-train"></i></div>
-                <div class="element durable drag-item" data-type="durable" data-value="20" draggable="true" id="community-garden"><i class="fas fa-seedling"></i></div>
-                <div class="element durable drag-item" data-type="durable" data-value="20" draggable="true" id="green-roof"><i class="fas fa-leaf"></i></div>
-                <!-- Éléments non durables -->
-                <div class="element non-durable drag-item" data-type="non-durable" data-value="-10" draggable="true" id="highway"><i class="fas fa-road"></i></div>
-                <div class="element non-durable drag-item" data-type="non-durable" data-value="-10" draggable="true" id="mall"><i class="fas fa-store"></i></div>
-                <div class="element non-durable drag-item" data-type="non-durable" data-value="-10" draggable="true" id="big-road"><i class="fas fa-truck"></i></div>
-                <div class="element non-durable drag-item" data-type="non-durable" data-value="-10" draggable="true" id="industrial-zone"><i class="fas fa-industry"></i></div>
+        <div id="elements-container" style="display: block !important; width: 100% !important;">
+            <div class="elements-list" style="display: grid !important; grid-template-columns: repeat(5, 1fr) !important; gap: 10px !important; justify-content: center !important; margin-top: 15px !important;">
+                <!-- Éléments durables - modifiés avec ID correspondant à ceux du script -->
+                <div class="element durable drag-item" data-type="durable" data-value="20" draggable="true" id="element-bike" style="display: flex !important; align-items: center !important; justify-content: center !important; width: 48px !important; height: 48px !important; cursor: pointer !important; background-color: #e8f5e9 !important; border: 1px solid #81c784 !important; position: relative !important;"><i class="fas fa-bicycle" style="font-size: 1.5rem !important; color: #4caf50 !important; font-weight: 900 !important;"></i></div>
+                <div class="element durable drag-item" data-type="durable" data-value="20" draggable="true" id="element-solar" style="display: flex !important; align-items: center !important; justify-content: center !important; width: 48px !important; height: 48px !important; cursor: pointer !important; background-color: #e8f5e9 !important; border: 1px solid #81c784 !important; position: relative !important;"><i class="fas fa-solar-panel" style="font-size: 1.5rem !important; color: #4caf50 !important; font-weight: 900 !important;"></i></div>
+                <div class="element durable drag-item" data-type="durable" data-value="20" draggable="true" id="element-bus" style="display: flex !important; align-items: center !important; justify-content: center !important; width: 48px !important; height: 48px !important; cursor: pointer !important; background-color: #e8f5e9 !important; border: 1px solid #81c784 !important; position: relative !important;"><i class="fas fa-bus" style="font-size: 1.5rem !important; color: #4caf50 !important; font-weight: 900 !important;"></i></div>
+                <div class="element durable drag-item" data-type="durable" data-value="20" draggable="true" id="element-plant" style="display: flex !important; align-items: center !important; justify-content: center !important; width: 48px !important; height: 48px !important; cursor: pointer !important; background-color: #e8f5e9 !important; border: 1px solid #81c784 !important; position: relative !important;"><i class="fas fa-seedling" style="font-size: 1.5rem !important; color: #4caf50 !important; font-weight: 900 !important;"></i></div>
+                <div class="element durable drag-item" data-type="durable" data-value="20" draggable="true" id="element-leaf" style="display: flex !important; align-items: center !important; justify-content: center !important; width: 48px !important; height: 48px !important; cursor: pointer !important; background-color: #e8f5e9 !important; border: 1px solid #81c784 !important; position: relative !important;"><i class="fas fa-leaf" style="font-size: 1.5rem !important; color: #4caf50 !important; font-weight: 900 !important;"></i></div>
+                <!-- Éléments non durables - modifiés avec ID correspondant à ceux du script -->
+                <div class="element non-durable drag-item" data-type="non-durable" data-value="-10" draggable="true" id="element-road" style="display: flex !important; align-items: center !important; justify-content: center !important; width: 48px !important; height: 48px !important; cursor: pointer !important; background-color: #ffebee !important; border: 1px solid #e57373 !important; position: relative !important;"><i class="fas fa-road" style="font-size: 1.5rem !important; color: #f44336 !important; font-weight: 900 !important;"></i></div>
+                <div class="element non-durable drag-item" data-type="non-durable" data-value="-10" draggable="true" id="element-shop" style="display: flex !important; align-items: center !important; justify-content: center !important; width: 48px !important; height: 48px !important; cursor: pointer !important; background-color: #ffebee !important; border: 1px solid #e57373 !important; position: relative !important;"><i class="fas fa-store" style="font-size: 1.5rem !important; color: #f44336 !important; font-weight: 900 !important;"></i></div>
+                <div class="element non-durable drag-item" data-type="non-durable" data-value="-10" draggable="true" id="element-truck" style="display: flex !important; align-items: center !important; justify-content: center !important; width: 48px !important; height: 48px !important; cursor: pointer !important; background-color: #ffebee !important; border: 1px solid #e57373 !important; position: relative !important;"><i class="fas fa-truck" style="font-size: 1.5rem !important; color: #f44336 !important; font-weight: 900 !important;"></i></div>
+                <div class="element non-durable drag-item" data-type="non-durable" data-value="-10" draggable="true" id="element-factory" style="display: flex !important; align-items: center !important; justify-content: center !important; width: 48px !important; height: 48px !important; cursor: pointer !important; background-color: #ffebee !important; border: 1px solid #e57373 !important; position: relative !important;"><i class="fas fa-industry" style="font-size: 1.5rem !important; color: #f44336 !important; font-weight: 900 !important;"></i></div>
             </div>
         </div>
     </div>
@@ -84,6 +84,14 @@ if (!isset($_SESSION['captcha_token'])) {
         <input type="hidden" name="captcha_token" value="<?php echo $_SESSION['captcha_token'] ?? ''; ?>">
         <input type="hidden" name="captcha_elements" id="captcha-elements" value="[]">
     </form>
+
+    <!-- Add debugging style to make the city grid more visible -->
+    <style>
+    #city-grid {
+        border: 2px dashed #ccc !important;
+        min-height: 80px !important;
+    }
+    </style>
 </div>
 
 <script src="/WaveNet/views/assets/js/eco-captcha-handler.js"></script> 

@@ -163,52 +163,160 @@ class CaptchaController {
     /**
      * Génère et renvoie le fragment HTML pour le CAPTCHA interactif.
      */
-    private function getEcoCaptchaHTML() {
+    public function getEcoCaptchaHTML() {
         header('Content-Type: text/html; charset=utf-8');
 
-        // --- DÉBUT : NOUVELLE STRUCTURE HTML (SANS STYLE INTÉGRÉ) --- 
-        ?>
-        <form id="captcha-form">
-            <h4 style="text-align: center; margin-bottom: 10px;">Vérification Rapide</h4> 
-            <p style="text-align: center; margin-bottom: 20px; font-size: 0.95em; color: #666;">Faites glisser 3 éléments verts dans la zone.</p>
+        // Vérifier si le mode autonome est demandé
+        $standalone = isset($_GET['standalone']) && $_GET['standalone'] == '1';
 
-            <div class="captcha-wrapper"> 
-                <div class="captcha-drop-zone" id="captcha-drop-zone">
-                    <div id="city-grid"></div>
-                </div>
-                <div id="elements-container"> 
-                    <div class="captcha-elements-zone elements-list" id="captcha-items">
-                        <div id="element-bike" class="element drag-item durable" data-type="durable" data-value="12" draggable="true" title="Vélo"><i class="fas fa-bicycle"></i></div>
-                        <div id="element-solar" class="element drag-item durable" data-type="durable" data-value="15" draggable="true" title="Panneau Solaire"><i class="fas fa-solar-panel"></i></div>
-                        <div id="element-bus" class="element drag-item durable" data-type="durable" data-value="8" draggable="true" title="Bus"><i class="fas fa-bus-alt"></i></div>
-                        <div id="element-plant" class="element drag-item durable" data-type="durable" data-value="10" draggable="true" title="Plante"><i class="fas fa-seedling"></i></div>
-                        <div id="element-leaf" class="element drag-item durable" data-type="durable" data-value="5" draggable="true" title="Feuille (Énergie verte)"><i class="fas fa-leaf"></i></div>
-                        <div id="element-road" class="element drag-item non-durable" data-type="non-durable" data-value="-5" draggable="true" title="Route (Trafic)"><i class="fas fa-road"></i></div>
-                        <div id="element-shop" class="element drag-item non-durable" data-type="non-durable" data-value="-6" draggable="true" title="Magasin (Consommation)"><i class="fas fa-store"></i></div>
-                        <div id="element-truck" class="element drag-item non-durable" data-type="non-durable" data-value="-10" draggable="true" title="Camion"><i class="fas fa-truck"></i></div>
-                        <div id="element-factory" class="element drag-item non-durable" data-type="non-durable" data-value="-15" draggable="true" title="Usine"><i class="fas fa-industry"></i></div>
-                    </div>
-                </div>
-            </div>
+        if ($standalone) {
+            // Générer une page complète et isolée pour le CAPTCHA
+            ?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification de sécurité</title>
+    <!-- Inclure FontAwesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Style isolé pour éviter tout conflit -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        #captcha-wrapper {
+            max-width: 380px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+        }
+        p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        /* Assurez-vous que ces styles sont compatibles avec eco-captcha.php */
+        .element {
+            width: 48px;
+            height: 48px;
+            background-color: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            position: relative;
+            padding: 0;
+            margin: 0 auto;
+        }
+        .element i {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        .element:hover {
+            transform: scale(1.08);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .element.durable {
+            border-color: #81c784;
+            background-color: #e8f5e9;
+        }
+        .element.durable i { color: #4caf50; }
+        .element.non-durable {
+            border-color: #e57373;
+            background-color: #ffebee;
+        }
+        .element.non-durable i { color: #f44336; }
+        
+        .elements-list {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        #city-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            margin: 0 auto 15px;
+            min-height: 60px;
+            width: 100%;
+            max-width: 350px;
+            border: 2px dashed #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="captcha-wrapper">
+        <h2>Vérification de sécurité</h2>
+        <p>Complétez ce CAPTCHA pour continuer</p>
+        
+        <?php require_once __DIR__ . '/../views/includes/eco-captcha.php'; ?>
+    </div>
+    
+    <script>
+    // Script pour communiquer avec la fenêtre parente
+    function sendSuccessToParent(data) {
+        if (window.opener && !window.opener.closed && window.opener.handleExternalCaptchaSuccess) {
+            window.opener.handleExternalCaptchaSuccess(data);
+        } else {
+            alert("Vérification réussie! Vous pouvez fermer cette fenêtre et continuer sur la page principale.");
+        }
+    }
+    
+    // Remplacer la fonction de succès standard
+    window.handleEcoCaptchaSuccess = function(data) {
+        console.log("CAPTCHA validé avec succès!");
+        // Envoyer à la fenêtre parente
+        sendSuccessToParent(data);
+    };
+    </script>
+</body>
+</html>
+            <?php
+            exit;
+        }
+        
+        // Mode normal : inclure seulement le fragment HTML
+        require_once __DIR__ . '/../views/includes/eco-captcha.php';
+        exit;
+    }
 
-            <div class="captcha-bottom-info" id="captcha-score-container"> 
-                <span id="captcha-score-label">Score:</span> 
-                <span id="durability-score">0</span>
-                <div id="captcha-feedback" style="margin-left: 15px; font-weight: bold; min-height: 20px;">Glissez les éléments verts.</div>
-                <input type="hidden" id="captcha-score" name="captcha_score" value="0">
-                <input type="hidden" id="captcha-elements" name="captcha_elements" value="{}">
-            </div>
-
-            <div class="captcha-footer" id="captcha-actions">
-                 <button type="button" id="reset-captcha" class="btn btn-secondary">Recommencer</button>
-                 <div class="captcha-attempts" id="attempts-left">Tentatives restantes : 3</div> 
-                 <button type="button" id="validate-captcha" class="btn btn-success">Valider</button>
-            </div>
-        </form>
-        <?php
-        // --- FIN : NOUVELLE STRUCTURE HTML --- 
-
-        exit; 
+    /**
+     * Charge le contenu du captcha et le renvoie.
+     * Cette méthode est appelée via AJAX.
+     */
+    public function load() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Générer un token aléatoire pour le captcha
+        $_SESSION['captcha_token'] = bin2hex(random_bytes(16));
+        
+        // Renvoyer le contenu HTML du captcha
+        $this->getEcoCaptchaHTML();
     }
 
     /**
@@ -225,6 +333,9 @@ class CaptchaController {
         switch ($action) {
             case 'getEcoCaptchaHTML':
                 $controller->getEcoCaptchaHTML();
+                break;
+            case 'load':
+                $controller->load();
                 break;
             case 'validate':
                 $controller->validate();

@@ -522,3 +522,135 @@ body {
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
+
+/* ===================== */
+/* TABLES                 */
+/* ===================== */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.data-table th {
+  background-color: var(--dark-color);
+  color: var(--white);
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.data-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:hover {
+  background-color: var(--light-color);
+}
+
+/* ===================== */
+/* FORMS                  */
+/* ===================== */
+form {
+  margin: 1.5rem 0;
+  background-color: var(--white);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+button,
+.btn {
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+button:hover,
+.btn:hover {
+  background-color: var(--dark-color);
+}
+
+button[type="submit"] {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+}
+
+button.delete,
+button[name="delete"],
+button[name="delete_rec"] {
+  background-color: #e74c3c;
+}
+
+button.delete:hover,
+button[name="delete"]:hover,
+button[name="delete_rec"]:hover {
+  background-color: #c0392b;
+}
+
+/* Édition sur place */
+.editable {
+  position: relative;
+}
+
+.editable span {
+  display: block;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.editable:hover span {
+  background-color: var(--light-color);
+}
+
+/* Messages d'erreur */
+.error {
+  color: #e74c3c;
+  background-color: #fde8e7;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}

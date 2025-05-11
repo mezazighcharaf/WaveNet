@@ -31,6 +31,7 @@ require_once '../../models/Defi.php';
 require_once '../../models/Transport.php';
 require_once '../../models/Quartier.php';
 require_once '../../models/security_functions.php';
+require_once '../../controller/quartierC.php';
 $userId = $_SESSION['user_id'];
 $userName = $_SESSION['user_nom'] ?? 'Utilisateur';
 $userEmail = $_SESSION['user_email'] ?? 'N/A';
@@ -47,9 +48,10 @@ try {
     $idQuartier = $userDbData->getIdQuartier();
     $quartierName = 'Non défini';
     if ($idQuartier) {
-        $quartierData = Quartier::findById($db, $idQuartier);
+        $quartierC = new quartierC();
+        $quartierData = $quartierC->recupererQuartierparId($idQuartier);
         if ($quartierData) {
-            $quartierName = $quartierData->getNomq();
+            $quartierName = $quartierData['nomq'];
         }
         $defisQuartier = Defi::getDefisByQuartier($db, $idQuartier);
         $defisCompletes = 0;

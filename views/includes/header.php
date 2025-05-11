@@ -168,6 +168,10 @@ if (!isset($activePage)) $activePage = "";
               <a class="nav-link <?php echo $activePage == 'interventions' ? 'active' : ''; ?>" 
                  href="/WaveNet/views/frontoffice/interventions.php">Interventions</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link <?php echo $activePage == 'recompenses' ? 'active' : ''; ?>" 
+                 href="/WaveNet/views/frontoffice/recompenses.php">Récompenses</a>
+            </li>
            
             <?php if (isset($_SESSION['user_id'])): ?>
             <li class="nav-item">

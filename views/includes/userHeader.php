@@ -195,6 +195,7 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
             <li><a href="/WaveNet/views/frontoffice/activites.php" class="<?php echo ($activePage === 'activites') ? 'active' : ''; ?>">Activités</a></li>
             <li><a href="/WaveNet/views/frontoffice/manageTransport.php" class="<?php echo ($activePage === 'transport') ? 'active' : ''; ?>">Transports</a></li>
             <li><a href="/WaveNet/views/frontoffice/addSignalement.php" class="<?php echo ($activePage === 'signalement') ? 'active' : ''; ?>">Signalements</a></li>
+            <li><a href="/WaveNet/views/frontoffice/recompenses.php" class="<?php echo ($activePage === 'recompenses') ? 'active' : ''; ?>">Récompenses</a></li>
             <li><a href="/WaveNet/views/frontoffice/account_activity.php" class="<?php echo ($activePage === 'account_activity') ? 'active' : ''; ?>">Activité du compte</a></li>
         <?php else: ?>
              <li><a href="/WaveNet/views/backoffice/index.php" class="<?php echo ($currentScript === 'index.php') ? 'active' : ''; ?>">Dashboard Admin</a></li>
@@ -236,6 +237,7 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
                     <a href="/WaveNet/views/frontoffice/editProfile.php"><i class="fas fa-user-edit"></i>Modifier mon profil</a>
                     <a href="/WaveNet/views/frontoffice/viewSignalements.php"><i class="fas fa-exclamation-triangle"></i>Mes signalements</a>
                     <a href="/WaveNet/views/frontoffice/signalement.php"><i class="fas fa-plus-circle"></i>Ajouter un signalement</a>
+                    <a href="/WaveNet/views/frontoffice/recompenses.php"><i class="fas fa-gift"></i>Récompenses</a>
                     <a href="/WaveNet/views/frontoffice/account_activity.php"><i class="fas fa-history"></i>Activité du compte</a>
                     <a href="/WaveNet/controller/UserController.php?action=gerer2FA"><i class="fas fa-shield-alt"></i>Sécurité du compte</a>
                     <div class="dropdown-divider"></div>
