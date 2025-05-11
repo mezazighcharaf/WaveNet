@@ -71,24 +71,6 @@ try {
             if (isset($etapes[$etapeIndex]) && isset($etapes[$etapeIndex]['Points_Bonus'])) {
                 $pointsGagnes = (int)$etapes[$etapeIndex]['Points_Bonus'];
                 file_put_contents($logFile, date('Y-m-d H:i:s') . " - Points gagnés pour l'étape: $pointsGagnes\n", FILE_APPEND);
-<<<<<<< HEAD
-=======
-            }
-        }
-        
-        // Si c'est la dernière étape, on ajoute les points du défi entier
-        if ($etape == count($etapes) + 1) {
-            // Récupérer les points du défi
-            $query = "SELECT Points_verts FROM defi WHERE Id_Defi = ?";
-            $stmt = $db->prepare($query);
-            $stmt->bindParam(1, $defiId);
-            $stmt->execute();
-            $defiInfo = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($defiInfo && isset($defiInfo['Points_verts'])) {
-                $pointsGagnes += (int)$defiInfo['Points_verts'];
-                file_put_contents($logFile, date('Y-m-d H:i:s') . " - Points supplémentaires pour fin du défi: " . $defiInfo['Points_verts'] . "\n", FILE_APPEND);
->>>>>>> 58b50b555e4140703bbb6ca678a98155b67dc7c0
             }
         }
         
