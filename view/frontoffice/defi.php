@@ -672,550 +672,445 @@
   <script src="/Projet_Web/assets/js/stickman.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Variables globales
-        let stream = null;
-        let isCapturing = false;
-        let mobilenetModel = null;
-        let modelReady = false;
-        
-        // Récupérer les éléments de la modale
-        const modal = document.getElementById('modal-validation-image');
-        const closeModal = document.getElementById('close-modal');
-        const btnCapturePhoto = document.getElementById('btn-capture-photo');
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const imgPreview = document.getElementById('img-preview');
-        const btnVerifier = document.getElementById('btn-verifier');
-        const uploadArea = document.getElementById('upload-area');
-        const inputUpload = document.getElementById('input-upload-image');
-        const resultValidation = document.getElementById('result-validation');
+      // Variables globales
+      let stream = null;
+      let isCapturing = false;
+      let mobilenetModel = null;
+      let modelReady = false;
+      
+      // Récupérer les éléments de la modale
+      const modal = document.getElementById('modal-validation-image');
+      const closeModal = document.getElementById('close-modal');
+      const btnCapturePhoto = document.getElementById('btn-capture-photo');
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const imgPreview = document.getElementById('img-preview');
+      const btnVerifier = document.getElementById('btn-verifier');
+      const uploadArea = document.getElementById('upload-area');
+      const inputUpload = document.getElementById('input-upload-image');
+      const resultValidation = document.getElementById('result-validation');
+      const btnAccomplir = document.getElementById('btn-accomplir');
 
-        // Fonction pour charger le modèle
-        async function loadModel() {
-            try {
-                console.log('Chargement du modèle MobileNet...');
-                mobilenetModel = await mobilenet.load();
-                modelReady = true;
-                console.log('Modèle MobileNet chargé avec succès !');
-                const resultValidation = document.getElementById('result-validation');
-                if (resultValidation) {
-                    resultValidation.textContent = '';
-                }
-            } catch (err) {
-                console.error('Erreur lors du chargement du modèle:', err);
-                const resultValidation = document.getElementById('result-validation');
-                if (resultValidation) {
-                    resultValidation.textContent = 'Erreur lors du chargement du modèle.';
-                }
-            }
+      // Vérifier l'état du défi
+      const defiComplet = <?php echo isset($defiComplet) && $defiComplet ? 'true' : 'false'; ?>;
+      const defiTermine = <?php echo $defiTermine ? 'true' : 'false'; ?>;
+      const isTempsEcoule = <?php echo ($isTempsEcoule && !$isDefiComplet) ? 'true' : 'false'; ?>;
+      const isDefiAvenir = <?php echo $isDefiAvenir ? 'true' : 'false'; ?>;
+
+      // Gestion du bouton "Étape accomplie"
+      if (btnAccomplir) {
+        // Mettre à jour l'état du bouton
+        if (defiComplet || defiTermine) {
+          btnAccomplir.disabled = true;
+          btnAccomplir.textContent = 'Défi déjà relevé';
+        } else if (isTempsEcoule) {
+          btnAccomplir.disabled = true;
+          btnAccomplir.textContent = 'Défi expiré';
+        } else if (isDefiAvenir) {
+          btnAccomplir.disabled = true;
+          btnAccomplir.textContent = 'Défi à venir';
+        } else {
+          btnAccomplir.disabled = false;
+          btnAccomplir.textContent = 'Étape accomplie';
         }
 
-        // Charger le modèle au démarrage
-        loadModel();
-
-        // Fonction pour réinitialiser la prévisualisation
-        function resetPreview() {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
+        // Ajouter l'événement click
+        btnAccomplir.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('Clic sur le bouton Étape accomplie');
+          if (!btnAccomplir.disabled && modal) {
+            console.log('Ouverture de la modale');
+            modal.style.display = 'block';
+            if (typeof resetPreview === 'function') {
+              resetPreview();
             }
+          }
+        });
+      }
+
+      // Placer le stickman à la fin si défi terminé
+      if ((defiComplet || defiTermine) && typeof etapes !== 'undefined' && stickman) {
+        stickman.setAttribute('transform', `translate(${etapes[etapes.length-1]}, 200)`);
+      }
+
+      // Fonction pour réinitialiser la prévisualisation
+      function resetPreview() {
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+          stream = null;
+        }
+        video.style.display = 'none';
+        canvas.style.display = 'none';
+        imgPreview.style.display = 'none';
+        imgPreview.src = '';
+        btnVerifier.disabled = true;
+        resultValidation.textContent = '';
+        btnCapturePhoto.textContent = 'Prendre une photo';
+        isCapturing = false;
+      }
+
+      // Fonction pour charger le modèle
+      async function loadModel() {
+        try {
+          console.log('Chargement du modèle MobileNet...');
+          mobilenetModel = await mobilenet.load();
+          modelReady = true;
+          console.log('Modèle MobileNet chargé avec succès !');
+          const resultValidation = document.getElementById('result-validation');
+          if (resultValidation) {
+            resultValidation.textContent = '';
+          }
+        } catch (err) {
+          console.error('Erreur lors du chargement du modèle:', err);
+          const resultValidation = document.getElementById('result-validation');
+          if (resultValidation) {
+            resultValidation.textContent = 'Erreur lors du chargement du modèle.';
+          }
+        }
+      }
+
+      // Charger le modèle au démarrage
+      loadModel();
+
+      // Gestion de la capture photo
+      if (btnCapturePhoto) {
+        btnCapturePhoto.addEventListener('click', async function() {
+          if (!isCapturing) {
+            try {
+              stream = await navigator.mediaDevices.getUserMedia({ video: true });
+              video.srcObject = stream;
+              video.style.display = 'block';
+              canvas.style.display = 'none';
+              imgPreview.style.display = 'none';
+              btnVerifier.disabled = true;
+              btnCapturePhoto.textContent = 'Capturer';
+              isCapturing = true;
+            } catch (err) {
+              console.error('Erreur accès caméra:', err);
+              alert('Impossible d\'accéder à la caméra : ' + err.message);
+            }
+          } else {
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/png');
+            imgPreview.src = imageData;
+            imgPreview.style.display = 'block';
             video.style.display = 'none';
             canvas.style.display = 'none';
-            imgPreview.style.display = 'none';
-            imgPreview.src = '';
-            btnVerifier.disabled = true;
-            resultValidation.textContent = '';
+            btnVerifier.disabled = false;
+            
+            if (stream) {
+              stream.getTracks().forEach(track => track.stop());
+              stream = null;
+            }
+            
             btnCapturePhoto.textContent = 'Prendre une photo';
             isCapturing = false;
-        }
+          }
+        });
+      }
 
-        // Gestion de la capture photo
-        if (btnCapturePhoto) {
-            btnCapturePhoto.addEventListener('click', async function() {
-                if (!isCapturing) {
-                    try {
-                        stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                        video.srcObject = stream;
-                        video.style.display = 'block';
-                        canvas.style.display = 'none';
-                        imgPreview.style.display = 'none';
-                        btnVerifier.disabled = true;
-                        btnCapturePhoto.textContent = 'Capturer';
-                        isCapturing = true;
-                    } catch (err) {
-                        console.error('Erreur accès caméra:', err);
-                        alert('Impossible d\'accéder à la caméra : ' + err.message);
-                    }
-                } else {
-                    const context = canvas.getContext('2d');
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    const imageData = canvas.toDataURL('image/png');
-                    imgPreview.src = imageData;
-                    imgPreview.style.display = 'block';
-                    video.style.display = 'none';
-                    canvas.style.display = 'none';
-                    btnVerifier.disabled = false;
-                    
-                    if (stream) {
-                        stream.getTracks().forEach(track => track.stop());
-                        stream = null;
-                    }
-                    
-                    btnCapturePhoto.textContent = 'Prendre une photo';
-                    isCapturing = false;
-                }
-            });
-        }
+      // Gestionnaire d'événement pour le bouton Vérifier
+      if (btnVerifier) {
+        btnVerifier.addEventListener('click', async function() {
+          if (!modelReady) {
+            resultValidation.textContent = 'Le modèle n\'est pas prêt. Veuillez patienter.';
+            return;
+          }
+          if (!imgPreview.src || imgPreview.style.display !== 'block') {
+            resultValidation.textContent = 'Aucune image à vérifier.';
+            return;
+          }
 
-        // Gestionnaire d'événement pour le bouton Vérifier
-        if (btnVerifier) {
-            btnVerifier.addEventListener('click', async function() {
-                if (!modelReady) {
-                    resultValidation.textContent = 'Le modèle n\'est pas prêt. Veuillez patienter.';
-                    return;
-                }
-                if (!imgPreview.src || imgPreview.style.display !== 'block') {
-                    resultValidation.textContent = 'Aucune image à vérifier.';
-                    return;
-                }
+          btnVerifier.textContent = 'Vérification en cours...';
+          btnVerifier.disabled = true;
+          resultValidation.textContent = '';
 
-                btnVerifier.textContent = 'Vérification en cours...';
-                btnVerifier.disabled = true;
-                resultValidation.textContent = '';
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.src = imgPreview.src;
 
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.src = imgPreview.src;
+          await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+          });
 
-                await new Promise((resolve, reject) => {
-                    img.onload = resolve;
-                    img.onerror = reject;
-                });
+          const predictions = await mobilenetModel.classify(img);
 
-                const predictions = await mobilenetModel.classify(img);
+          // Récupère le nom de l'étape courante
+          let nomEtape = '';
+          if (typeof currentStepIndex !== 'undefined' && etapesData[currentStepIndex]) {
+            nomEtape = etapesData[currentStepIndex].title + ' ' + (etapesData[currentStepIndex].description || '');
+          } else {
+            nomEtape = document.querySelector('.tooltip-content-title')?.textContent || '';
+          }
+          let nomDefi = "<?php echo addslashes($defi['Titre_D']); ?>";
 
-                // Récupère le nom de l'étape courante
-                let nomEtape = '';
-                if (typeof currentStepIndex !== 'undefined' && etapesData[currentStepIndex]) {
-                    nomEtape = etapesData[currentStepIndex].title + ' ' + (etapesData[currentStepIndex].description || '');
-                } else {
-                    nomEtape = document.querySelector('.tooltip-content-title')?.textContent || '';
-                }
-                let nomDefi = "<?php echo addslashes($defi['Titre_D']); ?>";
+          // Traduction et mots-clés
+          const traductions = {
+            'arbre': ['tree'],
+            'fleur': ['flower'],
+            'plante': ['plant'],
+            'graines': ['seed', 'seeds'],
+            'planter': ['planting', 'sow', 'sowing'],
+            'semis': ['seedling', 'seedlings'],
+            'terre': ['soil', 'earth', 'ground'],
+            'eau': ['water', 'watering'],
+            'vélo': ['bicycle', 'bike'],
+            'poubelle': ['trash', 'bin', 'garbage'],
+            'recycler': ['recycle', 'recycling'],
+            'forêt': ['forest'],
+            'feuille': ['leaf', 'leaves']
+          };
 
-                // Traduction et mots-clés
-                const traductions = {
-                    'arbre': ['tree'],
-                    'fleur': ['flower'],
-                    'plante': ['plant'],
-                    'graines': ['seed', 'seeds'],
-                    'planter': ['planting', 'sow', 'sowing'],
-                    'semis': ['seedling', 'seedlings'],
-                    'terre': ['soil', 'earth', 'ground'],
-                    'eau': ['water', 'watering'],
-                    'vélo': ['bicycle', 'bike'],
-                    'poubelle': ['trash', 'bin', 'garbage'],
-                    'recycler': ['recycle', 'recycling'],
-                    'forêt': ['forest'],
-                    'feuille': ['leaf', 'leaves']
-                };
+          // Affiche les prédictions pour debug
+          let debug = '<b>Prédictions du modèle :</b><ul>';
+          predictions.slice(0, 3).forEach(pred => {
+            debug += `<li>${pred.className} (${(pred.probability*100).toFixed(1)}%)</li>`;
+          });
+          debug += '</ul>';
 
-                // Affiche les prédictions pour debug
-                let debug = '<b>Prédictions du modèle :</b><ul>';
-                predictions.slice(0, 3).forEach(pred => {
-                    debug += `<li>${pred.className} (${(pred.probability*100).toFixed(1)}%)</li>`;
-                });
-                debug += '</ul>';
+          // Génère la liste des mots-clés à valider
+          const motsEtape = nomEtape.toLowerCase().split(/\s+/);
+          let motsAnglais = [];
+          motsEtape.forEach(mot => {
+            if (traductions[mot]) motsAnglais = motsAnglais.concat(traductions[mot]);
+          });
+          const motsGeneriques = ['plant', 'seed', 'garden', 'person', 'activity', 'tree', 'flower', 'nature', 'outdoor', 'soil', 'pot', 'hand', 'grow', 'green'];
 
-                // Génère la liste des mots-clés à valider
-                const motsEtape = nomEtape.toLowerCase().split(/\s+/);
-                let motsAnglais = [];
-                motsEtape.forEach(mot => {
-                    if (traductions[mot]) motsAnglais = motsAnglais.concat(traductions[mot]);
-                });
-                const motsGeneriques = ['plant', 'seed', 'garden', 'person', 'activity', 'tree', 'flower', 'nature', 'outdoor', 'soil', 'pot', 'hand', 'grow', 'green'];
+          // On compare les prédictions avec tous les mots français, anglais, génériques
+          const isValid = predictions.some(pred => {
+            const label = pred.className.toLowerCase();
+            if (motsEtape.some(mot => mot.length > 3 && label.includes(mot))) return true;
+            if (motsAnglais.some(mot => label.includes(mot))) return true;
+            if (motsGeneriques.some(mot => label.includes(mot))) return true;
+            if (label.includes(nomDefi.toLowerCase())) return true;
+            return false;
+          });
 
-                // On compare les prédictions avec tous les mots français, anglais, génériques
-                const isValid = predictions.some(pred => {
-                    const label = pred.className.toLowerCase();
-                    if (motsEtape.some(mot => mot.length > 3 && label.includes(mot))) return true;
-                    if (motsAnglais.some(mot => label.includes(mot))) return true;
-                    if (motsGeneriques.some(mot => label.includes(mot))) return true;
-                    if (label.includes(nomDefi.toLowerCase())) return true;
-                    return false;
-                });
-
-                if (isValid) {
-                    resultValidation.innerHTML = debug + '<span style="color:green;font-weight:700;">✔️ Étape validée automatiquement !</span>';
-                    if (modal) modal.style.display = 'none';
-                    const toast = document.getElementById('toast-success');
-                    if (toast) {
-                        toast.style.display = 'block';
-                        setTimeout(() => { toast.style.display = 'none'; }, 2000);
-                    }
-                    if (etapeActuelle < etapes.length - 1 && typeof deplacerStickman === 'function') {
-                        deplacerStickman(etapeActuelle + 1);
-                        // Appel AJAX pour sauvegarder l'étape et récupérer les points
-                        fetch('sauvegarder_etape.php', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                            body: 'etape=' + (etapeActuelle + 1) + '&defi_id=<?php echo $defiId; ?>'
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success && typeof afficherNotificationPoints === 'function') {
-                                afficherNotificationPoints(data.points);
-                            }
-                        });
-                    }
-                    if (typeof resetPreview === 'function') resetPreview();
-                } else {
-                    resultValidation.innerHTML = debug + '<span style="color:#c62828;font-weight:700;">❌ Image non conforme à l\'étape.</span>';
-                }
-
-                btnVerifier.textContent = 'Vérifier';
-                btnVerifier.disabled = false;
-            });
-        }
-
-        // Ouvrir la modale quand on clique sur "Étape accomplie"
-        const btnAccomplir = document.getElementById('btn-accomplir');
-        if (btnAccomplir) {
-            console.log('Bouton Étape accomplie trouvé, événement attaché');
-            btnAccomplir.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (modal) {
-                    modal.style.display = 'block';
-                    resetPreview();
-                }
-            });
-        } else {
-            alert('Le bouton Étape accomplie n\'a pas été trouvé dans le DOM !');
-        }
-
-        // Fermer la modale
-        if (closeModal) {
-            closeModal.addEventListener('click', function() {
-                modal.style.display = 'none';
-                resetPreview();
-            });
-        }
-
-        // Fermer la modale en cliquant en dehors
-        window.addEventListener('click', function(event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-                resetPreview();
+          if (isValid) {
+            resultValidation.innerHTML = debug + '<span style="color:green;font-weight:700;">✔️ Étape validée automatiquement !</span>';
+            if (modal) modal.style.display = 'none';
+            const toast = document.getElementById('toast-success');
+            if (toast) {
+              toast.style.display = 'block';
+              setTimeout(() => { toast.style.display = 'none'; }, 2000);
             }
+            if (etapeActuelle < etapes.length - 1 && typeof deplacerStickman === 'function') {
+              deplacerStickman(etapeActuelle + 1);
+              // Appel AJAX pour sauvegarder l'étape et récupérer les points
+              fetch('sauvegarder_etape.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'etape=' + (etapeActuelle + 1) + '&defi_id=<?php echo $defiId; ?>'
+              })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success && typeof afficherNotificationPoints === 'function') {
+                  afficherNotificationPoints(data.points);
+                }
+              });
+            }
+            if (typeof resetPreview === 'function') resetPreview();
+          } else {
+            resultValidation.innerHTML = debug + '<span style="color:#c62828;font-weight:700;">❌ Image non conforme à l\'étape.</span>';
+          }
+
+          btnVerifier.textContent = 'Vérifier';
+          btnVerifier.disabled = false;
+        });
+      }
+
+      // Fermer la modale
+      if (closeModal) {
+        closeModal.addEventListener('click', function() {
+          modal.style.display = 'none';
+          resetPreview();
+        });
+      }
+
+      // Fermer la modale en cliquant en dehors
+      window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+          resetPreview();
+        }
+      });
+
+      // Gestion de l'upload d'image
+      if (inputUpload) {
+        inputUpload.addEventListener('change', function(e) {
+          if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+              imgPreview.src = e.target.result;
+              imgPreview.style.display = 'block';
+              video.style.display = 'none';
+              canvas.style.display = 'none';
+              btnVerifier.disabled = false;
+            };
+            
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      // Gestion du drag & drop
+      if (uploadArea) {
+        uploadArea.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          uploadArea.classList.add('dragover');
         });
 
-        // Gestion de l'upload d'image
-        if (inputUpload) {
-            inputUpload.addEventListener('change', function(e) {
-                if (e.target.files && e.target.files[0]) {
-                    const file = e.target.files[0];
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        imgPreview.src = e.target.result;
-                        imgPreview.style.display = 'block';
-                        video.style.display = 'none';
-                        canvas.style.display = 'none';
-                        btnVerifier.disabled = false;
-                    };
-                    
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
+        uploadArea.addEventListener('dragleave', function(e) {
+          e.preventDefault();
+          uploadArea.classList.remove('dragover');
+        });
 
-        // Gestion du drag & drop
-        if (uploadArea) {
-            uploadArea.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
+        uploadArea.addEventListener('drop', function(e) {
+          e.preventDefault();
+          uploadArea.classList.remove('dragover');
+          
+          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            const file = e.dataTransfer.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+              imgPreview.src = e.target.result;
+              imgPreview.style.display = 'block';
+              video.style.display = 'none';
+              canvas.style.display = 'none';
+              btnVerifier.disabled = false;
+            };
+            
+            reader.readAsDataURL(file);
+          }
+        });
+      }
 
-            uploadArea.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-            });
-
-            uploadArea.addEventListener('drop', function(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                
-                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                    const file = e.dataTransfer.files[0];
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        imgPreview.src = e.target.result;
-                        imgPreview.style.display = 'block';
-                        video.style.display = 'none';
-                        canvas.style.display = 'none';
-                        btnVerifier.disabled = false;
-                    };
-                    
-                    reader.readAsDataURL(file);
-                }
-            });
+      // Fonction pour créer et afficher les confettis et le message de succès (depuis défis_complet.php)
+      function celebrerSucces() {
+        console.log('Célébration appelée !');
+        document.getElementById('message-succes').style.opacity = "1";
+        const confettiContainer = document.getElementById('confetti-container');
+        confettiContainer.innerHTML = '';
+        const confettiCount = 700;
+        const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fd0', '#0fd', '#f83', '#8f3', '#3f8', '#83f', '#f38'];
+        for (let i = 0; i < confettiCount; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          const startPosX = Math.random() * window.innerWidth;
+          confetti.style.left = startPosX + 'px';
+          confetti.style.top = '-50px';
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          const size = Math.random() * 15 + 5;
+          confetti.style.width = size + 'px';
+          confetti.style.height = size + 'px';
+          const shapeNum = Math.floor(Math.random() * 3);
+          if (shapeNum === 0) {
+            confetti.style.borderRadius = '50%';
+          } else if (shapeNum === 1) {
+            confetti.style.borderRadius = '0';
+          } else {
+            confetti.style.borderRadius = '0';
+            confetti.style.transform = 'rotate(45deg)';
+          }
+          const fallDuration = Math.random() * 5 + 3;
+          confetti.style.animation = `fall ${fallDuration}s linear forwards`;
+          const delay = Math.random() * 5;
+          confetti.style.animationDelay = `${delay}s`;
+          confettiContainer.appendChild(confetti);
+          setTimeout(() => {
+            confetti.remove();
+          }, (fallDuration + delay) * 1000 + 500);
         }
-
-        // Fonction pour créer et afficher les confettis et le message de succès (depuis défis_complet.php)
-        function celebrerSucces() {
-            console.log('Célébration appelée !');
-            document.getElementById('message-succes').style.opacity = "1";
-            const confettiContainer = document.getElementById('confetti-container');
-            confettiContainer.innerHTML = '';
-            const confettiCount = 700;
-            const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fd0', '#0fd', '#f83', '#8f3', '#3f8', '#83f', '#f38'];
-            for (let i = 0; i < confettiCount; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                const startPosX = Math.random() * window.innerWidth;
-                confetti.style.left = startPosX + 'px';
-                confetti.style.top = '-50px';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                const size = Math.random() * 15 + 5;
-                confetti.style.width = size + 'px';
-                confetti.style.height = size + 'px';
-                const shapeNum = Math.floor(Math.random() * 3);
-                if (shapeNum === 0) {
-                    confetti.style.borderRadius = '50%';
-                } else if (shapeNum === 1) {
-                    confetti.style.borderRadius = '0';
-                } else {
-                    confetti.style.borderRadius = '0';
-                    confetti.style.transform = 'rotate(45deg)';
-                }
-                const fallDuration = Math.random() * 5 + 3;
-                confetti.style.animation = `fall ${fallDuration}s linear forwards`;
-                const delay = Math.random() * 5;
-                confetti.style.animationDelay = `${delay}s`;
-                confettiContainer.appendChild(confetti);
-                setTimeout(() => {
-                    confetti.remove();
-                }, (fallDuration + delay) * 1000 + 500);
-            }
-            setTimeout(() => {
-                document.getElementById('message-succes').style.opacity = "0";
-            }, 5000);
-            setTimeout(() => {
-                confettiContainer.innerHTML = '';
-            }, 15000);
-        }
-        window.celebrerSucces = celebrerSucces;
-        window.successCelebrated = false;
-
-        // Désactiver le bouton si le défi est terminé ou complet
-        var btnAccomplir = document.getElementById('btn-accomplir');
-        var defiComplet = <?php echo isset($defiComplet) && $defiComplet ? 'true' : 'false'; ?>;
-        var defiTermine = <?php echo $defiTermine ? 'true' : 'false'; ?>;
-        if (btnAccomplir && (defiComplet || defiTermine)) {
-            btnAccomplir.disabled = true;
-            btnAccomplir.textContent = 'Défi déjà relevé';
-        }
-        // Placer le stickman à la fin si défi terminé
-        if ((defiComplet || defiTermine) && typeof etapes !== 'undefined' && stickman) {
-            stickman.setAttribute('transform', `translate(${etapes[etapes.length-1]}, 200)`);
-        }
-
-        // Gestion du temps écoulé (stickman qui pleure + pluie de larmes)
-        var isTempsEcoule = <?php echo ($isTempsEcoule && !$isDefiComplet) ? 'true' : 'false'; ?>;
-        if (isTempsEcoule) {
-            var btnAccomplir = document.getElementById('btn-accomplir');
-            if (btnAccomplir) {
-                btnAccomplir.disabled = true;
-                btnAccomplir.textContent = 'Défi expiré';
-            }
-            // Fonction pour faire pleurer le stickman
-            function faireStickmanPleurer() {
-                if (!stickman) return;
-                stickman.setAttribute('transform', 'translate(400, 200)');
-                armLeft.setAttribute('x1', '0');
-                armLeft.setAttribute('y1', '-60');
-                armLeft.setAttribute('x2', '-10');
-                armLeft.setAttribute('y2', '-100');
-                armRight.setAttribute('x1', '0');
-                armRight.setAttribute('y1', '-60');
-                armRight.setAttribute('x2', '10');
-                armRight.setAttribute('y2', '-100');
-                // Jambes tremblantes
-                setInterval(() => {
-                    const tremblementGauche = Math.random() * 3 - 1.5;
-                    const tremblementDroit = Math.random() * 3 - 1.5;
-                    legLeft.setAttribute('x2', (-20 + tremblementGauche).toString());
-                    legRight.setAttribute('x2', (20 + tremblementDroit).toString());
-                }, 100);
-                // Bouche triste
-                const sourire = document.querySelector('#stickman path[d^="M-10,-90"]');
-                if (sourire) sourire.remove();
-                const boucheTristeSVG = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                boucheTristeSVG.setAttribute('d', 'M-10,-95 Q0,-100 10,-95');
-                boucheTristeSVG.setAttribute('stroke', 'black');
-                boucheTristeSVG.setAttribute('stroke-width', '2');
-                boucheTristeSVG.setAttribute('fill', 'none');
-                stickman.appendChild(boucheTristeSVG);
-                // Larmes qui tombent du visage
-                setInterval(() => {
-                    const larme = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                    const coteLarme = Math.random() < 0.5 ? -8 : 8;
-                    larme.setAttribute('cx', coteLarme.toString());
-                    larme.setAttribute('cy', '-95');
-                    larme.setAttribute('r', '2');
-                    larme.setAttribute('fill', '#00a2ff');
-                    larme.style.opacity = '0.8';
-                    stickman.appendChild(larme);
-                    let posY = -95;
-                    const animationLarme = setInterval(() => {
-                        posY += 2;
-                        larme.setAttribute('cy', posY.toString());
-                        if (posY > 0) {
-                            clearInterval(animationLarme);
-                            larme.remove();
-                        }
-                    }, 50);
-                }, 500);
-            }
-            // Fonction pour faire tomber des larmes sur l'écran
-            function faireTomberLarmes() {
-                const larmesContainer = document.createElement('div');
-                larmesContainer.id = 'larmes-container';
-                larmesContainer.style.position = 'fixed';
-                larmesContainer.style.top = '0';
-                larmesContainer.style.left = '0';
-                larmesContainer.style.width = '100vw';
-                larmesContainer.style.height = '100vh';
-                larmesContainer.style.pointerEvents = 'none';
-                larmesContainer.style.zIndex = '9999';
-                document.body.appendChild(larmesContainer);
-                const larmesCount = 200;
-                const blueColors = ['#0088ff', '#00a2ff', '#0076d6', '#005cbf', '#0047a0'];
-                for (let i = 0; i < larmesCount; i++) {
-                    setTimeout(() => {
-                        const larme = document.createElement('div');
-                        larme.className = 'larme';
-                        const startPosX = Math.random() * window.innerWidth;
-                        larme.style.position = 'fixed';
-                        larme.style.left = startPosX + 'px';
-                        larme.style.top = '-50px';
-                        larme.style.backgroundColor = blueColors[Math.floor(Math.random() * blueColors.length)];
-                        larme.style.opacity = '0.7';
-                        larme.style.zIndex = '9999';
-                        const size = Math.random() * 8 + 4;
-                        larme.style.width = size + 'px';
-                        larme.style.height = size * 1.5 + 'px';
-                        larme.style.borderRadius = '50% 50% 50% 50% / 60% 60% 40% 40%';
-                        larme.style.transform = 'rotate(30deg)';
-                        const fallDuration = Math.random() * 4 + 2;
-                        larme.style.animation = `fall ${fallDuration}s linear forwards`;
-                        const delay = Math.random() * 20;
-                        larme.style.animationDelay = `${delay}s`;
-                        larmesContainer.appendChild(larme);
-                        setTimeout(() => {
-                            larme.remove();
-                        }, (fallDuration + delay) * 1000 + 500);
-                    }, Math.random() * 1000);
-                }
-                const styleElement = document.createElement('style');
-                styleElement.textContent = `
-                    @keyframes fall {
-                        0% { 
-                            transform: translateY(0) rotate(30deg); 
-                            opacity: 0.7;
-                        }
-                        80% {
-                            opacity: 0.7;
-                        }
-                        100% { 
-                            transform: translateY(100vh) rotate(30deg); 
-                            opacity: 0;
-                        }
-                    }
-                `;
-                document.head.appendChild(styleElement);
-            }
-            // Lancer les animations tristes
-            faireStickmanPleurer();
-            faireTomberLarmes();
-        }
+        setTimeout(() => {
+          document.getElementById('message-succes').style.opacity = "0";
+        }, 5000);
+        setTimeout(() => {
+          confettiContainer.innerHTML = '';
+        }, 15000);
+      }
+      window.celebrerSucces = celebrerSucces;
+      window.successCelebrated = false;
     });
   </script>
   <script>
     // Affichage notification points (version défis_complet.php)
     function afficherNotificationPoints(points) {
-        const notification = document.createElement('div');
-        notification.className = 'points-notification';
-        notification.innerHTML = `<i class="fas fa-leaf"></i> <b>Bravo ! Vous avez gagné +${points} points !</b>`;
-        document.body.appendChild(notification);
-        setTimeout(() => { notification.style.opacity = '1'; }, 10);
-        setTimeout(() => {
-            notification.style.opacity = '0';
-            setTimeout(() => { notification.remove(); }, 500);
-        }, 3000);
+      const notification = document.createElement('div');
+      notification.className = 'points-notification';
+      notification.innerHTML = `<i class="fas fa-leaf"></i> <b>Bravo ! Vous avez gagné +${points} points !</b>`;
+      document.body.appendChild(notification);
+      setTimeout(() => { notification.style.opacity = '1'; }, 10);
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => { notification.remove(); }, 500);
+      }, 3000);
     }
   </script>
   <script>
     // Fonction pour mettre à jour l'affichage des points
     function updatePointsDisplay() {
-        fetch('/Projet_Web/view/frontoffice/get_points_utilisateur.php')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const pointsElement = document.querySelector('.points-value');
-                    if (pointsElement) {
-                        pointsElement.textContent = data.points;
-                    }
-                }
-            })
-            .catch(error => console.error('Erreur lors de la récupération des points:', error));
+      fetch('/Projet_Web/view/frontoffice/get_points_utilisateur.php')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            const pointsElement = document.querySelector('.points-value');
+            if (pointsElement) {
+              pointsElement.textContent = data.points;
+            }
+          }
+        })
+        .catch(error => console.error('Erreur lors de la récupération des points:', error));
     }
 
     // Mettre à jour l'affichage des points après avoir gagné des points
     function showPointsNotification(points) {
-        const notification = document.createElement('div');
-        notification.className = 'points-notification';
-        notification.textContent = `+${points} points !`;
-        document.body.appendChild(notification);
+      const notification = document.createElement('div');
+      notification.className = 'points-notification';
+      notification.textContent = `+${points} points !`;
+      document.body.appendChild(notification);
 
-        // Afficher la notification
-        setTimeout(() => {
-            notification.style.opacity = '1';
-            notification.style.transform = 'translate(-50%, -50%)';
-        }, 100);
+      // Afficher la notification
+      setTimeout(() => {
+        notification.style.opacity = '1';
+        notification.style.transform = 'translate(-50%, -50%)';
+      }, 100);
 
-        // Mettre à jour l'affichage des points
-        updatePointsDisplay();
+      // Mettre à jour l'affichage des points
+      updatePointsDisplay();
 
-        // Supprimer la notification après l'animation
-        setTimeout(() => {
-            notification.style.opacity = '0';
-            notification.style.transform = 'translate(-50%, -60%)';
-            setTimeout(() => notification.remove(), 500);
-        }, 2000);
+      // Supprimer la notification après l'animation
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translate(-50%, -60%)';
+        setTimeout(() => notification.remove(), 500);
+      }, 2000);
     }
 
     // Modifier la fonction sauvegarderProgression pour utiliser la nouvelle notification
     function sauvegarderProgression(etape) {
-        fetch('/Projet_Web/view/frontoffice/sauvegarder_etape.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `etape=${etape}&defi_id=${defiId}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                if (data.points > 0) {
-                    showPointsNotification(data.points);
-                }
-            } else {
-                console.error('Erreur:', data.message);
-            }
-        })
-        .catch(error => console.error('Erreur:', error));
+      fetch('/Projet_Web/view/frontoffice/sauvegarder_etape.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `etape=${etape}&defi_id=${defiId}`
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          if (data.points > 0) {
+            showPointsNotification(data.points);
+          }
+        } else {
+          console.error('Erreur:', data.message);
+        }
+      })
+      .catch(error => console.error('Erreur:', error));
     }
   </script>
 </body>

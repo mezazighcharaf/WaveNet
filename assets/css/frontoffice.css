@@ -1420,40 +1420,40 @@ footer {
     z-index: 10000;
 }
 .tooltip {
-    position: absolute;
-    background-color: white;
+  position: absolute;
+  background-color: white;
     color: #333;
-    padding: 10px 15px;
+  padding: 10px 15px;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 1000;
     display: none;
     min-width: 150px;
-    max-width: 250px;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
+  max-width: 250px;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 .tooltip-content {
     position: relative;
 }
 .tooltip-content-title {
-    margin: 0 0 5px 0;
+  margin: 0 0 5px 0;
     color: #4CAF50;
-    font-size: 16px;
-    font-weight: 600;
+  font-size: 16px;
+  font-weight: 600;
 }
 .tooltip-content-desc {
     margin: 0;
     color: #666;
     font-size: 14px;
-    line-height: 1.4;
+  line-height: 1.4;
 }
 .point-hover {
-    cursor: pointer;
+  cursor: pointer;
     transition: all 0.2s ease;
 }
 .point-hover:hover {
-    r: 6;
+  r: 6;
     fill: #4CAF50;
 }
 .btn-primary {
