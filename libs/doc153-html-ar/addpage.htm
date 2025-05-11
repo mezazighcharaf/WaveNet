@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=Windows-1256">
+<TITLE>AddPage</TITLE>
+<LINK TYPE="text/css" REL="stylesheet" HREF="fpdf.css">
+</HEAD>
+<BODY>
+<H2 DIR='LTR'>AddPage</H2>
+<P DIR='LTR'><TT>AddPage([<B>string</B> orientation])</TT></P>
+<H4 CLASS='st'>الإصدار</H4>
+1.0
+<H4 CLASS='st'>الشرح</H4>
+تقوم هذه الدالة بإضافة صفحة جديدة إلى المستند وإذا كانت الصفحة موجودة سيتم استدعاء الدالة Footer أولاً
+لوضع المعلومات في اخر الصفحة وعندها سيتم إضافة الصفحة وسيكون الموضع الحالي للكتابة او الرسم في الصفحة
+هو الموضع العلوي الأيسر في زاوية الصفحة الجديدة وسيتم بعدها استدعاء الدالة Header لعرض رأس الصفحة الجديدة
+<BR>
+ولتغيير الخط المستخدم في الصفحة الجديدة يجب استدعاء دالة تغيير الخط قبل إضافة الصفحة
+مع العلم انك لست بحاجة إلى إستدعاء الدالة SetFont في حال أردت استخدام نفس الخط المستخدم في الصفحات السابقة وينطبق هذا الكلام على
+لون الخط و عرضه .
+<BR>
+وستكون البداية في الصفحة الجديدة كما ذكرنا سابقاً من الجزء العلوي الأيسر للصفحة
+<H4 CLASS='st'>باراميتر</H4>
+<TT><U>orientation</U></TT>
+<BLOCKQUOTE>
+يمثل هذا البارامتر اتجاه الصفحة وهو يأخذ أحد القيم المذكورة في الأسفل مع العلم أن هذه القيم حساسة لحالة الأحرف
+<UL>
+<LI><TT>P</TT> او <TT>Portrait</TT>
+<LI><TT>L</TT> او <TT>Landscape</TT>
+</UL>
+القيمة الإفتراضية هي التي يتم تمريرها لدالة تحميل الكائن
+</BLOCKQUOTE>
+<H4 CLASS='st'>انظر لمواضيع ذات صلة</H4>
+<A HREF="fpdf.htm">FPDF</A>,
+<A HREF="header.htm">Header</A>,
+<A HREF="footer.htm">Footer</A>,
+<A HREF="setmargins.htm">SetMargins</A>
+<HR STYLE="margin-top:1.5em">
+<DIV STYLE="text-align:center"><A HREF="index.htm">الرئيسية</A></DIV>
+</BODY>
+</HTML>

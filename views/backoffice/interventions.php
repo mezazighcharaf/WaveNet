@@ -55,9 +55,31 @@
       <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" type="text/css">
       <link href="css/sb-admin-2.min.css" rel="stylesheet">
        <style>
-           .badge-non-traite { background-color: #6c757d; color: white; }
-           .badge-en-cours { background-color: #ffc107; color: #333; }
-           .badge-traite { background-color: #28a745; color: white; }
+           /* Palette de couleurs WaveNet */
+           .badge-secondary { 
+               background-color: #6c757d; 
+               color: white; 
+           }
+           .badge-non-traite { 
+               background-color: #6c757d; 
+               color: white; 
+           }
+           .badge-en-cours { 
+               background-color: #f1c40f; 
+               color: #2e4f3e; 
+           }
+           .badge-traite { 
+               background-color: #4caf50; 
+               color: white; 
+           }
+           
+           /* Styles généraux pour les badges */
+           .badge {
+               padding: 0.4em 0.6em;
+               border-radius: 0.25rem;
+               font-weight: 500;
+               text-transform: capitalize;
+           }
        </style>
     </head>
     <body>
@@ -76,6 +98,7 @@
             <li><a href="/WaveNet/views/backoffice/gsignalement.php"><i class="fas fa-exclamation-triangle"></i> Signalements</a></li>
             <li><a href="/WaveNet/views/backoffice/interventions.php" class="active"><i class="fas fa-tools"></i> Interventions</a></li>
             <li><a href="/WaveNet/views/backoffice/recompenseback.php"><i class="fas fa-gift"></i> Récompenses</a></li>
+            <li><a href="/WaveNet/views/backoffice/eco_actionsB.php"><i class="fas fa-leaf"></i> Eco Actions</a></li>
             <li class="home-link"><a href="/WaveNet/views/frontoffice/userDashboard.php"><i class="fas fa-home"></i> Accueil frontoffice</a></li>
           </ul>
         </nav>

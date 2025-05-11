@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=Windows-1256">
+<TITLE>AcceptPageBreak</TITLE>
+<LINK TYPE="text/css" REL="stylesheet" HREF="fpdf.css">
+</HEAD>
+<BODY>
+<H2 DIR='LTR'>AcceptPageBreak</H2>
+<P DIR='LTR'><TT><B>boolean</B> AcceptPageBreak()</TT></P>
+<H4 CLASS='st'>الإصدار</H4>
+1.4
+<H4 CLASS='st'>الشرح</H4>
+تقوم هذه الدالة بتحديد امكانية اتاحة فاصل الصفحات بشكل اتوماتيكي او لا وذلك حسب القيمة المعادة
+من الدالة , والتطبيق الإفتراضي لهذه الدالة والخاص بنوع القيمة المعادة يتم تحديده بواسطة الدالة SetAutoPageBreak
+ويتم إستدعاء هذه الدالة بشكل تلقائي ويجب الا تستدعى مباشرة من البرنامج
+<H4 CLASS='st'>مثال</H4>
+هذة الطريقة يتم تحميلها بشكل زائد في عمليات الوراثة من الكلاس FPDF
+<PRE><CODE>class PDF extends FPDF
+{
+var $col=0;
+
+function SetCol($col)
+{
+    //Move position to a column
+    $this-&gt;col=$col;
+    $x=10+$col*65;
+    $this-&gt;SetLeftMargin($x);
+    $this-&gt;SetX($x);
+}
+
+function AcceptPageBreak()
+{
+    if($this-&gt;col&lt;2)
+    {
+        //Go to next column
+        $this-&gt;SetCol($this-&gt;col+1);
+        $this-&gt;SetY(10);
+        return false;
+    }
+    else
+    {
+        //Go back to first column and issue page break
+        $this-&gt;SetCol(0);
+        return true;
+    }
+}
+}
+
+$pdf=new PDF();
+$pdf-&gt;Open();
+$pdf-&gt;AddPage();
+$pdf-&gt;SetFont('Arial','',12);
+for($i=1;$i&lt;=300;$i++)
+    $pdf-&gt;Cell(0,5,&quot;Line $i&quot;,0,1);
+$pdf-&gt;Output();</CODE></PRE>
+<H4 CLASS='st'>انظر لمواضيع ذات صلة</H4>
+<A HREF="setautopagebreak.htm">SetAutoPageBreak</A>
+<HR STYLE="margin-top:1.5em">
+<DIV STYLE="text-align:center"><A HREF="index.htm">الرئيسية</A></DIV>
+</BODY>
+</HTML>

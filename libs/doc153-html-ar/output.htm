@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=Windows-1256">
+<TITLE>Output</TITLE>
+<LINK TYPE="text/css" REL="stylesheet" HREF="fpdf.css">
+</HEAD>
+<BODY>
+<H2 DIR='LTR'>Output</H2>
+<P DIR='LTR'><TT>ناتج السلسلة([<B>string</B> name [, <B>string</B> dest]])</TT></P>
+<H4 CLASS='st'>الإصدار</H4>
+1.0
+<H4 CLASS='st'>الشرح</H4>
+ارسال الوثيقة الى مكان محدد:سلسلة ,ملف محلى او مستعرض. فى الحالة الاخيرة فان البرنامج المساعد يمكن استخدامة اذا وجد او عن طريق تحميلة ,
+<BR>
+الطريقة الاولى تسمى Close اذا كان ضروريا انهاء الوثيقة
+<H4 CLASS='st'>باراميتر</H4>
+<TT><U>name</U></TT>
+<BLOCKQUOTE>
+اسم الملف اذا لم يكن موجودا فان الوثيقة ترسل الى المتصفح
+(destination <TT>I</TT> وتعطيه الإسم <TT>doc.pdf</TT>.
+</BLOCKQUOTE>
+<TT><U>dest</U></TT>
+<BLOCKQUOTE>
+المكان الذى سترسل الية الوثيقة وهى يمكن ان تأخد احد القيم الاتية
+<UL>
+<LI><TT>I</TT>: ارسال الملف داخل المتصفح. وهان يستخدم البرنامج المساعد اذا لزم الامر.
+الاسم مرسل من قبل <TT>name</TT> يستخدم اذا استخدم احد خاصية "Save as" فى توليد الروابط PDF
+<LI><TT>D</TT>: ترسل الى المتصفح وتجبر على تحميل ملف باسم المرسل
+<TT>name</TT>.
+<LI><TT>F</TT>: حفظ باسم الملف المحلى مع اسم المرسل <TT>name</TT>.
+<LI><TT>S</TT>: ترجع المستند كسلسلة نصية . ويتم تجاهل<TT>name</TT>.
+</UL>
+اذا كان البراميرت غير محدد ولكن الاسم موجود اذن الاتجاء سيكون <TT>F</TT> واذا كان البارميتر محدد اذن سيكون <TT>I</TT>.<BR>
+<BR>
+ملحوظة : للتوافق مع الاصدارات السابقة ,القيمة المنطقية تكون مقبولة
+
+(<TT>false</TT> for <TT>F</TT> and <TT>true</TT> for <TT>D</TT>).
+</BLOCKQUOTE>
+<H4 CLASS='st'>انظر لمواضيع ذات صلة</H4>
+<A HREF="close.htm">Close</A>
+<HR STYLE="margin-top:1.5em">
+<DIV STYLE="text-align:center"><A HREF="index.htm">الرئيسية</A></DIV>
+</BODY>
+</HTML>

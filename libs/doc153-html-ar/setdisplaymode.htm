@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=Windows-1256">
+<TITLE>SetDisplayMode</TITLE>
+<LINK TYPE="text/css" REL="stylesheet" HREF="fpdf.css">
+</HEAD>
+<BODY>
+<H2 DIR='LTR'>SetDisplayMode</H2>
+<P DIR='LTR'><TT>SetDisplayMode(<B>mixed</B> zoom [, <B>string</B> layout])</TT></P>
+<H4 CLASS='st'>الإصدار</H4>
+1.2
+<H4 CLASS='st'>الشرح</H4>
+تستخدم هذه الدالة لتحديد نمط العرض الخاص بالمستند والذي سيتم عرضه ضمن قارئ الأكروبات كعرضه في كامل الشاشة أو بطريقة افتراضية
+<BR>
+و كشكل افتراضي يستخدم قارئ الأكروبات النمط (fullwidth) أو طريقة العرض الكاملة
+<H4 CLASS='st'>باراميتر</H4>
+<TT><U>zoom</U></TT>
+<BLOCKQUOTE>
+يستخدم هذا البارامتر للتحكم في طريقة عرض المستند ضمن قارئ الأكروبات وهو يأخذ أحد القيم التالية :
+<UL>
+<LI><TT>fullpage</TT>: عرض الصفحة الداخلية ضمن الشاشة اي كامل الشاشة
+<LI><TT>fullwidth</TT>: يستخدم هذا النمط اكبر عرض للشاشة
+<LI><TT>real</TT>: نمط العرض الحقيقي وهو مساوي للعرض المنضبط عند حجم 100 % في قارئ الأكروبات ( equivalent to 100% zoom )
+<LI><TT>default</TT>: وهذا النمط هو النمط الإفتراضي للعرض ضمن قارئ الأكروبات
+</UL>
+او استخدام رقم للإشارة الى الحجم المراد العرض به
+</BLOCKQUOTE>
+<TT><U>layout</U></TT>
+<BLOCKQUOTE>
+يمثل هذا البارامتر طبقة الصفحة ضمن عارض الأكروبات او طريقة تطبيق العرض وهو يأخذ القيم التالية :
+<UL>
+<LI><TT>single</TT>: عرض صفحة واحدة فقط في كل مرة
+<LI><TT>continuous</TT>: عرض متتابع او متتالي للصفحات
+<LI><TT>two</TT>: عرض صفحتين في عمودين للعرض
+<LI><TT>default</TT>: استخدام طريقةالعرض الإفتراضية
+</UL>
+القيمة الإفتراضية هي <TT>continuous</TT>.
+</BLOCKQUOTE>
+<HR STYLE="margin-top:1.5em">
+<DIV STYLE="text-align:center"><A HREF="index.htm">الرئيسية</A></DIV>
+</BODY>
+</HTML>

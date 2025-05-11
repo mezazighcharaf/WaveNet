@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=Windows-1256">
+<TITLE>SetFont</TITLE>
+<LINK TYPE="text/css" REL="stylesheet" HREF="fpdf.css">
+</HEAD>
+<BODY>
+<H2 DIR='LTR'>SetFont</H2>
+<P DIR='LTR'><TT>SetFont(<B>string</B> family [, <B>string</B> style [, <B>float</B> size]])</TT></P>
+<H4 CLASS='st'>الإصدار</H4>
+1.0
+<H4 CLASS='st'>الشرح</H4>
+تستخدم هذه الدالة لتحديد نوع الخط في المستند او الصفحة ويجب استدعاء هذه الدالة
+ مرة واحدة على الأقل قبل اجراء عملية الطباعة
+<BR>
+يمكن استخدام خط معين من الخطوط القياسية او استخدام خط تم اضافته بواسطة الدالة AddFont()
+والخطوط القياسية تستخدم ترميز ويندوز للغة الإنجليزية 1252 لدول غرب اوروبا
+<BR>
+يتم استدعاء هذه الدالة قبل إنشاء الصفحة الأولى في المستند وينتقل نفس الخط الذي تم
+تحديده من صفحة إلى اخرى ضمن صفحات المستند
+<BR>
+وإذا كنت تريد تغيير حجم الخط فببساطة استدعي الدالة SetFontSize() لتغيير حجم الخط
+<BR>
+<BR>
+<B>ملاحظة: </B>الخطوط يتم الوصول إلى ملفاتها بالبحث تسلسلياً كالآتي :
+<BR>
+<BR>
+<UL>
+<LI>المجلد الذي تم وضعه مساره كقيمة للثابت <TT>FPDF_FONTPATH</TT> وذلك في حال تم تعريف الثابت مسبقاً .
+<BR>
+<LI>الخطوط الموجودة في المجلد الحالي والذي يحتوي على ملف fpdf.php في حال تواجده ايضاً .
+<BR>
+<LI>المجلد الذي يتم الوصول إليه بإستخدام <TT>include</TT>
+</UL>
+مثال لإستخدام الحالة الأخيرة في تحديد مجلد الخطوط بإستخدام
+المجلد الذي تم وضع مساره في الثابت FPDF_FONTPATH , ولاحظ ان / الأخير مطلوبة ضمن المسار .
+<PRE><CODE>define('FPDF_FONTPATH','/home/www/font/');
+require('fpdf.php');</CODE></PRE>
+إذا كان المجلد الذي تم تحديده غير موجود عندها سيتم ظهور رسالة خطأ تفيد بأنه لا يمكن تضمين او ادراج
+الخطوط القياسية من المسار الذي تم تحديده
+<H4 CLASS='st'>باراميتر</H4>
+<TT><U>family</U></TT>
+<BLOCKQUOTE>
+يمثل هذا البارامتر اسم الخط المراد تحديده ويمكن تحديده بالإسم المعرف بالدالة AddFont() أو تحديد اسم احد الخطوط القياسية مع العلم
+ان اسم الخط حساس لحالة الأحرف :
+<UL>
+<LI><SPAN DIR="LTR"><TT>Courier</TT> (fixed-width)</SPAN>
+<LI><TT>Helvetica</TT> أو <SPAN DIR="LTR"><TT>Arial</TT> (synonymous; sans serif)</SPAN>
+<LI><SPAN DIR="LTR"><TT>Times</TT> (serif)</SPAN>
+<LI><SPAN DIR="LTR"><TT>Symbol</TT> (symbolic)</SPAN>
+<LI><SPAN DIR="LTR"><TT>ZapfDingbats</TT> (symbolic)</SPAN>
+</UL>
+يمكن تحديد قيمة خالية لهذا البارامتر وفي هذه الحالة سيتم استخدام اخر خط تم تحديده في المستند او الخط الحالي
+</BLOCKQUOTE>
+<TT><U>style</U></TT>
+<BLOCKQUOTE>
+يمثل هذا البارامتر نمط الخط وتنسيقه وهو حساس لحالة الأحرف وهو يأخذ القيم التالية :
+<UL>
+<LI>empty string: عادي
+<LI><TT>B</TT>: عريض
+<LI><TT>I</TT>: مائل
+<LI><TT>U</TT>: تحته خط
+</UL>
+أو تركيبه من هذه القيم والقيمة الإفتراضية هي (عادي) أما النمط العريض والمائل فلا يمكن تطبيقها على الرموز
+</BLOCKQUOTE>
+<TT><U>size</U></TT>
+<BLOCKQUOTE>
+يستخدم هذا البارامتر لتحديد حجم الخط بالنقطة
+<BR>
+القيمة الإفتراضية لحجم الخط هي اخر قيمة تم استخدامها في المستند واذا لم يتم تحديد قيمة من قبل
+فستعطى القيمة 12
+</BLOCKQUOTE>
+<H4 CLASS='st'>مثال</H4>
+<PRE><CODE>//Times regular 12
+$pdf-&gt;SetFont('Times');
+//Arial bold 14
+$pdf-&gt;SetFont('Arial','B',14);
+//Removes bold
+$pdf-&gt;SetFont('');
+//Times bold, italic and underlined 14
+$pdf-&gt;SetFont('Times','BIU');</CODE></PRE>
+<H4 CLASS='st'>انظر لمواضيع ذات صلة</H4>
+<A HREF="addfont.htm">AddFont</A>,
+<A HREF="setfontsize.htm">SetFontSize</A>,
+<A HREF="cell.htm">Cell</A>,
+<A HREF="multicell.htm">MultiCell</A>,
+<A HREF="write.htm">Write</A>
+<HR STYLE="margin-top:1.5em">
+<DIV STYLE="text-align:center"><A HREF="index.htm">الرئيسية</A></DIV>
+</BODY>
+</HTML>

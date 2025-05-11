@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=Windows-1256">
+<TITLE>Header</TITLE>
+<LINK TYPE="text/css" REL="stylesheet" HREF="fpdf.css">
+</HEAD>
+<BODY>
+<H2 DIR='LTR'>Header</H2>
+<P DIR='LTR'><TT>Header()</TT></P>
+<H4 CLASS='st'>الإصدار</H4>
+1.0
+<H4 CLASS='st'>الشرح</H4>
+تقوم هذه الدالة بإجراء عملية معينة على رأس كل صفحة في المستند مثل رسم خطوط او صور او وضع
+علامة تجارية معينة خاصة بالكاتب او اي شئ وسيتم تضمينها ضمن رأس كل صفحة في المستند ويتم
+استدعاء هذه الدالة بشكل تلقائي من قبل الدالة AddPage مع ملاحظة ان هذه الدالة تأتي فارغة ضمن
+كلاس FPDF أي أنها لاتعمل شئ لذلك يجب عليك انشاء كلاس موروث من كلاس FPDF وعمل تحميل
+زائد للدالة Header ووضع العملية التي سيتم وضعها في رأس كل صفحة .
+<H4 CLASS='st'>مثال</H4>
+<PRE><CODE>class PDF extends FPDF
+{
+function Header()
+{
+    //Select Arial bold 15
+    $this-&gt;SetFont('Arial','B',15);
+    //Move to the right
+    $this-&gt;Cell(80);
+    //Framed title
+    $this-&gt;Cell(30,10,'Title',1,0,'C');
+    //Line break
+    $this-&gt;Ln(20);
+}
+}</CODE></PRE>
+<H4 CLASS='st'>انظر لمواضيع ذات صلة</H4>
+<A HREF="footer.htm">Footer</A>
+<HR STYLE="margin-top:1.5em">
+<DIV STYLE="text-align:center"><A HREF="index.htm">الرئيسية</A></DIV>
+</BODY>
+</HTML>

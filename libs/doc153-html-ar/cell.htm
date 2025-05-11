@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=Windows-1256">
+<TITLE>Cell</TITLE>
+<LINK TYPE="text/css" REL="stylesheet" HREF="fpdf.css">
+</HEAD>
+<BODY>
+<H2 DIR='LTR'>Cell</H2>
+<P DIR='LTR'><TT>Cell(<B>float</B> w [, <B>float</B> h [, <B>string</B> txt [, <B>mixed</B> border [, <B>int</B> ln [, <B>string</B> align [, <B>int</B> fill [, <B>mixed</B> link]]]]]]])</TT></P>
+<H4 CLASS='st'>الإصدار</H4>
+1.0
+<H4 CLASS='st'>الشرح</H4>
+تقوم هذه الدالة بإدارج خلية (أو منطقة مربعة) ضمن مستند pdf ويمكن ان يدرج بداخلها نص او رابط ويمكن تنسيقها بوضع حدود لها ولون للخلفية الخاصة بالخلية .
+<H4 CLASS='st'>باراميتر</H4>
+<TT><U>w</U></TT>
+<BLOCKQUOTE>
+يمثل هذا الباراميتر عرض الخلية . وإذا كان القيمة المعطى له هي 0 عندها سيتم توسيع الخلفية إلى جهة الحاشية اليمنى
+</BLOCKQUOTE>
+<TT><U>h</U></TT>
+<BLOCKQUOTE>
+يمثل هذا الباراميتر إرتفاع الخلية
+القيمة الإفتراضي هي : <TT>0</TT>.
+</BLOCKQUOTE>
+<TT><U>txt</U></TT>
+<BLOCKQUOTE>
+يمثل هذا البارميتر النص المراد وضعه في الخلية
+القيمة الإفتراضية هي : نص خالي
+</BLOCKQUOTE>
+<TT><U>border</U></TT>
+<BLOCKQUOTE>
+تحدد اذا كانت الحدود يجب ان ترسم حول الخلية وقيمة هذا الباراميتر يمكن ان تكون رقماً وهي موضحة كما يلي :
+<UL>
+<LI><TT>0</TT>: هذه القيمة تجعل الخلية بدون حدود
+<LI><TT>1</TT>: هذه القيمة تجعل الخلية تأخذ حدود إطار
+</UL>
+او نص يحتوي على واحد او تركيبة من مايلي (وفي اي ترتيب) :
+
+<UL>
+<LI><TT>L</TT>: يسار
+<LI><TT>T</TT>: أعلى
+<LI><TT>R</TT>: يمين
+<LI><TT>B</TT>: أسفل
+</UL>
+و القيمة الإفتراضية هي : <TT>0</TT>.
+</BLOCKQUOTE>
+<TT><U>ln</U></TT>
+<BLOCKQUOTE>
+يشير الية عندما يكون المكان الحالى يجب ان ياتى بعد المناداة والقيم المسموح بها هى كالتالي :
+<UL>
+<LI><TT>0</TT>: إلى جهة اليمين
+<LI><TT>1</TT>: إلى بداية السطر التالي
+<LI><TT>2</TT>: للأسفل
+</UL>
+ وضع القيمة <TT>1</TT> هو مساوي لوضع <TT>0</TT> وإستدعاء الدالة Ln ولكن بعدها
+و القيمة الإفتراضية هي : <TT>0</TT>.
+</BLOCKQUOTE>
+<TT><U>align</U></TT>
+<BLOCKQUOTE>
+يحدد هذا الباراميتر محاذاة النص داخل الخلية
+<UL>
+<LI><TT>L</TT>أو نص خالي : محاذاة جهة اليسار ( وهي القيمة الإفتراضية )
+<LI><TT>C</TT>: محاذاة إلى المنتصف
+<LI><TT>R</TT>: محاذاة جهة اليمين
+</UL>
+</BLOCKQUOTE>
+<TT><U>fill</U></TT>
+<BLOCKQUOTE>
+يحدد هذا الباراميتر وضعية تعبئة الخلية بلون  والقيمة  (<TT>1</TT>) تشير
+إلى تعبئة الخلية و يمكن إعطائها القيمة (<TT>0</TT>) لتكون شفافة
+و القيمة الإفتراضية : <TT>0</TT>.
+</BLOCKQUOTE>
+<TT><U>link</U></TT>
+<BLOCKQUOTE>
+يحدد هذا الباراميتر الرابط التشعبي المراد وضعه ضمن الخلية وهو إما يكون سلسلة نصية أو قيمة المعرف المعاد
+من استدعاء الدالة AddLink
+</BLOCKQUOTE>
+<H4 CLASS='st'>مثال</H4>
+<PRE><CODE>//Set font
+$pdf-&gt;SetFont('Arial','B',16);
+//Move to 8 cm to the right
+$pdf-&gt;Cell(80);
+//Centered text in a framed 20*10 mm cell and line break
+$pdf-&gt;Cell(20,10,'Title',1,1,'C');</CODE></PRE>
+<H4 CLASS='st'>انظر لمواضيع ذات صلة</H4>
+<A HREF="setfont.htm">SetFont</A>,
+<A HREF="setdrawcolor.htm">SetDrawColor</A>,
+<A HREF="setfillcolor.htm">SetFillColor</A>,
+<A HREF="settextcolor.htm">SetTextColor</A>,
+<A HREF="setlinewidth.htm">SetLineWidth</A>,
+<A HREF="addlink.htm">AddLink</A>,
+<A HREF="ln.htm">Ln</A>,
+<A HREF="multicell.htm">MultiCell</A>,
+<A HREF="write.htm">Write</A>,
+<A HREF="setautopagebreak.htm">SetAutoPageBreak</A>
+<HR STYLE="margin-top:1.5em">
+<DIV STYLE="text-align:center"><A HREF="index.htm">الرئيسية</A></DIV>
+</BODY>
+</HTML>
