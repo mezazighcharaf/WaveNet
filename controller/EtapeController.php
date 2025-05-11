@@ -27,20 +27,24 @@ class EtapeController {
     // In the createEtape method, change Points_E to Points_Bonus
     public function createEtape($data) {
         try {
+            // Récupérer le statut du défi associé
+            $defiController = new DefiController();
+            $defi = $defiController->getDefi($data['Id_Defi']);
+            $statutDefi = $defi ? $defi->Statut_D : 'À venir';
+
             $query = "INSERT INTO etape (Titre_E, Description_E, Ordre, Points_Bonus, Statut_E, Id_Defi) 
                       VALUES (:titre, :description, :ordre, :points, :statut, :id_defi)";
-            
             $stmt = $this->db->prepare($query);
-            
-            // Bind parameters with the correct column name
             $stmt->bindParam(':titre', $data['Titre_E']);
             $stmt->bindParam(':description', $data['Description_E']);
             $stmt->bindParam(':ordre', $data['Ordre']);
-            $stmt->bindParam(':points', $data['Points_Bonus']); // Changed from Points_E to Points_Bonus
-            $stmt->bindParam(':statut', $data['Statut_E']);
+            $stmt->bindParam(':points', $data['Points_Bonus']);
+            $stmt->bindParam(':statut', $statutDefi);
             $stmt->bindParam(':id_defi', $data['Id_Defi']);
-            
-            return $stmt->execute();
+            $result = $stmt->execute();
+            // Mettre à jour les statuts des étapes après création
+            $this->updateEtapeStatuses();
+            return $result;
         } catch(PDOException $e) {
             error_log("Error creating etape: " . $e->getMessage());
             return false;
@@ -73,6 +77,11 @@ class EtapeController {
 
     public function updateEtape($data) {
         try {
+            // Récupérer le statut du défi associé
+            $defiController = new DefiController();
+            $defi = $defiController->getDefi($data['Id_Defi']);
+            $statutDefi = $defi ? $defi->Statut_D : 'À venir';
+
             $query = "UPDATE etape 
                       SET Titre_E = :titre, 
                           Description_E = :description, 
@@ -81,18 +90,18 @@ class EtapeController {
                           Statut_E = :statut, 
                           Id_Defi = :id_defi 
                       WHERE Id_etape = :id";
-            
             $stmt = $this->db->prepare($query);
-            
             $stmt->bindParam(':id', $data['Id_etape']);
             $stmt->bindParam(':titre', $data['Titre_E']);
             $stmt->bindParam(':description', $data['Description_E']);
             $stmt->bindParam(':ordre', $data['Ordre']);
             $stmt->bindParam(':points', $data['Points_Bonus']);
-            $stmt->bindParam(':statut', $data['Statut_E']);
+            $stmt->bindParam(':statut', $statutDefi);
             $stmt->bindParam(':id_defi', $data['Id_Defi']);
-            
-            return $stmt->execute();
+            $result = $stmt->execute();
+            // Mettre à jour les statuts des étapes après modification
+            $this->updateEtapeStatuses();
+            return $result;
         } catch(PDOException $e) {
             error_log("Error updating etape: " . $e->getMessage());
             return false;
@@ -144,6 +153,74 @@ class EtapeController {
         } catch(PDOException $e) {
             error_log("Error getting defi name: " . $e->getMessage());
             return 'Défi inconnu';
+        }
+    }
+
+    /**
+     * Valide une étape pour un utilisateur
+     * @param int $etapeId ID de l'étape
+     * @param int $userId ID de l'utilisateur
+     * @param string $imagePath Chemin de l'image de preuve
+     * @return array|false Retourne un tableau avec les points gagnés ou false en cas d'échec
+     */
+    public function validateEtape($etapeId, $userId, $imagePath) {
+        try {
+            // Commencer une transaction
+            $this->db->beginTransaction();
+
+            // 1. Vérifier si l'étape existe et récupérer ses points
+            $query = "SELECT Points_Bonus FROM etape WHERE Id_etape = :etape_id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':etape_id', $etapeId);
+            $stmt->execute();
+            $etape = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$etape) {
+                throw new Exception("Étape non trouvée");
+            }
+
+            // 2. Vérifier si l'utilisateur n'a pas déjà validé cette étape
+            $query = "SELECT * FROM validation_etape WHERE Id_etape = :etape_id AND Id_utilisateur = :user_id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':etape_id', $etapeId);
+            $stmt->bindParam(':user_id', $userId);
+            $stmt->execute();
+
+            if ($stmt->fetch()) {
+                throw new Exception("Cette étape a déjà été validée");
+            }
+
+            // 3. Enregistrer la validation
+            $query = "INSERT INTO validation_etape (Id_etape, Id_utilisateur, Date_validation, Image_preuve) 
+                     VALUES (:etape_id, :user_id, NOW(), :image_path)";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':etape_id', $etapeId);
+            $stmt->bindParam(':user_id', $userId);
+            $stmt->bindParam(':image_path', $imagePath);
+            $stmt->execute();
+
+            // 4. Mettre à jour les points de l'utilisateur
+            $query = "UPDATE utilisateur 
+                     SET Points_verts = Points_verts + :points 
+                     WHERE Id_Utilisateur = :user_id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':points', $etape['Points_Bonus']);
+            $stmt->bindParam(':user_id', $userId);
+            $stmt->execute();
+
+            // Valider la transaction
+            $this->db->commit();
+
+            return [
+                'success' => true,
+                'points' => $etape['Points_Bonus']
+            ];
+
+        } catch (Exception $e) {
+            // Annuler la transaction en cas d'erreur
+            $this->db->rollBack();
+            error_log("Erreur lors de la validation de l'étape: " . $e->getMessage());
+            return false;
         }
     }
 }

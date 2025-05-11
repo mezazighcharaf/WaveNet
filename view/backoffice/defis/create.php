@@ -1,14 +1,6 @@
 <?php
 session_start();
 
-// Check if user is logged in as admin
-if(!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'admin') {
-    // Just mock admin role for demonstration since there's no login
-    $_SESSION['user_id'] = 1;
-    $_SESSION['user_role'] = 'admin';
-    $_SESSION['user_name'] = 'Admin';
-}
-
 require_once __DIR__ . '/../../../controller/DefiController.php';
 
 // Initialize controller
@@ -21,7 +13,6 @@ $formData = [
     'Description_D' => '',
     'Objectif' => '',
     'Points_verts' => '',
-    'Statut_D' => 'Actif',
     'Date_Debut' => '',
     'Date_Fin' => '',
     'Difficulte' => 'Facile',
@@ -36,7 +27,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         'Description_D' => trim(htmlspecialchars($_POST['Description_D'] ?? '')),
         'Objectif' => trim(htmlspecialchars($_POST['Objectif'] ?? '')),
         'Points_verts' => $_POST['Points_verts'] ?? '',
-        'Statut_D' => $_POST['Statut_D'] ?? '',
         'Date_Debut' => $_POST['Date_Debut'] ?? '',
         'Date_Fin' => $_POST['Date_Fin'] ?? '',
         'Difficulte' => $_POST['Difficulte'] ?? '',
@@ -70,12 +60,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors['Points_verts'] = "Le nombre de points est obligatoire";
     } elseif(!is_numeric($formData['Points_verts']) || $formData['Points_verts'] < 1 || $formData['Points_verts'] > 1000) {
         $errors['Points_verts'] = "Le nombre de points doit être compris entre 1 et 1000";
-    }
-    
-    // Statut
-    $statutsValides = ['Actif', 'Inactif', 'À venir'];
-    if(empty($formData['Statut_D']) || !in_array($formData['Statut_D'], $statutsValides)) {
-        $errors['Statut_D'] = "Le statut sélectionné n'est pas valide";
     }
     
     // Dates
@@ -365,11 +349,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <div class="form-group <?php echo isset($errors['Points_verts']) ? 'has-error' : ''; ?>">
                                 <label for="Points_verts">Points verts <span class="required">*</span></label>
                                 <input type="number" id="Points_verts" name="Points_verts" class="form-control" 
-                                      value="<?php echo htmlspecialchars($formData['Points_verts']); ?>">
+                                       value="<?php echo htmlspecialchars($formData['Points_verts']); ?>" min="1" max="1000" required>
                                 <?php if(isset($errors['Points_verts'])): ?>
                                     <div class="error-message"><?php echo $errors['Points_verts']; ?></div>
-                                <?php else: ?>
-                                    <div class="help-text">Valeur entre 1 et 1000</div>
                                 <?php endif; ?>
                                 <div class="error-message js-error" id="error-Points_verts"></div>
                             </div>
@@ -401,21 +383,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <h3 class="section-title">Paramètres du défi</h3>
                     
                     <div class="form-row">
-                        <div class="form-column">
-                            <div class="form-group <?php echo isset($errors['Statut_D']) ? 'has-error' : ''; ?>">
-                                <label for="Statut_D">Statut <span class="required">*</span></label>
-                                <select id="Statut_D" name="Statut_D" class="form-control">
-                                    <option value="">Sélectionnez un statut</option>
-                                    <option value="Actif" <?php echo $formData['Statut_D'] == 'Actif' ? 'selected' : ''; ?>>Actif</option>
-                                    <option value="Inactif" <?php echo $formData['Statut_D'] == 'Inactif' ? 'selected' : ''; ?>>Inactif</option>
-                                    <option value="À venir" <?php echo $formData['Statut_D'] == 'À venir' ? 'selected' : ''; ?>>À venir</option>
-                                </select>
-                                <?php if(isset($errors['Statut_D'])): ?>
-                                    <div class="error-message"><?php echo $errors['Statut_D']; ?></div>
-                                <?php endif; ?>
-                                <div class="error-message js-error" id="error-Statut_D"></div>
-                            </div>
-                        </div>
                         <div class="form-column">
                             <div class="form-group <?php echo isset($errors['Difficulte']) ? 'has-error' : ''; ?>">
                                 <label for="Difficulte">Difficulté <span class="required">*</span></label>
@@ -549,15 +516,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                 return hideError('Points_verts');
             }
             
-            // Validation du statut
-            function validateStatut() {
-                const statut = document.getElementById('Statut_D').value;
-                if (statut === '') {
-                    return showError('Statut_D', 'Veuillez sélectionner un statut');
-                }
-                return hideError('Statut_D');
-            }
-            
             // Validation de la date de début
             function validateDateDebut() {
                 const dateDebut = document.getElementById('Date_Debut').value;
@@ -612,7 +570,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             document.getElementById('Description_D').addEventListener('input', validateDescription);
             document.getElementById('Objectif').addEventListener('input', validateObjectif);
             document.getElementById('Points_verts').addEventListener('input', validatePoints);
-            document.getElementById('Statut_D').addEventListener('change', validateStatut);
             document.getElementById('Date_Debut').addEventListener('change', function() {
                 validateDateDebut();
                 validateDateFin(); // Re-valider la date de fin si la date de début change
@@ -631,15 +588,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                 const description = validateDescription();
                 const objectif = validateObjectif();
                 const points = validatePoints();
-                const statut = validateStatut();
                 const dateDebut = validateDateDebut();
                 const dateFin = validateDateFin();
                 const difficulte = validateDifficulte();
                 const quartier = validateQuartier();
                 
                 // Si tous les champs sont valides, soumettre le formulaire
-                if (titre && description && objectif && points && statut && 
-                    dateDebut && dateFin && difficulte && quartier) {
+                if (titre && description && objectif && points && dateDebut && dateFin && difficulte && quartier) {
                     // Soumission du formulaire
                     form.submit();
                 } else {

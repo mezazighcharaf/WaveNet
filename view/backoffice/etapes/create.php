@@ -1,13 +1,6 @@
 <?php
 session_start();
 
-// Check if user is logged in as admin
-if(!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'admin') {
-    $_SESSION['user_id'] = 1;
-    $_SESSION['user_role'] = 'admin';
-    $_SESSION['user_name'] = 'Admin';
-}
-
 require_once __DIR__ . '/../../../controller/EtapeController.php';
 // Add this line to include the DefiController
 require_once __DIR__ . '/../../../controller/DefiController.php';
@@ -25,7 +18,6 @@ $formData = [
     'Description_E' => '',
     'Ordre' => '',
     'Points_Bonus' => '',
-    'Statut_E' => 'Actif',
     'Id_Defi' => isset($_GET['Id_Defi']) ? $_GET['Id_Defi'] : ''
 ];
 
@@ -36,7 +28,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         'Description_E' => trim(htmlspecialchars($_POST['Description_E'] ?? '')),
         'Ordre' => $_POST['Ordre'] ?? '',
         'Points_Bonus' => $_POST['Points_Bonus'] ?? '',
-        'Statut_E' => $_POST['Statut_E'] ?? '',
         'Id_Defi' => $_POST['Id_Defi'] ?? ''
     ];
 
@@ -65,11 +56,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors['Points_Bonus'] = "Les points bonus sont obligatoires";
     } elseif(!is_numeric($formData['Points_Bonus']) || $formData['Points_Bonus'] < 0 || $formData['Points_Bonus'] > 1000) {
         $errors['Points_Bonus'] = "Les points bonus doivent être compris entre 0 et 1000";
-    }
-
-    $statutsValides = ['Actif', 'Inactif', 'À venir'];
-    if(empty($formData['Statut_E']) || !in_array($formData['Statut_E'], $statutsValides)) {
-        $errors['Statut_E'] = "Le statut sélectionné n'est pas valide";
     }
 
     if(empty($formData['Id_Defi'])) {
@@ -334,21 +320,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <div class="error-message js-error" id="error-Points_Bonus"></div>
                             </div>
                         </div>
-                        <div class="form-column">
-                            <div class="form-group <?php echo isset($errors['Statut_E']) ? 'has-error' : ''; ?>">
-                                <label for="Statut_E">Statut <span class="required">*</span></label>
-                                <select id="Statut_E" name="Statut_E" class="form-control">
-                                    <option value="">Sélectionnez un statut</option>
-                                    <option value="Actif" <?php echo $formData['Statut_E'] == 'Actif' ? 'selected' : ''; ?>>Actif</option>
-                                    <option value="Inactif" <?php echo $formData['Statut_E'] == 'Inactif' ? 'selected' : ''; ?>>Inactif</option>
-                                    <option value="À venir" <?php echo $formData['Statut_E'] == 'À venir' ? 'selected' : ''; ?>>À venir</option>
-                                </select>
-                                <?php if(isset($errors['Statut_E'])): ?>
-                                    <div class="error-message"><?php echo $errors['Statut_E']; ?></div>
-                                <?php endif; ?>
-                                <div class="error-message js-error" id="error-Statut_E"></div>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="form-group <?php echo isset($errors['Id_Defi']) ? 'has-error' : ''; ?>">
@@ -435,13 +406,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 return hideError('Points_Bonus');
             }
-            function validateStatut() {
-                const statut = document.getElementById('Statut_E').value;
-                if (statut === '') {
-                    return showError('Statut_E', "Veuillez sélectionner un statut");
-                }
-                return hideError('Statut_E');
-            }
             function validateIdDefi() {
                 const idDefi = document.getElementById('Id_Defi').value.trim();
                 if (idDefi === '') {
@@ -456,7 +420,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             document.getElementById('Description_E').addEventListener('input', validateDescription);
             document.getElementById('Ordre').addEventListener('input', validateOrdre);
             document.getElementById('Points_Bonus').addEventListener('input', validatePointsBonus);
-            document.getElementById('Statut_E').addEventListener('change', validateStatut);
             document.getElementById('Id_Defi').addEventListener('input', validateIdDefi);
 
             form.addEventListener('submit', function(event) {
@@ -466,10 +429,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                 const description = validateDescription();
                 const ordre = validateOrdre();
                 const points = validatePointsBonus();
-                const statut = validateStatut();
                 const idDefi = validateIdDefi();
 
-                if (titre && description && ordre && points && statut && idDefi) {
+                if (titre && description && ordre && points && idDefi) {
                     form.submit();
                 } else {
                     const firstErrorElement = document.querySelector('.js-error.visible');

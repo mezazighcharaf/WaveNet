@@ -1,14 +1,24 @@
 <?php
 session_start();
 
+// Activer le débogage pour identifier le problème
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Fichier de log spécifique
+$logFile = __DIR__ . '/../../debug_sauvegarde.log';
+file_put_contents($logFile, date('Y-m-d H:i:s') . " - Début de la sauvegarde\n", FILE_APPEND);
+
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] === 'demo_user') {
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - Erreur: Utilisateur non connecté\n", FILE_APPEND);
     echo json_encode(['success' => false, 'message' => "Utilisateur non connecté"]);
     exit;
 }
 
 // Vérifier si les données nécessaires sont fournies
 if (!isset($_POST['etape']) || !isset($_POST['defi_id'])) {
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - Erreur: Données manquantes dans POST: " . print_r($_POST, true) . "\n", FILE_APPEND);
     echo json_encode(['success' => false, 'message' => "Données manquantes"]);
     exit;
 }
@@ -18,6 +28,8 @@ $defiId = (int)$_POST['defi_id'];
 $userId = $_SESSION['user_id'];
 $pointsGagnes = 0;
 
+file_put_contents($logFile, date('Y-m-d H:i:s') . " - Données reçues: Utilisateur=$userId, Défi=$defiId, Étape=$etape\n", FILE_APPEND);
+
 // Inclure la connexion à la base de données
 require_once __DIR__ . '/../../model/Database.php';
 
@@ -25,6 +37,7 @@ try {
     // Créer une instance de la classe Database pour obtenir une connexion
     $database = new Database();
     $db = $database->getConnection();
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - Connexion à la base de données établie\n", FILE_APPEND);
     
     // Vérifier si l'utilisateur participe bien à ce défi
     $query = "SELECT Defi_En_Cours, Etape_En_Cours FROM utilisateur WHERE Id_Utilisateur = ? AND Defi_En_Cours = ?";
@@ -34,6 +47,7 @@ try {
     $stmt->execute();
     
     if ($stmt->rowCount() === 0) {
+        file_put_contents($logFile, date('Y-m-d H:i:s') . " - Erreur: L'utilisateur ne participe pas à ce défi\n", FILE_APPEND);
         echo json_encode(['success' => false, 'message' => "Vous ne participez pas à ce défi"]);
         exit;
     }
@@ -42,7 +56,7 @@ try {
     $etapePrecedente = isset($userInfo['Etape_En_Cours']) ? (int)$userInfo['Etape_En_Cours'] : 0;
     
     // Log pour le débogage
-    error_log("Sauvegarde étape: Utilisateur $userId, Défi $defiId, Étape $etape, Précédente $etapePrecedente");
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - Étape précédente: $etapePrecedente, Nouvelle étape: $etape\n", FILE_APPEND);
     
     // Calculer les points si on a avancé à une nouvelle étape
     if ($etape > $etapePrecedente) {
@@ -56,20 +70,7 @@ try {
             $etapeIndex = $etape - 1;
             if (isset($etapes[$etapeIndex]) && isset($etapes[$etapeIndex]['Points_Bonus'])) {
                 $pointsGagnes = (int)$etapes[$etapeIndex]['Points_Bonus'];
-            }
-        }
-        
-        // Si c'est la dernière étape, on ajoute les points du défi entier
-        if ($etape == count($etapes) + 1) {
-            // Récupérer les points du défi
-            $query = "SELECT Points_verts FROM defi WHERE Id_Defi = ?";
-            $stmt = $db->prepare($query);
-            $stmt->bindParam(1, $defiId);
-            $stmt->execute();
-            $defiInfo = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($defiInfo && isset($defiInfo['Points_verts'])) {
-                $pointsGagnes += (int)$defiInfo['Points_verts'];
+                file_put_contents($logFile, date('Y-m-d H:i:s') . " - Points gagnés pour l'étape: $pointsGagnes\n", FILE_APPEND);
             }
         }
         
@@ -79,7 +80,8 @@ try {
             $stmt = $db->prepare($query);
             $stmt->bindParam(1, $pointsGagnes);
             $stmt->bindParam(2, $userId);
-            $stmt->execute();
+            $result = $stmt->execute();
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Mise à jour des points: " . ($result ? "Succès" : "Échec") . "\n", FILE_APPEND);
             
             // Mettre à jour les points dans la session
             if (isset($_SESSION['points'])) {
@@ -102,6 +104,7 @@ try {
     // S'assurer que l'on ne recule pas dans les étapes (seulement avancer)
     if ($etape < $etapePrecedente) {
         $etape = $etapePrecedente;
+        file_put_contents($logFile, date('Y-m-d H:i:s') . " - Tentative de reculer, étape fixée à: $etape\n", FILE_APPEND);
     }
     
     // Mettre à jour l'étape en cours pour l'utilisateur - s'assurer que la requête spécifie bien le défi
@@ -112,9 +115,11 @@ try {
     $stmt->bindParam(3, $defiId);
     
     $result = $stmt->execute();
-    error_log("Mise à jour étape: " . ($result ? "Succès" : "Échec") . " pour utilisateur $userId, défi $defiId, étape $etape");
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - Mise à jour étape: " . ($result ? "Succès" : "Échec") . " pour utilisateur $userId, défi $defiId, étape $etape\n", FILE_APPEND);
     
     if ($result) {
+        file_put_contents($logFile, date('Y-m-d H:i:s') . " - Vérification des lignes affectées: " . $stmt->rowCount() . "\n", FILE_APPEND);
+        
         // Si c'est la dernière étape, marquer le défi comme terminé dans la table participation
         if ($etape >= count($etapes) + 1) { // Dernière étape (après toutes les étapes du défi)
             $query = "INSERT INTO participation (Id_Utilisateur, Id_Defi, Date_Participation) 
@@ -124,9 +129,10 @@ try {
             $stmt->bindParam(1, $userId);
             $stmt->bindParam(2, $defiId);
             $success = $stmt->execute();
-            error_log("Enregistrement de participation: " . ($success ? "Succès" : "Échec"));
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Enregistrement de participation: " . ($success ? "Succès" : "Échec") . "\n", FILE_APPEND);
         }
         
+        file_put_contents($logFile, date('Y-m-d H:i:s') . " - Sauvegarde terminée avec succès\n", FILE_APPEND);
         echo json_encode([
             'success' => true, 
             'message' => "Progression sauvegardée", 
@@ -134,10 +140,11 @@ try {
             'etape' => $etape
         ]);
     } else {
+        file_put_contents($logFile, date('Y-m-d H:i:s') . " - Erreur lors de la sauvegarde\n", FILE_APPEND);
         echo json_encode(['success' => false, 'message' => "Erreur lors de la sauvegarde"]);
     }
 } catch (PDOException $e) {
-    error_log("Erreur PDO: " . $e->getMessage());
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - Erreur PDO: " . $e->getMessage() . "\n", FILE_APPEND);
     echo json_encode(['success' => false, 'message' => "Erreur: " . $e->getMessage()]);
 }
 ?> 

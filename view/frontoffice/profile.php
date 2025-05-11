@@ -25,221 +25,9 @@ $participations = $defiController->getUserParticipations($_SESSION['user_id']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon profil - Urbaverse</title>
-    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="/Projet_Web/assets/css/frontoffice.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        .profile-container {
-            max-width: 1000px;
-            margin: 100px auto 50px;
-        }
-        
-        .profile-header {
-            background-color: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-        
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            background-color: var(--light-green);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: var(--dark-green);
-        }
-        
-        .profile-info {
-            flex: 1;
-        }
-        
-        .profile-name {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 5px;
-        }
-        
-        .profile-email {
-            color: #666;
-            margin-bottom: 15px;
-        }
-        
-        .profile-stats {
-            display: flex;
-            gap: 30px;
-        }
-        
-        .stat-item {
-            background-color: #f9fbf9;
-            padding: 15px 20px;
-            border-radius: 10px;
-            text-align: center;
-            min-width: 120px;
-        }
-        
-        .stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--accent-green);
-            margin-bottom: 5px;
-        }
-        
-        .stat-label {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .profile-section {
-            background-color: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
-        
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--text-color);
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .defi-card {
-            display: flex;
-            background-color: #f9fbf9;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
-        }
-        
-        .defi-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .defi-image {
-            width: 120px;
-            background-color: var(--light-green);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 30px;
-        }
-        
-        .defi-content {
-            flex: 1;
-            padding: 20px;
-        }
-        
-        .defi-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--text-color);
-        }
-        
-        .defi-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-        
-        .defi-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .badge-points {
-            background-color: rgba(76, 175, 80, 0.1);
-            color: var(--accent-green);
-        }
-        
-        .badge-date {
-            background-color: rgba(33, 150, 243, 0.1);
-            color: #2196f3;
-        }
-        
-        .badge-status {
-            background-color: rgba(255, 193, 7, 0.1);
-            color: #ffc107;
-        }
-        
-        .defi-description {
-            color: #666;
-            margin-bottom: 15px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        
-        .defi-actions {
-            text-align: right;
-        }
-        
-        .btn-view {
-            display: inline-block;
-            padding: 8px 15px;
-            background-color: var(--accent-green);
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
-        }
-        
-        .btn-view:hover {
-            background-color: #3c8c40;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 50px 0;
-            color: #666;
-        }
-        
-        .empty-state i {
-            font-size: 50px;
-            color: #ddd;
-            margin-bottom: 20px;
-        }
-        
-        .empty-state p {
-            margin-bottom: 20px;
-        }
-        
-        .btn-explore {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--accent-green);
-            color: white;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
-        }
-        
-        .btn-explore:hover {
-            background-color: #3c8c40;
-        }
-    </style>
 </head>
 <body>
     <!-- HEADER -->
@@ -247,8 +35,8 @@ $participations = $defiController->getUserParticipations($_SESSION['user_id']);
         <div class="container">
             <div class="logo">
                 <a href="index.php">
-                    <img src="../../assets/img/logo.jpg" alt="Logo Urbaverse">
-                    <span style="color: white; font-weight: 700; font-size: 24px;">Urbaverse</span>
+                    <img src="/Projet_Web/assets/img/logo.jpg" alt="Logo Urbaverse">
+                    <span class="logo-title--white">Urbaverse</span>
                 </a>
             </div>
             <nav class="main-nav">
@@ -267,9 +55,9 @@ $participations = $defiController->getUserParticipations($_SESSION['user_id']);
                 
                 <?php if(isset($_SESSION['username']) && $_SESSION['user_id'] !== 'demo_user'): ?>
                     <span><i class="fas fa-user"></i> <?php echo $_SESSION['username']; ?></span>
-                    <a href="logout.php" style="color: white; margin-left: 10px;"><i class="fas fa-sign-out-alt"></i></a>
+                    <a href="logout.php" class="logout-link"><i class="fas fa-sign-out-alt"></i></a>
                 <?php else: ?>
-                    <a href="login.php" style="text-decoration: none;"><span><i class="fas fa-user"></i> Invité (Connexion)</span></a>
+                    <a href="login.php" class="no-underline"><span><i class="fas fa-user"></i> Invité (Connexion)</span></a>
                 <?php endif; ?>
             </div>
         </div>
@@ -337,7 +125,7 @@ $participations = $defiController->getUserParticipations($_SESSION['user_id']);
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <img src="../../assets/img/logo.jpg" alt="Logo Urbaverse" style="width: 80px; height: 80px; border-radius: 50%;">
+                    <img src="/Projet_Web/assets/img/logo.jpg" alt="Logo Urbaverse" class="footer-logo-img">
                     <p>Ensemble, rendons notre quartier plus vert et plus durable.</p>
                 </div>
                 <div class="footer-links">

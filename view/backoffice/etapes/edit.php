@@ -1,13 +1,6 @@
 <?php
 session_start();
 
-// Check if user is logged in as admin
-if(!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'admin') {
-    $_SESSION['user_id'] = 1;
-    $_SESSION['user_role'] = 'admin';
-    $_SESSION['user_name'] = 'Admin';
-}
-
 require_once __DIR__ . '/../../../controller/EtapeController.php';
 require_once __DIR__ . '/../../../controller/DefiController.php';
 
@@ -42,7 +35,6 @@ $formData = [
     'Description_E' => $etape['Description_E'],
     'Ordre' => $etape['Ordre'],
     'Points_Bonus' => $etape['Points_Bonus'],
-    'Statut_E' => $etape['Statut_E'],
     'Id_Defi' => $etape['Id_Defi']
 ];
 
@@ -57,7 +49,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         'Description_E' => trim(htmlspecialchars($_POST['Description_E'] ?? '')),
         'Ordre' => $_POST['Ordre'] ?? '',
         'Points_Bonus' => $_POST['Points_Bonus'] ?? '',
-        'Statut_E' => $_POST['Statut_E'] ?? '',
         'Id_Defi' => $_POST['Id_Defi'] ?? ''
     ];
 
@@ -86,11 +77,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors['Points_Bonus'] = "Les points bonus sont obligatoires";
     } elseif(!is_numeric($formData['Points_Bonus']) || $formData['Points_Bonus'] < 0 || $formData['Points_Bonus'] > 1000) {
         $errors['Points_Bonus'] = "Les points bonus doivent être compris entre 0 et 1000";
-    }
-
-    $statutsValides = ['Actif', 'Inactif', 'À venir'];
-    if(empty($formData['Statut_E']) || !in_array($formData['Statut_E'], $statutsValides)) {
-        $errors['Statut_E'] = "Le statut sélectionné n'est pas valide";
     }
 
     if(empty($formData['Id_Defi'])) {
@@ -284,31 +270,20 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <?php endif; ?>
                 </div>
 
-                <div class="form-group <?php echo isset($errors['Statut_E']) ? 'has-error' : ''; ?>">
-                    <label for="Statut_E">Statut <span class="required">*</span></label>
-                    <select id="Statut_E" name="Statut_E" class="form-control" required>
-                        <option value="Actif" <?php echo $formData['Statut_E'] == 'Actif' ? 'selected' : ''; ?>>Actif</option>
-                        <option value="Inactif" <?php echo $formData['Statut_E'] == 'Inactif' ? 'selected' : ''; ?>>Inactif</option>
-                        <option value="À venir" <?php echo $formData['Statut_E'] == 'À venir' ? 'selected' : ''; ?>>À venir</option>
-                    </select>
-                    <?php if(isset($errors['Statut_E'])): ?>
-                        <span class="error-message"><?php echo $errors['Statut_E']; ?></span>
-                    <?php endif; ?>
-                </div>
-
                 <div class="form-group <?php echo isset($errors['Id_Defi']) ? 'has-error' : ''; ?>">
                     <label for="Id_Defi">Défi associé <span class="required">*</span></label>
-                    <select id="Id_Defi" name="Id_Defi" class="form-control" required>
+                    <select id="Id_Defi" name="Id_Defi" class="form-control">
                         <option value="">Sélectionnez un défi</option>
-                        <?php while($defi = $defis->fetch(PDO::FETCH_ASSOC)): ?>
-                            <option value="<?php echo $defi['Id_Defi']; ?>" <?php echo $formData['Id_Defi'] == $defi['Id_Defi'] ? 'selected' : ''; ?>>
+                        <?php foreach($defis as $defi): ?>
+                            <option value="<?php echo $defi['Id_Defi']; ?>" <?php echo ($formData['Id_Defi'] == $defi['Id_Defi']) ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($defi['Titre_D']); ?>
                             </option>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
                     </select>
                     <?php if(isset($errors['Id_Defi'])): ?>
-                        <span class="error-message"><?php echo $errors['Id_Defi']; ?></span>
+                        <div class="error-message"><?php echo $errors['Id_Defi']; ?></div>
                     <?php endif; ?>
+                    <div class="error-message js-error" id="error-Id_Defi"></div>
                 </div>
 
                 <div class="form-actions">
