@@ -38,9 +38,7 @@
 
 
 
-
-
-/* Bouton désactivé */
+/* Bouton désactivé 
 .btn-primary.disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -67,4 +65,4 @@
     border-radius: 3px;
     font-weight: bold;
     z-index: 1;
-}
+}*/

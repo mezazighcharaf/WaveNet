@@ -8,11 +8,9 @@ $recController = new RecompenseController();
 $recompenses = $recController->listAll();
 $utilisateurController = new UtilisateurController();
 
-// ID de l'utilisateur connecté (à remplacer par la session réelle)
 $id_utilisateur_connecte = 123;
 $utilisateur = $utilisateurController->getUtilisateurById($id_utilisateur_connecte);
 
-// Traitement de la confirmation de récompense
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_rec'])) {
     $id_rec = $_POST['id_rec'];
     try {
@@ -24,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_rec'])) {
             $utilisateurController->updatePointsVerts($id_utilisateur_connecte, $nouveaux_points);
             $utilisateur->setPointsVerts($nouveaux_points);
 
-            // Enregistrer dans la session pour l'affichage après redirection
             $_SESSION['confirmation_data'] = [
                 'code' => substr(md5(uniqid()), 0, 8),
                 'nom_rec' => $recompense->getNomRec(),
@@ -40,12 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_rec'])) {
         $_SESSION['message'] = "Erreur: " . $e->getMessage();
     }
 
-    // Redirection pour éviter le repost
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
 
-// Récupérer les messages depuis la session après redirection
 $message = $_SESSION['message'] ?? '';
 $confirmation_data = $_SESSION['confirmation_data'] ?? null;
 unset($_SESSION['message'], $_SESSION['confirmation_data']);
@@ -65,177 +60,11 @@ function isPromo($dateFin) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Récompenses - Urbaverse</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="modal.css" />
+
     <link rel="stylesheet" href="promo-styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <style>
-        .alert {
-            padding: 15px;
-            margin: 20px auto;
-            max-width: 800px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        /* Styles améliorés pour le modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
 
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 12px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transform: translateY(20px);
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            opacity: 0;
-            position: relative;
-            border: 1px solid #e0e0e0;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .modal-content h3 {
-            color: #2e7d32;
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .modal-content p {
-            color: #555;
-            line-height: 1.6;
-            margin: 0.5rem 0;
-        }
-
-        .modal-content p strong {
-            color: #333;
-            font-weight: 600;
-        }
-
-        .confirmation-code {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin: 1.5rem 0;
-            padding: 1.2rem;
-            background: linear-gradient(135deg, #f5f5f5, #e8f5e9);
-            border-radius: 8px;
-            letter-spacing: 2px;
-            color: #2e7d32;
-            border: 2px dashed #c8e6c9;
-            font-family: 'Courier New', monospace;
-        }
-
-        .modal-actions {
-            margin-top: 2rem;
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .modal-actions button {
-            padding: 0.8rem 1.5rem;
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
-        }
-
-        .modal-actions button:first-child {
-            background-color: #2e7d32;
-            color: white;
-        }
-
-        .modal-actions button:first-child:hover {
-            background-color: #1b5e20;
-            transform: translateY(-2px);
-        }
-
-        .modal-actions button:last-child {
-            background-color: #f5f5f5;
-            color: #333;
-        }
-
-        .modal-actions button:last-child:hover {
-            background-color: #e0e0e0;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #777;
-            transition: color 0.2s ease;
-        }
-
-        .modal-close:hover {
-            color: #333;
-        }
-
-        /* Animation de succès */
-        @keyframes checkmark {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .success-icon {
-            font-size: 4rem;
-            color: #2e7d32;
-            margin-bottom: 1rem;
-            animation: checkmark 0.6s ease;
-            display: inline-block;
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .modal-content {
-                padding: 1.5rem;
-            }
-            .confirmation-code {
-                font-size: 1.4rem;
-                padding: 1rem;
-            }
-        }
-    </style>
 </head>
 <body>
     <header class="main-header">
@@ -266,7 +95,7 @@ function isPromo($dateFin) {
         </div>
         <?php endif; ?>
 
-        <!-- Modal de confirmation -->
+        <!-- Modal  -->
         <?php if (!empty($confirmation_data)): ?>
         <div class="modal-overlay" id="confirmationModal">
             <div class="modal-content">
@@ -373,7 +202,8 @@ function isPromo($dateFin) {
 
     <script src="promo-script.js"></script>
     <script>
-        // Afficher le modal avec animation
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="N9VVpJ57n-tJQCTWSzGgc";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    
         document.addEventListener('DOMContentLoaded', function() {
             const modal = document.getElementById('confirmationModal');
             if (modal) {
