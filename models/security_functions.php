@@ -62,7 +62,15 @@ function getGeoInfo($ip) {
 
 // Journal des connexions
 function logConnection($userId, $success, $failureReason = null) {
-    $db = connectDB();
+    error_log("[logConnection] Début de journalisation pour utilisateur ID: $userId, success: " . ($success ? "true" : "false"));
+    
+    try {
+        $db = connectDB();
+        error_log("[logConnection] Connexion à la DB établie");
+    } catch (PDOException $e) {
+        error_log("[logConnection] ERREUR de connexion à la DB: " . $e->getMessage());
+        return false;
+    }
     
     // Utiliser l'IP du client
     $ip = $_SERVER['REMOTE_ADDR'];
@@ -70,13 +78,37 @@ function logConnection($userId, $success, $failureReason = null) {
     // Récupérer les infos de l'agent utilisateur
     $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
     
-    // Récupérer les informations géographiques
-    $geoInfo = getGeoInfo($ip);
+    try {
+        // Récupérer les informations géographiques
+        error_log("[logConnection] Récupération des informations géographiques pour IP: $ip");
+        $geoInfo = getGeoInfo($ip);
+        error_log("[logConnection] Informations géo récupérées: pays=" . $geoInfo['country'] . ", ville=" . $geoInfo['city']);
+    } catch (Exception $e) {
+        error_log("[logConnection] ERREUR lors de la récupération des informations géographiques: " . $e->getMessage());
+        $geoInfo = [
+            'country' => 'Unknown',
+            'city' => 'Unknown',
+            'latitude' => 0,
+            'longitude' => 0
+        ];
+    }
+    
+    // Vérifier la structure de la table
+    try {
+        error_log("[logConnection] Vérification de la structure de la table connexion_logs");
+        $columns = $db->query("DESCRIBE connexion_logs")->fetchAll(PDO::FETCH_COLUMN);
+        error_log("[logConnection] Colonnes de connexion_logs: " . implode(", ", $columns));
+    } catch (PDOException $e) {
+        error_log("[logConnection] ERREUR lors de la vérification de la structure: " . $e->getMessage());
+    }
     
     try {
+        error_log("[logConnection] Préparation de la requête d'insertion");
         $stmt = $db->prepare("INSERT INTO connexion_logs 
                              (id_utilisateur, date_connexion, ip_address, user_agent, country, city, latitude, longitude, success, failure_reason) 
                              VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)");
+        
+        error_log("[logConnection] Exécution de la requête d'insertion avec les valeurs: userId=$userId, ip=$ip, country=" . $geoInfo['country'] . ", city=" . $geoInfo['city'] . ", success=" . ($success ? "1" : "0"));
         
         $stmt->execute([
             $userId, 
@@ -90,10 +122,21 @@ function logConnection($userId, $success, $failureReason = null) {
             $failureReason
         ]);
         
+        error_log("[logConnection] Insertion réussie dans connexion_logs pour l'utilisateur $userId");
         return true;
     } catch (PDOException $e) {
-        error_log("Error logging connection: " . $e->getMessage());
-        return false;
+        error_log("[logConnection] ERREUR lors de l'insertion dans connexion_logs: " . $e->getMessage());
+        // Essayer d'insérer avec des valeurs minimales
+        try {
+            error_log("[logConnection] Tentative d'insertion avec valeurs minimales");
+            $minimalStmt = $db->prepare("INSERT INTO connexion_logs (id_utilisateur, success) VALUES (?, ?)");
+            $minimalStmt->execute([$userId, $success ? 1 : 0]);
+            error_log("[logConnection] Insertion minimale réussie pour l'utilisateur $userId");
+            return true;
+        } catch (PDOException $e2) {
+            error_log("[logConnection] ERREUR critique - Même l'insertion minimale a échoué: " . $e2->getMessage());
+            return false;
+        }
     }
 }
 

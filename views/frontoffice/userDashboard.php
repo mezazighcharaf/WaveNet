@@ -45,6 +45,11 @@ try {
         header("Location: /WaveNet/views/frontoffice/login.php?error=user_not_found");
         exit;
     }
+    
+    // Mettre à jour les points verts dans la session
+    $pointsVerts = $userDbData->getPointsVerts() ?? 0;
+    $_SESSION['user_points'] = $pointsVerts;
+    
     $idQuartier = $userDbData->getIdQuartier();
     $quartierName = 'Non défini';
     if ($idQuartier) {
@@ -161,7 +166,18 @@ require_once '../includes/userHeader.php';
                 </div>
                 <h3 style="color: var(--dark-green); font-size: 1.2rem; margin-bottom: 0.5rem;">Points Verts</h3>
                 <div style="font-size: 2rem; font-weight: 700; color: var(--accent-green);"><?php echo $userData['points']; ?></div>
-                <p style="color: var(--gray-500); margin-top: 0.5rem;">Niveau: <?php echo $userData['level']; ?></p>
+                <p style="color: var(--gray-500); margin-top: 0.5rem;">Niveau: <?php 
+                  $pointsValue = $userData['points'];
+                  if ($pointsValue > 1000) {
+                    echo "Expert";
+                  } else if ($pointsValue > 500) {
+                    echo "Avancé";
+                  } else if ($pointsValue > 100) {
+                    echo "Intermédiaire";
+                  } else {
+                    echo "Débutant";
+                  }
+                ?></p>
               </div>
             </div>
             <div style="flex: 1; min-width: 220px; background-color: var(--white); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); transition: transform var(--transition-speed), box-shadow var(--transition-speed);">
@@ -447,48 +463,128 @@ require_once '../includes/userHeader.php';
               $points = $userDbData->getPointsVerts();
               $nextLevel = 100;
               $levelLabel = "Intermédiaire";
+              $currentLevel = "Débutant";
+              
               if ($points > 1000) {
                   $progressPercent = 100;
-                  $levelLabel = "Expert";
+                  $levelLabel = "Légende";
+                  $currentLevel = "Expert";
               } else if ($points > 500) {
                   $progressPercent = ($points - 500) / 5;
                   $nextLevel = 1000;
                   $levelLabel = "Expert";
+                  $currentLevel = "Avancé";
               } else if ($points > 100) {
                   $progressPercent = ($points - 100) / 4;
                   $nextLevel = 500;
                   $levelLabel = "Avancé";
+                  $currentLevel = "Intermédiaire";
               } else {
                   $progressPercent = $points;
                   $levelLabel = "Intermédiaire";
+                  $currentLevel = "Débutant";
               }
+              
+              // Ensure progress percentage is between 0 and 100
+              $progressPercent = max(0, min(100, $progressPercent));
+              
+              // Calculate points needed for next level
+              $pointsNeeded = $nextLevel - $points;
               ?>
+              
               <div style="margin-bottom: 1.5rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                  <span style="font-size: 0.9rem; color: var(--text-color);">Progression vers niveau <?= $levelLabel ?></span>
-                  <span style="font-size: 0.9rem; font-weight: 600; color: var(--accent-green);"><?= $points ?>/<?= $nextLevel ?></span>
+                  <div>
+                    <span style="font-size: 1rem; font-weight: 600; color: var(--dark-green);">Niveau actuel: <?= $currentLevel ?></span>
+                    <span style="font-size: 0.9rem; color: var(--gray-500); margin-left: 0.5rem;">(<?= $points ?> points)</span>
+                  </div>
+                  <span style="font-size: 0.9rem; font-weight: 600; color: var(--accent-green);"><?= $points ?>/<?= $nextLevel ?> points</span>
                 </div>
-                <div style="height: 8px; background-color: var(--gray-200); border-radius: 4px; overflow: hidden;">
-                  <div style="height: 100%; width: <?= $progressPercent ?>%; background-color: var(--accent-green); transition: width 0.3s;"></div>
+                
+                <!-- Improved progress bar -->
+                <div style="position: relative; height: 12px; background-color: var(--gray-200); border-radius: 6px; overflow: hidden; margin-bottom: 0.75rem;">
+                  <div style="height: 100%; width: <?= $progressPercent ?>%; background: linear-gradient(90deg, #48BB78, #38A169); transition: width 0.5s ease; position: relative;">
+                    <?php if ($progressPercent > 95): ?>
+                    <div style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); width: 8px; height: 8px; background-color: white; border-radius: 50%; animation: pulse 1.5s infinite;"></div>
+                    <?php endif; ?>
+                  </div>
                 </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--gray-500);">
+                  <span>Niveau <?= $currentLevel ?></span>
+                  <span>Niveau <?= $levelLabel ?></span>
+                </div>
+                
+                <?php if ($points < 1000): ?>
+                <div style="margin-top: 1rem; padding: 0.75rem; background-color: rgba(76, 175, 80, 0.1); border-radius: var(--border-radius); text-align: center;">
+                  <p style="margin: 0; color: var(--dark-green); font-size: 0.9rem;">
+                    <i class="fas fa-info-circle" style="margin-right: 0.5rem;"></i>
+                    Plus que <strong><?= $pointsNeeded ?> points</strong> pour atteindre le niveau <?= $levelLabel ?>!
+                  </p>
+                </div>
+                <?php else: ?>
+                <div style="margin-top: 1rem; padding: 0.75rem; background-color: rgba(76, 175, 80, 0.1); border-radius: var(--border-radius); text-align: center;">
+                  <p style="margin: 0; color: var(--dark-green); font-size: 0.9rem;">
+                    <i class="fas fa-star" style="margin-right: 0.5rem;"></i>
+                    <strong>Félicitations!</strong> Vous avez atteint le niveau maximum!
+                  </p>
+                </div>
+                <?php endif; ?>
               </div>
+              
               <h4 style="font-size: 1rem; color: var(--dark-green); margin-bottom: 1rem;">Badges obtenus</h4>
               <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
-                <div style="text-align: center; width: 70px; opacity: <?= $points >= 10 ? '1' : '0.4' ?>;">
-                  <i class="fas fa-seedling" style="font-size: 1.5rem; color: var(--accent-green); margin-bottom: 0.25rem;"></i>
-                  <div style="font-size: 0.8rem;">Débutant</div>
+                <div style="text-align: center; width: 70px; transition: all 0.3s ease; <?= $points >= 10 ? 'transform: scale(1.05);' : 'opacity: 0.4;' ?>">
+                  <div style="width: 50px; height: 50px; border-radius: 50%; background-color: <?= $points >= 10 ? 'rgba(76, 175, 80, 0.2)' : 'var(--gray-200)' ?>; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem;">
+                    <i class="fas fa-seedling" style="font-size: 1.5rem; color: <?= $points >= 10 ? 'var(--accent-green)' : 'var(--gray-400)' ?>"></i>
+                  </div>
+                  <div style="font-size: 0.8rem; font-weight: <?= $points >= 10 ? '600' : '400' ?>; color: <?= $points >= 10 ? 'var(--dark-green)' : 'var(--gray-400)' ?>">Débutant</div>
                 </div>
-                <div style="text-align: center; width: 70px; opacity: <?= $points >= 100 ? '1' : '0.4' ?>;">
-                  <i class="fas fa-leaf" style="font-size: 1.5rem; color: var(--accent-green); margin-bottom: 0.25rem;"></i>
-                  <div style="font-size: 0.8rem;">Écologiste</div>
+                <div style="text-align: center; width: 70px; transition: all 0.3s ease; <?= $points >= 100 ? 'transform: scale(1.05);' : 'opacity: 0.4;' ?>">
+                  <div style="width: 50px; height: 50px; border-radius: 50%; background-color: <?= $points >= 100 ? 'rgba(76, 175, 80, 0.2)' : 'var(--gray-200)' ?>; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem;">
+                    <i class="fas fa-leaf" style="font-size: 1.5rem; color: <?= $points >= 100 ? 'var(--accent-green)' : 'var(--gray-400)' ?>"></i>
+                  </div>
+                  <div style="font-size: 0.8rem; font-weight: <?= $points >= 100 ? '600' : '400' ?>; color: <?= $points >= 100 ? 'var(--dark-green)' : 'var(--gray-400)' ?>">Écologiste</div>
                 </div>
-                <div style="text-align: center; width: 70px; opacity: <?= $points >= 500 ? '1' : '0.4' ?>;">
-                  <i class="fas fa-tree" style="font-size: 1.5rem; color: var(--accent-green); margin-bottom: 0.25rem;"></i>
-                  <div style="font-size: 0.8rem;">Champion</div>
+                <div style="text-align: center; width: 70px; transition: all 0.3s ease; <?= $points >= 500 ? 'transform: scale(1.05);' : 'opacity: 0.4;' ?>">
+                  <div style="width: 50px; height: 50px; border-radius: 50%; background-color: <?= $points >= 500 ? 'rgba(76, 175, 80, 0.2)' : 'var(--gray-200)' ?>; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem;">
+                    <i class="fas fa-tree" style="font-size: 1.5rem; color: <?= $points >= 500 ? 'var(--accent-green)' : 'var(--gray-400)' ?>"></i>
+                  </div>
+                  <div style="font-size: 0.8rem; font-weight: <?= $points >= 500 ? '600' : '400' ?>; color: <?= $points >= 500 ? 'var(--dark-green)' : 'var(--gray-400)' ?>">Champion</div>
                 </div>
-                <div style="text-align: center; width: 70px; opacity: <?= $points >= 1000 ? '1' : '0.4' ?>;">
-                  <i class="fas fa-globe-americas" style="font-size: 1.5rem; color: var(--accent-green); margin-bottom: 0.25rem;"></i>
-                  <div style="font-size: 0.8rem;">Éco-héros</div>
+                <div style="text-align: center; width: 70px; transition: all 0.3s ease; <?= $points >= 1000 ? 'transform: scale(1.05);' : 'opacity: 0.4;' ?>">
+                  <div style="width: 50px; height: 50px; border-radius: 50%; background-color: <?= $points >= 1000 ? 'rgba(76, 175, 80, 0.2)' : 'var(--gray-200)' ?>; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem;">
+                    <i class="fas fa-globe-americas" style="font-size: 1.5rem; color: <?= $points >= 1000 ? 'var(--accent-green)' : 'var(--gray-400)' ?>"></i>
+                  </div>
+                  <div style="font-size: 0.8rem; font-weight: <?= $points >= 1000 ? '600' : '400' ?>; color: <?= $points >= 1000 ? 'var(--dark-green)' : 'var(--gray-400)' ?>">Éco-héros</div>
+                </div>
+              </div>
+              
+              <!-- Recent achievements -->
+              <div style="margin-top: 1.5rem;">
+                <h4 style="font-size: 1rem; color: var(--dark-green); margin-bottom: 1rem;">Réalisations récentes</h4>
+                <div style="border-left: 3px solid var(--accent-green); padding-left: 1rem;">
+                  <div style="margin-bottom: 0.75rem; position: relative;">
+                    <div style="width: 10px; height: 10px; background-color: var(--accent-green); border-radius: 50%; position: absolute; left: -1.35rem; top: 0.35rem;"></div>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-color);">
+                      <strong>+10 points</strong> - Participation à un défi écologique
+                    </p>
+                    <span style="font-size: 0.8rem; color: var(--gray-500);">Il y a 3 jours</span>
+                  </div>
+                  <div style="margin-bottom: 0.75rem; position: relative;">
+                    <div style="width: 10px; height: 10px; background-color: var(--accent-green); border-radius: 50%; position: absolute; left: -1.35rem; top: 0.35rem;"></div>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-color);">
+                      <strong>+5 points</strong> - Signalement d'un problème urbain
+                    </p>
+                    <span style="font-size: 0.8rem; color: var(--gray-500);">Il y a 1 semaine</span>
+                  </div>
+                  <div style="position: relative;">
+                    <div style="width: 10px; height: 10px; background-color: var(--accent-green); border-radius: 50%; position: absolute; left: -1.35rem; top: 0.35rem;"></div>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-color);">
+                      <strong>+15 points</strong> - Enregistrement d'un transport écologique
+                    </p>
+                    <span style="font-size: 0.8rem; color: var(--gray-500);">Il y a 2 semaines</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -662,6 +758,29 @@ require_once '../includes/userHeader.php';
     border-radius: 8px;
     background-color: #f8f9fa;
 }
+
+/* Animation for the pulse effect in the progress bar */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(255, 255, 255, 0);
+    transform: translateY(-50%) scale(1.2);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+/* Hover effects for badges */
+.badge-container:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease;
+}
+
 /* Styles pour les suggestions de sécurité */
 .security-suggestions {
   display: flex;

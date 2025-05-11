@@ -31,6 +31,9 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: /WaveNet/views/frontoffice/login.php');
     exit;
 }
+
+// Définir la page active pour la navigation
+$activePage = 'interventions';
 ?>
 
 <!DOCTYPE html>
@@ -160,7 +163,7 @@ if (!isset($_SESSION['user_id'])) {
       <div class="interventions-grid">
         <?php
         
-        if (count($interventions) > 0) {
+        if ($interventions !== null && count($interventions) > 0) {
           
           foreach ($interventions as $intervention) {
             

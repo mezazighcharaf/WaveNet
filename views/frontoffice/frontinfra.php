@@ -15,7 +15,7 @@ $pageTitle = 'Découvrir les Infrastructures';
 $activePage = 'infrastructures';
 
 // Inclure le header commun
-include_once '../includes/header.php';
+include_once '../includes/userHeader.php';
 ?>
 
 <main class="main-content">

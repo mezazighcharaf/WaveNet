@@ -50,7 +50,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
       <title>Backoffice - Interventions - WaveNet</title>
       <link rel="stylesheet" href="/WaveNet/views/assets/css/backoffice11.css" />
-      <link rel="stylesheet" href="/WaveNet/views/assets/css/admin-dashboard.css" />
+     <link rel="stylesheet" href="/WaveNet/views/assets/css/admin-dashboard.css" />
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
       <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" type="text/css">
       <link href="css/sb-admin-2.min.css" rel="stylesheet">
@@ -99,6 +99,7 @@
             <li><a href="/WaveNet/views/backoffice/interventions.php" class="active"><i class="fas fa-tools"></i> Interventions</a></li>
             <li><a href="/WaveNet/views/backoffice/recompenseback.php"><i class="fas fa-gift"></i> Récompenses</a></li>
             <li><a href="/WaveNet/views/backoffice/eco_actionsB.php"><i class="fas fa-leaf"></i> Eco Actions</a></li>
+            <li><a href="/WaveNet/views/backoffice/gererTransports.php"><i class="fas fa-car"></i> Types de Transport</a></li>
             <li class="home-link"><a href="/WaveNet/views/frontoffice/userDashboard.php"><i class="fas fa-home"></i> Accueil frontoffice</a></li>
           </ul>
         </nav>

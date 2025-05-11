@@ -24,20 +24,22 @@ class infraC {
     }
 
     public function ajouterInfrastructure($infrastructure) {
-        $sql = "INSERT INTO infrastructure (id_infra, type, statut, idq)
-                VALUES (:id_infra, :type, :statut, :idq)";
+        $sql = "INSERT INTO infrastructure (type, statut, idq)
+                VALUES (:type, :statut, :idq)";
         $db = Config::getConnection();
     
         try {
             $query = $db->prepare($sql);
             $query->execute([
-                'id_infra' => $infrastructure->getIdInfra(),
                 'type' => $infrastructure->getType(),
                 'statut' => $infrastructure->getStatut(),
                 'idq' => $infrastructure->getIdq()
             ]);
+            
+            return $db->lastInsertId();
         } catch(PDOException $e) {
-            echo "Erreur :" . $e->getMessage();
+            echo "Erreur lors de l'ajout de l'infrastructure : " . $e->getMessage();
+            return false;
         }
     }
         

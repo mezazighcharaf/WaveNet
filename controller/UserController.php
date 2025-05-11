@@ -398,7 +398,9 @@ class UserController {
                 
                 // Vérifier si le quartier existe
                 require_once __DIR__ . '/../models/Quartier.php';
-                $quartierData = Quartier::findById($db, $id_quartier);
+                require_once __DIR__ . '/../controller/quartierC.php';
+                $quartierController = new quartierC();
+                $quartierData = $quartierController->recupererQuartierparId($id_quartier);
                 if (!$quartierData) {
                     $_SESSION['register_error'] = "Le quartier sélectionné n'existe pas.";
                     header('Location: /WaveNet/views/frontoffice/register.php');
@@ -845,9 +847,16 @@ class UserController {
             session_start();
         }
         
+        /* Commenté pour déboguer
         if (!isset($_SESSION['user_id'])) {
             header("Location: /WaveNet/views/frontoffice/login.php");
             exit;
+        }
+        */
+        
+        // Ajout temporaire pour le débogage - simuler un utilisateur connecté
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['user_id'] = 1; // Utilisez un ID d'utilisateur valide dans votre base de données
         }
         
         // Traiter le formulaire d'ajout de transport

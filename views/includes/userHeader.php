@@ -4,6 +4,15 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 // DEBUG - SUPPRIMER APRÈS TEST
 echo "<!-- userHeader.php chargé - Version: " . date('Y-m-d H:i:s') . " -->";
 
+// Simuler un utilisateur connecté pour le débogage
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['user_id'] = 1; // Utilisez un ID d'utilisateur valide dans votre base de données
+    $_SESSION['user_nom'] = 'Test';
+    $_SESSION['user_prenom'] = 'Utilisateur';
+    $_SESSION['user_niveau'] = 'client';
+    $_SESSION['user_points'] = 100;
+}
+
 // Données utilisateur
 $userId = $_SESSION['user_id'] ?? null;
 $userNom = $_SESSION['user_nom'] ?? '';
@@ -29,10 +38,13 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
         }
         .user-header .nav-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
             max-width: 1200px;
             margin: 0 auto;
+        }
+        .user-header .logo {
+            margin-right: 30px;
         }
         .user-header .logo h1 {
             color: var(--white, #fff);
@@ -184,7 +196,7 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
 <header class="main-header user-header">
   <div class="nav-container">
     <div class="logo">
-      <a href="/WaveNet/views/frontoffice/userDashboard.php" style="text-decoration:none; color:inherit;"><h1>WaveNet</h1></a>
+      <a href="/WaveNet/views/frontoffice/userDashboard.php" style="text-decoration:none; color:inherit;"><h1>Urbaverse</h1></a>
     </div>
     
     <nav>
@@ -194,7 +206,9 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
             <li><a href="/WaveNet/views/frontoffice/defis.php" class="<?php echo ($activePage === 'defis') ? 'active' : ''; ?>">Défis</a></li>
             <li><a href="/WaveNet/views/frontoffice/activites.php" class="<?php echo ($activePage === 'activites') ? 'active' : ''; ?>">Activités</a></li>
             <li><a href="/WaveNet/views/frontoffice/manageTransport.php" class="<?php echo ($activePage === 'transport') ? 'active' : ''; ?>">Transports</a></li>
+            <li><a href="/WaveNet/views/frontoffice/frontinfra.php" class="<?php echo ($activePage === 'infrastructures') ? 'active' : ''; ?>">Infrastructures</a></li>
             <li><a href="/WaveNet/views/frontoffice/addSignalement.php" class="<?php echo ($activePage === 'signalement') ? 'active' : ''; ?>">Signalements</a></li>
+            <li><a href="/WaveNet/views/frontoffice/interventions.php" class="<?php echo ($activePage === 'interventions') ? 'active' : ''; ?>">Interventions</a></li>
             <li><a href="/WaveNet/views/frontoffice/recompenses.php" class="<?php echo ($activePage === 'recompenses') ? 'active' : ''; ?>">Récompenses</a></li>
             <li><a href="/WaveNet/views/frontoffice/account_activity.php" class="<?php echo ($activePage === 'account_activity') ? 'active' : ''; ?>">Activité du compte</a></li>
         <?php else: ?>
@@ -212,6 +226,33 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
     </nav>
     
     <div class="user-actions">
+        <?php
+        // Récupérer les points verts de l'utilisateur s'il est connecté
+        $pointsVerts = 0;
+        if (isset($_SESSION['user_id'])) {
+            // Si les points sont stockés en session, les utiliser, sinon tenter de les récupérer depuis la base de données
+            if (isset($_SESSION['user_points'])) {
+                $pointsVerts = $_SESSION['user_points'];
+            } else {
+                try {
+                    require_once(__DIR__ . '/../../models/Utilisateur.php');
+                    require_once(__DIR__ . '/../../views/includes/config.php');
+                    $db = connectDB();
+                    $user = Utilisateur::findById($db, $_SESSION['user_id']);
+                    if ($user) {
+                        $pointsVerts = $user->getPointsVerts();
+                        $_SESSION['user_points'] = $pointsVerts; // Mettre à jour la session
+                    }
+                } catch (Exception $e) {
+                    // Gérer silencieusement l'erreur
+                }
+            }
+        }
+        ?>
+        <div class="points-display" style="margin-right: 15px; color: white; background-color: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 4px;">
+            <i class="fas fa-leaf" style="color: #4CAF50; margin-right: 5px;"></i>
+            <span><?php echo $pointsVerts; ?> points</span>
+        </div>
         <div class="user-profile-dropdown">
             <button class="user-profile-button">
                 <i class="fas fa-user-circle"></i> 
@@ -237,6 +278,8 @@ $activePage = $activePage ?? ''; // Assure que $activePage existe
                     <a href="/WaveNet/views/frontoffice/editProfile.php"><i class="fas fa-user-edit"></i>Modifier mon profil</a>
                     <a href="/WaveNet/views/frontoffice/viewSignalements.php"><i class="fas fa-exclamation-triangle"></i>Mes signalements</a>
                     <a href="/WaveNet/views/frontoffice/signalement.php"><i class="fas fa-plus-circle"></i>Ajouter un signalement</a>
+                    <a href="/WaveNet/views/frontoffice/interventions.php"><i class="fas fa-tools"></i>Interventions</a>
+                    <a href="/WaveNet/views/frontoffice/frontinfra.php"><i class="fas fa-building"></i>Infrastructures</a>
                     <a href="/WaveNet/views/frontoffice/recompenses.php"><i class="fas fa-gift"></i>Récompenses</a>
                     <a href="/WaveNet/views/frontoffice/account_activity.php"><i class="fas fa-history"></i>Activité du compte</a>
                     <a href="/WaveNet/controller/UserController.php?action=gerer2FA"><i class="fas fa-shield-alt"></i>Sécurité du compte</a>

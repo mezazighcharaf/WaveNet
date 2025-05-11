@@ -4,7 +4,7 @@ session_start();
 $_SESSION['username'] = "neyrouz";
 $_SESSION['email'] = "neyrouz@gmail.com";
 
-require_once(__DIR__ . '/../Model/participantModel.php');  // Include the correct model
+require_once(__DIR__ . '/../models/participantModel.php');  // Updated path to models directory
 
 class ParticipantController {
     private $model;
@@ -24,6 +24,29 @@ class ParticipantController {
 
     // Add a participant
     public function addParticipant($nom_participant, $email_participant,$id_action) {
+        // Ajouter des points verts pour la participation
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if (isset($_SESSION['user_id'])) {
+            require_once(__DIR__ . '/../models/Utilisateur.php');
+            require_once(__DIR__ . '/../views/includes/config.php');
+            $db = connectDB();
+            $user = Utilisateur::findById($db, $_SESSION['user_id']);
+            
+            if ($user) {
+                // Attribuer des points verts pour la participation (par exemple 10 points)
+                $pointsVerts = $user->getPointsVerts() + 10;
+                $user->setPointsVerts($pointsVerts);
+                $user->update($db);
+                
+                // Mettre à jour la session
+                $_SESSION['user_points'] = $pointsVerts;
+                $_SESSION['success_message'] = "Participation enregistrée ! Vous avez gagné 10 points verts.";
+            }
+        }
+        
         return $this->model->addParticipant($nom_participant, $email_participant,$id_action);  // Add participant via model
     }
 
@@ -47,14 +70,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email=$_SESSION['email'];
             $id_action=$_POST['id_action'];
             $controller->addParticipant($nom, $email,$id_action);
-            header ("location: ../view/eco_actions.php");
+            header ("location: ../views/frontoffice/eco_actions.php");
         } elseif ($actionType === 'annuler') {
             $nom=$_SESSION['username'];
             $email=$_SESSION['email'];
             $id_participant=$controller->getParticipantbynameandemail($nom,$email)['id_participant'];
             if (!$id_participant) {echo"participant not found!";}
             $controller->cancelParticipation($id_participant);
-            header ("location: ../view/eco_actions.php");
+            header ("location: ../views/frontoffice/eco_actions.php");
         }
         // Add more conditions for other actions if needed
     }

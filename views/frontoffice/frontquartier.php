@@ -33,7 +33,7 @@ $additionalCss = '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/d
 $additionalScripts = '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>';
 
 // Inclure le header commun
-include_once '../includes/header.php';
+include_once '../includes/userHeader.php';
 ?>
 
 <main class="main-content">

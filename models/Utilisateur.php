@@ -50,6 +50,37 @@ class Utilisateur {
     public function setPointsVerts($points) { $this->point_vert = $points; }
     public function setIdQuartier($id) { $this->idq = $id; }
     public function setIdq($id) { $this->idq = $id; }
+    public function update($db) {
+        try {
+            $stmt = $db->prepare("UPDATE UTILISATEUR SET 
+                nom = :nom, 
+                prenom = :prenom, 
+                email = :email, 
+                niveau = :niveau, 
+                point_vert = :point_vert, 
+                id_quartier = :id_quartier, 
+                newsletter = :newsletter,
+                evenements = :evenements
+                WHERE id_utilisateur = :id_utilisateur");
+
+            $params = [
+                'nom' => $this->nom,
+                'prenom' => $this->prenom,
+                'email' => $this->email,
+                'niveau' => $this->niveau,
+                'point_vert' => $this->point_vert,
+                'id_quartier' => $this->idq,
+                'newsletter' => $this->newsletter,
+                'evenements' => $this->evenements,
+                'id_utilisateur' => $this->id_utilisateur
+            ];
+            
+            return $stmt->execute($params);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la mise à jour de l'utilisateur: " . $e->getMessage());
+            return false;
+        }
+    }
     public static function findByEmail($db, $email) {
         $stmt = $db->prepare("SELECT * FROM UTILISATEUR WHERE email = :email");
         $stmt->execute(['email' => $email]);
@@ -65,6 +96,29 @@ class Utilisateur {
                 $result['id_quartier']
             );
             $user->id_utilisateur = $result['id_utilisateur'];
+            $user->newsletter = $result['newsletter'] ?? 0;
+            $user->evenements = $result['evenements'] ?? 0;
+            return $user;
+        }
+        return null;
+    }
+    public static function findById($db, $id) {
+        $stmt = $db->prepare("SELECT * FROM UTILISATEUR WHERE id_utilisateur = :id");
+        $stmt->execute(['id' => $id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            $user = new Utilisateur(
+                $result['nom'],
+                $result['prenom'],
+                $result['email'],
+                $result['mot_de_passe'],
+                $result['niveau'],
+                $result['point_vert'],
+                $result['id_quartier']
+            );
+            $user->id_utilisateur = $result['id_utilisateur'];
+            $user->newsletter = $result['newsletter'] ?? 0;
+            $user->evenements = $result['evenements'] ?? 0;
             return $user;
         }
         return null;
@@ -100,69 +154,8 @@ class Utilisateur {
             }
             error_log("Erreur lors de l'exécution de la requête: " . json_encode($stmt->errorInfo()));
             return false;
-        } catch (PDOException $e) {
-            error_log("Erreur PDO dans create: " . $e->getMessage());
-            error_log("Code erreur PDO: " . $e->getCode());
-            if ($e->getCode() == '23000') {
-                if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
-                    error_log("Email déjà utilisé");
-                } elseif (strpos($e->getMessage(), 'foreign key constraint') !== false) {
-                    error_log("Erreur de clé étrangère - vérifier idq/id_quartier");
-                }
-            }
-            throw new Exception("Erreur lors de la création de l'utilisateur: " . $e->getMessage());
-        }
-    }
-    public static function findById($db, $id) {
-        $stmt = $db->prepare("SELECT * FROM UTILISATEUR WHERE id_utilisateur = :id");
-        $stmt->execute(['id' => $id]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($result) {
-            $user = new Utilisateur(
-                $result['nom'],
-                $result['prenom'],
-                $result['email'],
-                $result['mot_de_passe'],
-                $result['niveau'],
-                $result['point_vert'],
-                $result['id_quartier']
-            );
-            $user->id_utilisateur = $result['id_utilisateur'];
-            return $user;
-        }
-        return null;
-    }
-    public function update($db) {
-        try {
-            $checkColumns = $db->query("SHOW COLUMNS FROM UTILISATEUR LIKE 'newsletter'");
-            $hasNewsletterColumn = $checkColumns->rowCount() > 0;
-            $sql = "UPDATE UTILISATEUR SET 
-                    nom = :nom, 
-                    prenom = :prenom, 
-                    email = :email, 
-                    id_quartier = :id_quartier, 
-                    mot_de_passe = :mot_de_passe";
-            if ($hasNewsletterColumn) {
-                $sql .= ", newsletter = :newsletter, evenements = :evenements";
-            }
-            $sql .= " WHERE id_utilisateur = :id_utilisateur";
-            $stmt = $db->prepare($sql);
-            $params = [
-                'nom' => $this->nom,
-                'prenom' => $this->prenom,
-                'email' => $this->email,
-                'id_quartier' => $this->idq,
-                'mot_de_passe' => $this->mot_de_passe,
-                'id_utilisateur' => $this->id_utilisateur
-            ];
-            if ($hasNewsletterColumn) {
-                $params['newsletter'] = $this->newsletter ? 1 : 0;
-                $params['evenements'] = $this->evenements ? 1 : 0;
-            }
-            $stmt->execute($params);
-            return true;
-        } catch (PDOException $e) {
-            error_log("Erreur lors de la mise à jour de l'utilisateur: " . $e->getMessage());
+        } catch (Exception $e) {
+            error_log("Exception lors de la création de l'utilisateur: " . $e->getMessage());
             return false;
         }
     }

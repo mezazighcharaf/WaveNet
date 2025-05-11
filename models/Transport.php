@@ -85,5 +85,81 @@ class Transport {
             return false;
         }
     }
-
+    
+    /**
+     * Récupérer un transport par son ID
+     * 
+     * @param PDO $db L'objet de connexion PDO
+     * @param int $id L'ID du transport
+     * @return Transport|null Le transport ou null s'il n'existe pas
+     */
+    public static function findById(PDO $db, int $id) {
+        $stmt = $db->prepare("SELECT * FROM TRANSPORT WHERE id_transport = :id_transport");
+        $stmt->execute(['id_transport' => $id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($result) {
+            return new Transport(
+                $result['id_utilisateur'],
+                $result['type_transport'],
+                $result['distance_parcourue'],
+                $result['frequence'],
+                $result['eco_index'],
+                $result['date_derniere_utilisation'],
+                $result['id_transport']
+            );
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Mettre à jour un transport
+     * 
+     * @param PDO $db L'objet de connexion PDO
+     * @return bool True si la mise à jour réussit, false sinon
+     */
+    public function update(PDO $db): bool {
+        $sql = "UPDATE TRANSPORT SET 
+                type_transport = :type_transport,
+                distance_parcourue = :distance_parcourue,
+                frequence = :frequence,
+                eco_index = :eco_index,
+                date_derniere_utilisation = :date_derniere_utilisation
+                WHERE id_transport = :id_transport";
+                
+        $stmt = $db->prepare($sql);
+        
+        try {
+            return $stmt->execute([
+                ':type_transport' => $this->type_transport,
+                ':distance_parcourue' => $this->distance_parcourue,
+                ':frequence' => $this->frequence,
+                ':eco_index' => $this->eco_index,
+                ':date_derniere_utilisation' => $this->date_derniere_utilisation,
+                ':id_transport' => $this->id_transport
+            ]);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la mise à jour du transport : " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Supprimer un transport par son ID
+     * 
+     * @param PDO $db L'objet de connexion PDO
+     * @param int $id L'ID du transport à supprimer
+     * @return bool True si la suppression réussit, false sinon
+     */
+    public static function delete(PDO $db, int $id): bool {
+        $stmt = $db->prepare("DELETE FROM TRANSPORT WHERE id_transport = :id_transport");
+        
+        try {
+            return $stmt->execute([':id_transport' => $id]);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la suppression du transport : " . $e->getMessage());
+            return false;
+        }
+    }
 }

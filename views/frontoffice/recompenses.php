@@ -50,6 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_rec'])) {
             $utilisateur->setPointsVerts($nouveaux_points);
             $utilisateur->update($db);
             
+            // Mettre à jour les points dans la session
+            $_SESSION['user_points'] = $nouveaux_points;
+            
             // Enregistrer dans la session pour l'affichage après redirection
             $_SESSION['confirmation_data'] = [
                 'code' => substr(md5(uniqid()), 0, 8),
@@ -87,7 +90,7 @@ function isPromo($dateFin) {
 echo '<link rel="stylesheet" href="/WaveNet/views/assets/css/style11.css">';
 
 // Inclure l'en-tête
-include_once(__DIR__ . '/../includes/header.php');
+include_once(__DIR__ . '/../includes/userHeader.php');
 ?>
 
 <!-- Garder uniquement le contenu principal, sans les balises HTML/head/body qui sont déjà dans header.php -->
@@ -241,6 +244,7 @@ include_once(__DIR__ . '/../includes/header.php');
         // Retirer les boutons pour l'impression
         modalContent.querySelector('.modal-actions').remove();
         modalContent.querySelector('.modal-close').remove();
+        modalContent.querySelector('.success-icon').remove();
         
         printWindow.document.write('<html><head><title>Confirmation WaveNet</title>');
         printWindow.document.write('<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">');

@@ -4,7 +4,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-  // Inclure Composer autoload
 
 // Fonction pour envoyer un rappel par e-mail
 function sendReminder($toEmail, $participantName, $eventDate) {

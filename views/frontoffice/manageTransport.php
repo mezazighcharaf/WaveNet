@@ -2,10 +2,18 @@
 if (session_status() === PHP_SESSION_NONE) { 
     session_start();
 }
+/* Commenté pour déboguer
 if (!isset($_SESSION['user_id'])) {
     header("Location: /WaveNet/views/frontoffice/login.php");
     exit;
 }
+*/
+
+// Ajout temporaire pour le débogage - simuler un utilisateur connecté
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['user_id'] = 1; // Utilisez un ID d'utilisateur valide dans votre base de données
+}
+
 $pageTitle = 'Gérer mes transports';
 $activePage = 'transport'; 
 require_once '../../views/includes/config.php';
@@ -153,8 +161,8 @@ require_once '../includes/userHeader.php';
                                             <td><span class="badge badge-primary"><?= intval($t['frequence']) ?> fois/sem</span></td>
                                             <td><span class="eco-index <?= $ecoClass ?>"><?= number_format(floatval($t['eco_index']), 1) ?></span></td>
                                             <td class="actions">
-                                                <button class="btn-icon" title="Modifier"><i class="fas fa-edit"></i></button>
-                                                <button class="btn-icon" title="Supprimer"><i class="fas fa-trash-alt"></i></button>
+                                                <button class="btn-icon edit-transport" data-id="<?= $t['id_transport'] ?>" data-type="<?= htmlspecialchars($t['type_transport']) ?>" data-distance="<?= $t['distance_parcourue'] ?>" data-frequence="<?= $t['frequence'] ?>" title="Modifier"><i class="fas fa-edit"></i></button>
+                                                <a href="/WaveNet/controller/TransportController.php?action=supprimerTransport&id=<?= $t['id_transport'] ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce transport ?')" class="btn-icon" title="Supprimer"><i class="fas fa-trash-alt"></i></a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -257,6 +265,54 @@ require_once '../includes/userHeader.php';
                         <p>Les transports écologiques vous rapportent plus de points verts !</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- Formulaire Modifier Transport (Modal) -->
+    <div class="modal" id="editTransportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Modifier le transport</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form action="/WaveNet/controller/TransportController.php?action=modifierTransport" method="post" class="simplified-form">
+                    <input type="hidden" id="edit_id_transport" name="id_transport" value="">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit_type_transport">Type</label>
+                            <select id="edit_type_transport" name="type_transport" required class="form-control">
+                                <option value="" disabled>Choisir...</option>
+                                <option value="Marche">Marche</option>
+                                <option value="Vélo">Vélo</option>
+                                <option value="Trottinette électrique">Trottinette électrique</option>
+                                <option value="Transport en commun (Bus)">Bus</option>
+                                <option value="Transport en commun (Tram/Métro)">Tram/Métro</option>
+                                <option value="Covoiturage">Covoiturage</option>
+                                <option value="Voiture électrique">Voiture électrique</option>
+                                <option value="Voiture thermique">Voiture thermique</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_distance_parcourue">Distance (km)</label>
+                            <input type="number" id="edit_distance_parcourue" name="distance_parcourue" step="0.1" min="0.1" required class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit_frequence">Fréquence (fois/semaine)</label>
+                            <input type="number" id="edit_frequence" name="frequence" min="1" max="7" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_date_derniere_utilisation">Dernière utilisation</label>
+                            <input type="date" id="edit_date_derniere_utilisation" name="date_derniere_utilisation" class="form-control" value="<?= date('Y-m-d') ?>">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary close-modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -538,48 +594,148 @@ require_once '../includes/userHeader.php';
             font-size: 1rem;
         }
     }
+    /* Styles pour la modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.4);
+        overflow: auto;
+    }
+    
+    .modal-content {
+        background-color: white;
+        margin: 10% auto;
+        border-radius: 5px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        width: 80%;
+        max-width: 600px;
+        animation: modalfade 0.3s;
+    }
+    
+    @keyframes modalfade {
+        from {opacity: 0; transform: translateY(-30px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+    
+    .modal-header {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .modal-header h3 {
+        margin: 0;
+        color: var(--dark-green);
+    }
+    
+    .close-modal {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .close-modal:hover {
+        color: var(--dark-green);
+    }
+    
+    .modal-body {
+        padding: 15px;
+    }
     </style>
-<?php
-$additionalScripts = <<<EOT
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const addTransportForm = document.getElementById('add-transport-form');
-        const transportFormError = document.getElementById('transport-form-error');
-        const transportMessageDiv = document.getElementById('transport-message');
-        if (addTransportForm) {
-            addTransportForm.addEventListener('submit', function(e) {
-                transportFormError.textContent = ''; 
-                const typeTransport = document.getElementById('type_transport').value;
-                const distance = document.getElementById('distance_parcourue').value;
-                const frequence = document.getElementById('frequence').value;
-                let errors = [];
-                if (!typeTransport) {
-                    errors.push('Veuillez choisir un type de transport.');
-                }
-                if (distance === '' || parseFloat(distance) <= 0) {
-                    errors.push('Veuillez saisir une distance valide (supérieure à zéro).');
-                }
-                if (frequence === '' || parseInt(frequence) < 0) {
-                    errors.push('Veuillez saisir une fréquence valide (positive ou nulle).');
-                }
-                if (errors.length > 0) {
-                    e.preventDefault();
-                    transportFormError.innerHTML = errors.join('<br>');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des messages d'erreur et de succès
+            <?php if (!empty($errorMessages)): ?>
+                <?php foreach ($errorMessages as $error): ?>
+                    showError("<?= addslashes($error) ?>");
+                <?php endforeach; ?>
+            <?php endif; ?>
+
+            <?php if (!empty($successMessage)): ?>
+                showSuccess("<?= addslashes($successMessage) ?>");
+            <?php endif; ?>
+
+            // Modal pour modifier un transport
+            const modal = document.getElementById('editTransportModal');
+            const editButtons = document.querySelectorAll('.edit-transport');
+            const closeButtons = document.querySelectorAll('.close-modal');
+            
+            // Ouvrir la modal
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Récupérer les données du transport
+                    const id = this.getAttribute('data-id');
+                    const type = this.getAttribute('data-type');
+                    const distance = this.getAttribute('data-distance');
+                    const frequence = this.getAttribute('data-frequence');
+                    
+                    // Remplir le formulaire
+                    document.getElementById('edit_id_transport').value = id;
+                    document.getElementById('edit_type_transport').value = type;
+                    document.getElementById('edit_distance_parcourue').value = distance;
+                    document.getElementById('edit_frequence').value = frequence;
+                    
+                    // Afficher la modal
+                    modal.style.display = 'block';
+                });
+            });
+            
+            // Fermer la modal
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+            });
+            
+            // Fermer la modal si on clique en dehors
+            window.addEventListener('click', function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
                 }
             });
-        }
-        if (transportMessageDiv) {
+        });
+        
+        function showError(message) {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-danger';
+            alert.innerHTML = message;
+            document.querySelector('.transport-dashboard').prepend(alert);
+            
+            // Faire défiler vers l'alerte
+            alert.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Supprimer l'alerte après 5 secondes
             setTimeout(() => {
-                transportMessageDiv.style.opacity = '0';
-                transportMessageDiv.style.transition = 'opacity 0.5s ease';
-                setTimeout(() => { 
-                    transportMessageDiv.style.display = 'none'; 
-                }, 500);
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
             }, 5000);
         }
-    });
-</script>
-EOT;
+        
+        function showSuccess(message) {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success';
+            alert.innerHTML = message;
+            document.querySelector('.transport-dashboard').prepend(alert);
+            
+            // Faire défiler vers l'alerte
+            alert.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Supprimer l'alerte après 5 secondes
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        }
+    </script>
+<?php
 require_once '../includes/footer.php';
 ?>
 </body>

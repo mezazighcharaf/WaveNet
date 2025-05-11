@@ -37,6 +37,28 @@ require_once '../../models/security_functions.php';
 // Récupérer l'ID de l'utilisateur connecté
 $userId = $_SESSION['user_id'];
 
+// Enregistrer la connexion actuelle si elle n'existe pas déjà
+try {
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    
+    // Vérifier si cette connexion existe déjà (même IP, même user-agent, dans les 5 dernières minutes)
+    $stmt = $db->prepare("SELECT COUNT(*) FROM connexion_logs 
+                         WHERE id_utilisateur = ? 
+                         AND ip_address = ?
+                         AND user_agent = ?
+                         AND date_connexion > DATE_SUB(NOW(), INTERVAL 5 MINUTE)");
+    $stmt->execute([$userId, $ip, $userAgent]);
+    $exists = $stmt->fetchColumn() > 0;
+    
+    // Si la connexion n'existe pas déjà, l'enregistrer
+    if (!$exists) {
+        logConnection($userId, true);
+    }
+} catch (PDOException $e) {
+    error_log("Erreur lors de la vérification/enregistrement de la connexion actuelle: " . $e->getMessage());
+}
+
 // Récupérer les informations de l'utilisateur
 $userData = null;
 try {

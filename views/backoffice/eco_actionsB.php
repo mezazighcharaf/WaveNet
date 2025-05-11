@@ -86,6 +86,7 @@ if (isset($_GET['id_participant'])) {
                 <li><a href="/WaveNet/views/backoffice/interventions.php"><i class="fas fa-tools"></i> Interventions</a></li>
                 <li><a href="/WaveNet/views/backoffice/recompenseback.php"><i class="fas fa-gift"></i> Récompenses</a></li>
                 <li><a href="/WaveNet/views/backoffice/eco_actionsB.php" class="active"><i class="fas fa-leaf"></i> Eco Actions</a></li>
+                <li><a href="/WaveNet/views/backoffice/gererTransports.php"><i class="fas fa-car"></i> Types de Transport</a></li>
                 <li class="home-link"><a href="/WaveNet/views/frontoffice/userDashboard.php"><i class="fas fa-home"></i> Accueil frontoffice</a></li>
             </ul>
         </nav>

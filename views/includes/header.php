@@ -146,7 +146,7 @@ if (!isset($activePage)) $activePage = "";
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link <?php echo $activePage == 'accueil' ? 'active' : ''; ?>" 
-                 href="/WaveNet/views/index.php">Accueil</a>
+                 href="/WaveNet/index.php">Accueil</a>
             </li>
             <li class="nav-item">
               <a class="nav-link <?php echo $activePage == 'about' ? 'active' : ''; ?>" 
