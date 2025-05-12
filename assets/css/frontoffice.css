@@ -211,99 +211,120 @@
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 10000;
     left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.7);
+    width: 100vw;
+    height: 100vh;
+    background: rgba(44, 62, 80, 0.45);
+    backdrop-filter: blur(2px);
+    justify-content: center;
+    align-items: center;
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
-    border-radius: 10px;
-    position: relative;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover {
-    color: black;
-}
-
-.capture-options {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin: 20px 0;
-}
-
-#cameraContainer {
-    margin: 20px 0;
-    text-align: center;
-}
-
-#cameraPreview {
-    width: 100%;
+    background: #fff;
+    border-radius: 18px;
     max-width: 500px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-#previewContainer {
-    margin: 20px 0;
+    margin: 80px auto;
+    padding: 38px 36px 28px 36px;
+    box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+    position: relative;
     text-align: center;
 }
 
-#imagePreview {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-.preview-actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
+#close-modal {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    font-size: 28px;
+    color: #888;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
+    transition: color 0.2s;
 }
 
-.btn-primary {
-    background-color: #4CAF50;
-    color: white;
+#close-modal:hover {
+    color: #c62828;
 }
 
-.btn-secondary {
-    background-color: #666;
-    color: white;
+#modal-validation-image h3 {
+    margin-bottom: 18px;
+    font-size: 1.3rem;
+    color: var(--dark-green);
+    font-weight: 700;
 }
 
-.btn-success {
-    background-color: #2196F3;
-    color: white;
+.btn-capture-photo {
+    display: inline-block;
+    background: var(--accent-green);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.6rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+    transition: background 0.2s, transform 0.2s;
+}
+#btn-verifier {
+    display: inline-block;
+    background: var(--accent-green);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.6rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-bottom: 0;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+    transition: background 0.2s, transform 0.2s;
+  }
+
+.btn-capture-photo:hover {
+    background: #43a047;
+    transform: translateY(-2px) scale(1.04);
 }
 
-.btn:hover {
-    opacity: 0.9;
+#btn-verifier:hover:enabled {
+    background: #43a047;
+    transform: translateY(-2px) scale(1.04);
+  }
+#btn-verifier:disabled {
+  background: #bdbdbd;
+  color: #fff;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+#input-upload-image {
+    margin: 10px 0 18px 0;
+    display: block;
+    width: 100%;
+}
+
+#preview-container {
+    margin: 10px 0 18px 0;
+    min-height: 40px;
+}
+
+#preview-container video,
+#preview-container canvas,
+#preview-container img {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+    margin: 0 auto 10px auto;
+    display: block;
+    max-width: 100%;
+}
+
+#result-validation {
+    margin-top: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
 /* ====== CSS extrait de view/frontoffice/index.php ====== */
@@ -1401,45 +1422,39 @@ footer {
 .tooltip {
   position: absolute;
   background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+    color: #333;
   padding: 10px 15px;
+    border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  font-size: 14px;
+    z-index: 1000;
+    display: none;
+    min-width: 150px;
   max-width: 250px;
-  z-index: 9000;
   pointer-events: none;
-  opacity: 0;
   transition: opacity 0.2s ease;
 }
-.tooltip.visible {
-  opacity: 1;
+.tooltip-content {
+    position: relative;
 }
-.tooltip h4 {
+.tooltip-content-title {
   margin: 0 0 5px 0;
-  color: var(--accent-green);
+    color: #4CAF50;
   font-size: 16px;
   font-weight: 600;
 }
-.tooltip p {
-  margin: 5px 0 0 0;
-  color: #333;
+.tooltip-content-desc {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
   line-height: 1.4;
-}
-.tooltip .tooltip-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  margin-top: 8px;
-  color: #666;
 }
 .point-hover {
   cursor: pointer;
-  transition: r 0.2s ease;
+    transition: all 0.2s ease;
 }
 .point-hover:hover {
   r: 6;
-  fill: var(--accent-green);
+    fill: #4CAF50;
 }
 .btn-primary {
   background-color: #4CAF50;
@@ -2192,17 +2207,6 @@ a[href*="status=Terminé"].active,
   color: #43a047;
 }
 
-/* BADGE STATUT COMME BADGE DIFFICULTÉ MAIS COULEURS STATUT */
-
-.defi-card .badge-status.à-venir {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-.defi-card .badge-status.terminé {
-  background: #ffebee;
-  color: #c62828;
-}
-
 /* Badge statut pour l'accueil */
 .status-badge-home {
     display: inline-block !important;
@@ -2239,34 +2243,6 @@ a[href*="status=Terminé"].active,
     border: 1.5px solid #ef9a9a;
 }
 
-.status-badge-home.à-venir {
-    background-color: #e3f2fd;
-    color: #1565c0;
-    border: 1px solid #90caf9;
-}
-
-.status-badge-home.actif {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-    border: 1px solid #a5d6a7;
-}
-
-.status-badge-home.terminé {
-    background-color: #ffebee;
-    color: #c62828;
-    border: 1px solid #ef9a9a;
-}
-
-/* Supprime ou commente cette règle (ligne ~2253) 
-.defi-card-body .status-badge-home.à-venir {
-     background-color: #e3f2fd !important;
-    color: #1565c0 !important;
-    border: 1.5px solid #90caf9 !important; 
-}*/
-
-/* Règles précises pour chaque statut */
-.status-badge-home.à-venir,
-.status-badge-home.a-venir,
 .status-badge-home.À-venir {
     background-color: #e3f2fd !important;
     color: #1565c0 !important;
@@ -2281,4 +2257,69 @@ a[href*="status=Terminé"].active,
     background-color: #ffebee !important;
     color: #c62828 !important;
     border: 1px solid #ef9a9a !important;
+}
+
+/* ===== DRAG & DROP UPLOAD ===== */
+.upload-area {
+  border: 2px dashed #90caf9;
+  border-radius: 14px;
+  padding: 18px 10px 10px 10px;
+  background: #f7fbff;
+  margin: 12px 0 18px 0;
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+.upload-area.dragover {
+  border-color: #2196F3;
+  background: #e3f2fd;
+}
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+.upload-btn {
+  display: inline-block;
+  background: var(--accent-green);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+  transition: background 0.2s, transform 0.2s;
+}
+.upload-btn:hover {
+  background: #43a047;
+  transform: translateY(-2px) scale(1.04);
+}
+.upload-or {
+  color: #2196F3;
+  font-size: 0.98rem;
+  margin-top: 2px;
+  margin-bottom: 0;
+}
+
+.points-notification {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(76, 175, 80, 0.95);
+  color: white;
+  padding: 20px 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  z-index: 10000;
+  font-size: 24px;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.5s, transform 0.5s;
+  text-align: center;
+  pointer-events: none;
 } 

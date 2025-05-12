@@ -1,14 +1,6 @@
 <?php
 session_start();
 
-// Check if user is logged in as admin
-if(!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'admin') {
-    // Just mock admin role for demonstration since there's no login
-    $_SESSION['user_id'] = 1;
-    $_SESSION['user_role'] = 'admin';
-    $_SESSION['user_name'] = 'Admin';
-}
-
 require_once __DIR__ . '/../../../controller/DefiController.php';
 
 // Initialize controller
@@ -386,5 +378,28 @@ if(!$defi) {
     
     <!-- Ajout de FontAwesome pour les icônes -->
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const points = document.querySelectorAll('.point-hover');
+        const tooltip = document.getElementById('tooltip');
+
+        points.forEach(point => {
+            point.addEventListener('mouseenter', function() {
+                console.log('Mouse entered point:', this.getAttribute('data-point'));
+                const pointInfo = `Étape: ${this.getAttribute('data-point')}`;
+                tooltip.textContent = pointInfo;
+                tooltip.style.display = 'block';
+                tooltip.style.left = `${this.getBoundingClientRect().left}px`;
+                tooltip.style.top = `${this.getBoundingClientRect().top - 30}px`;
+                tooltip.style.zIndex = '1000'; // Assure que le tooltip est au-dessus
+            });
+
+            point.addEventListener('mouseleave', function() {
+                console.log('Mouse left point:', this.getAttribute('data-point'));
+                tooltip.style.display = 'none';
+            });
+        });
+    });
+    </script>
 </body>
 </html> 
