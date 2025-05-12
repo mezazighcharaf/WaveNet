@@ -1,13 +1,6 @@
 <?php
 session_start();
 
-// Check if user is logged in as admin
-if(!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'admin') {
-    $_SESSION['user_id'] = 1;
-    $_SESSION['user_role'] = 'admin';
-    $_SESSION['user_name'] = 'Admin';
-}
-
 require_once __DIR__ . '/../../../controller/EtapeController.php';
 require_once __DIR__ . '/../../../controller/DefiController.php';
 
@@ -127,7 +120,7 @@ if(is_object($defi)) {
     <!-- MAIN CONTENT -->
     <main class="main-content">
         <header class="content-header">
-            <h1>Étape #<?php echo htmlspecialchars($etape['Id_Etape']); ?></h1>
+            <h1>Étape #<?php echo htmlspecialchars($etape['Id_etape']); ?></h1>
             <div class="user-info">
                 <span><?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Admin'; ?></span>
                 <a href="../../frontoffice/index.php" class="home-button">Accueil</a>
@@ -169,8 +162,8 @@ if(is_object($defi)) {
             
             <div class="actions">
                 <a href="index.php" class="btn btn-back">Retour à la liste</a>
-                <a href="edit.php?id=<?php echo $etape['Id_Etape']; ?>" class="btn btn-edit">Modifier</a>
-                <a href="delete.php?id=<?php echo $etape['Id_Etape']; ?>" class="btn btn-delete" onclick="return confirm('Voulez-vous vraiment supprimer cette étape ?');">Supprimer</a>
+                <a href="edit.php?id=<?php echo $etape['Id_etape']; ?>" class="btn btn-edit">Modifier</a>
+                <a href="delete.php?id=<?php echo $etape['Id_etape']; ?>" class="btn btn-delete" onclick="return confirm('Voulez-vous vraiment supprimer cette étape ?');">Supprimer</a>
             </div>
         </div>
     </main>
